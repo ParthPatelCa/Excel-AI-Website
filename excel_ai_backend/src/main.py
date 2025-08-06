@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 # Load environment variables
 load_dotenv()
 
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, jsonify
 from flask_cors import CORS
 from src.models.user import db
 from src.routes.user import user_bp
@@ -23,14 +23,14 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 CORS(app)
 
 # API versioning
-app.register_blueprint(user_bp, url_prefix='/api/v1')
-app.register_blueprint(excel_bp, url_prefix='/api/v1/excel')
-app.register_blueprint(google_sheets_bp, url_prefix='/api/v1/google-sheets')
+app.register_blueprint(user_bp, url_prefix='/api/v1', name='user_v1')
+app.register_blueprint(excel_bp, url_prefix='/api/v1/excel', name='excel_v1')
+app.register_blueprint(google_sheets_bp, url_prefix='/api/v1/google-sheets', name='google_sheets_v1')
 
 # Legacy support - redirect old API calls to v1
-app.register_blueprint(user_bp, url_prefix='/api')
-app.register_blueprint(excel_bp, url_prefix='/api/excel')
-app.register_blueprint(google_sheets_bp, url_prefix='/api/google-sheets')
+app.register_blueprint(user_bp, url_prefix='/api', name='user_legacy')
+app.register_blueprint(excel_bp, url_prefix='/api/excel', name='excel_legacy')
+app.register_blueprint(google_sheets_bp, url_prefix='/api/google-sheets', name='google_sheets_legacy')
 
 # uncomment if you need to use database
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"

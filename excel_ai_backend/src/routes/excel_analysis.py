@@ -154,25 +154,34 @@ def suggest_formulas():
         return jsonify({'error': f'Error generating formulas: {str(e)}'}), 500
 
 def generate_insights(df):
-    """Generate basic statistical insights from the dataframe"""
+    """Generate comprehensive statistical insights from the dataframe"""
     insights = {
         'summary_stats': {},
         'data_quality': {},
-        'patterns': []
+        'patterns': [],
+        'correlations': {},
+        'distributions': {}
     }
     
     # Summary statistics for numeric columns
     numeric_cols = df.select_dtypes(include=[np.number]).columns
     for col in numeric_cols:
-        insights['summary_stats'][col] = {
-            'mean': float(df[col].mean()) if not df[col].isna().all() else None,
-            'median': float(df[col].median()) if not df[col].isna().all() else None,
-            'std': float(df[col].std()) if not df[col].isna().all() else None,
-            'min': float(df[col].min()) if not df[col].isna().all() else None,
-            'max': float(df[col].max()) if not df[col].isna().all() else None,
-            'missing_count': int(df[col].isna().sum())
-        }
-    
+        col_data = df[col].dropna()
+        if len(col_data) > 0:
+            insights['summary_stats'][col] = {
+                'count': len(col_data),
+                'mean': float(col_data.mean()),
+                'median': float(col_data.median()),
+                'std': float(col_data.std()),
+                'min': float(col_data.min()),
+                'max': float(col_data.max()),
+                'q25': float(col_data.quantile(0.25)),
+                'q75': float(col_data.quantile(0.75)),
+                'missing_count': int(df[col].isna().sum()),
+                'skewness': float(col_data.skew()) if len(col_data) > 2 else 0,
+                'kurtosis': float(col_data.kurtosis()) if len(col_data) > 3 else 0
+            }
+
     # Data quality assessment
     insights['data_quality'] = {
         'total_rows': len(df),
@@ -180,31 +189,91 @@ def generate_insights(df):
         'missing_values': int(df.isna().sum().sum()),
         'duplicate_rows': int(df.duplicated().sum()),
         'numeric_columns': len(numeric_cols),
-        'text_columns': len(df.select_dtypes(include=['object']).columns)
+        'text_columns': len(df.select_dtypes(include=['object']).columns),
+        'memory_usage_mb': round(df.memory_usage(deep=True).sum() / 1024 / 1024, 2),
+        'column_types': df.dtypes.astype(str).to_dict()
     }
-    
+
+    # Distribution analysis for categorical columns
+    categorical_columns = df.select_dtypes(include=['object', 'category']).columns
+    for col in categorical_columns:
+        if len(df[col].dropna()) > 0:
+            value_counts = df[col].value_counts().head(10)
+            insights['distributions'][col] = {
+                'unique_values': int(df[col].nunique()),
+                'most_common': value_counts.to_dict(),
+                'missing_count': int(df[col].isnull().sum())
+            }
+
+    # Correlation analysis
+    if len(numeric_cols) > 1:
+        try:
+            correlation_matrix = df[numeric_cols].corr()
+            insights['correlations'] = correlation_matrix.round(3).to_dict()
+        except:
+            insights['correlations'] = {}
+
     # Identify patterns
     if len(numeric_cols) > 0:
         # Find columns with high correlation
-        corr_matrix = df[numeric_cols].corr()
-        high_corr_pairs = []
-        for i in range(len(corr_matrix.columns)):
-            for j in range(i+1, len(corr_matrix.columns)):
-                corr_val = corr_matrix.iloc[i, j]
-                if abs(corr_val) > 0.7 and not pd.isna(corr_val):
-                    high_corr_pairs.append({
-                        'column1': corr_matrix.columns[i],
-                        'column2': corr_matrix.columns[j],
-                        'correlation': float(corr_val)
-                    })
-        
-        if high_corr_pairs:
-            insights['patterns'].append({
-                'type': 'high_correlation',
-                'description': 'Found columns with high correlation',
-                'details': high_corr_pairs
-            })
+        try:
+            corr_matrix = df[numeric_cols].corr()
+            high_corr_pairs = []
+            for i in range(len(corr_matrix.columns)):
+                for j in range(i+1, len(corr_matrix.columns)):
+                    corr_val = corr_matrix.iloc[i, j]
+                    if abs(corr_val) > 0.7 and not pd.isna(corr_val):
+                        high_corr_pairs.append({
+                            'column1': corr_matrix.columns[i],
+                            'column2': corr_matrix.columns[j],
+                            'correlation': float(corr_val)
+                        })
+            
+            if high_corr_pairs:
+                insights['patterns'].append({
+                    'type': 'high_correlation',
+                    'description': 'Found columns with high correlation',
+                    'details': high_corr_pairs
+                })
+        except:
+            pass
+
+    # Detect potential data quality issues
+    quality_issues = []
     
+    # High missing value columns
+    missing_percentage = (df.isnull().sum() / len(df)) * 100
+    high_missing_cols = missing_percentage[missing_percentage > 20].index.tolist()
+    if high_missing_cols:
+        quality_issues.append(f"High missing values (>20%) in: {', '.join(high_missing_cols)}")
+    
+    # Duplicate rows
+    if insights['data_quality']['duplicate_rows'] > 0:
+        duplicate_percentage = (insights['data_quality']['duplicate_rows'] / len(df)) * 100
+        quality_issues.append(f"Found {insights['data_quality']['duplicate_rows']} duplicate rows ({duplicate_percentage:.1f}%)")
+    
+    # Constant columns
+    constant_cols = [col for col in df.columns if df[col].nunique() <= 1]
+    if constant_cols:
+        quality_issues.append(f"Constant value columns: {', '.join(constant_cols)}")
+    
+    # Outliers detection (simple IQR method)
+    for col in numeric_cols:
+        if col in insights['summary_stats']:
+            Q1 = insights['summary_stats'][col]['q25']
+            Q3 = insights['summary_stats'][col]['q75']
+            IQR = Q3 - Q1
+            if IQR > 0:
+                lower_bound = Q1 - 1.5 * IQR
+                upper_bound = Q3 + 1.5 * IQR
+                outliers = df[(df[col] < lower_bound) | (df[col] > upper_bound)][col]
+                if len(outliers) > 0:
+                    outlier_percentage = (len(outliers) / len(df)) * 100
+                    if outlier_percentage > 5:  # Only report if >5% outliers
+                        quality_issues.append(f"Potential outliers in {col}: {len(outliers)} values ({outlier_percentage:.1f}%)")
+    
+    insights['data_quality']['issues'] = quality_issues
+
     return insights
 
 def generate_ai_insights(df, basic_insights):

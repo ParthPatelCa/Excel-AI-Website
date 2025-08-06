@@ -6,6 +6,9 @@ import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
 import { LoadingSpinner, ErrorAlert, ProgressBar } from '@/components/ui/alerts.jsx'
+import { DataVisualization } from '@/components/DataVisualization.jsx'
+import { ChatInterface } from '@/components/ChatInterface.jsx'
+import { ExportReports } from '@/components/ExportReports.jsx'
 import { validateFile, validateGoogleSheetsUrl } from '@/utils/validation.js'
 import apiService from '@/services/api.js'
 import './App.css'
@@ -114,53 +117,73 @@ function App() {
   }
 
   const HomePage = () => (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="bg-blue-600 p-2 rounded-lg">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg">
                 <FileSpreadsheet className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">Excel AI Insights</h1>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  Excel AI Insights
+                </h1>
+                <p className="text-xs text-gray-500">Powered by Advanced AI</p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline">Sign In</Button>
-              <Button>Get Started</Button>
+              <Button variant="outline" className="bg-white/50 hover:bg-white/80">Sign In</Button>
+              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg">
+                Get Started
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-5xl font-bold text-gray-900 mb-6">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-indigo-400/20 to-blue-400/20 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="mb-6">
+            <Badge variant="outline" className="bg-white/50 text-blue-700 border-blue-200 px-4 py-2 text-sm font-medium">
+              ✨ AI-Powered Data Analysis
+            </Badge>
+          </div>
+          <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             Transform Your Excel Data with
-            <span className="text-blue-600"> AI-Powered Insights</span>
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent block mt-2">
+              AI-Powered Insights
+            </span>
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
             Upload your Excel files and get instant, intelligent analysis. Discover patterns, 
             generate formulas, and make data-driven decisions with our advanced AI technology.
           </p>
           
           {/* Data Input Section */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 mb-12">
+          <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-12 border border-white/20">
             <Tabs defaultValue="file" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="file" className="flex items-center space-x-2">
+              <TabsList className="grid w-full grid-cols-2 mb-6 bg-gray-100/50">
+                <TabsTrigger value="file" className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-md">
                   <Upload className="h-4 w-4" />
                   <span>Upload File</span>
                 </TabsTrigger>
-                <TabsTrigger value="sheets" className="flex items-center space-x-2">
+                <TabsTrigger value="sheets" className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-md">
                   <Link className="h-4 w-4" />
                   <span>Google Sheets</span>
                 </TabsTrigger>
               </TabsList>
               
               <TabsContent value="file" className="space-y-4">
-                <div className="border-2 border-dashed border-gray-300 hover:border-blue-400 transition-colors rounded-lg p-8">
+                <div className="border-2 border-dashed border-gray-300 hover:border-blue-400 transition-all duration-300 rounded-2xl p-8 hover:bg-blue-50/30">
                   <input
                     type="file"
                     accept=".xlsx,.xls,.csv"
@@ -170,14 +193,16 @@ function App() {
                   />
                   <label htmlFor="file-upload" className="cursor-pointer">
                     <div className="flex flex-col items-center">
-                      <Upload className="h-16 w-16 text-blue-500 mb-4" />
+                      <div className="bg-gradient-to-br from-blue-100 to-indigo-100 p-6 rounded-full mb-4">
+                        <Upload className="h-16 w-16 text-blue-600" />
+                      </div>
                       <h3 className="text-2xl font-semibold text-gray-900 mb-2">
                         Drop your Excel file here or click to browse
                       </h3>
-                      <p className="text-gray-500 mb-4">
+                      <p className="text-gray-500 mb-6">
                         Supports .xlsx, .xls, and .csv files up to 16MB
                       </p>
-                      <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                      <Button size="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg">
                         <Upload className="h-5 w-5 mr-2" />
                         Choose File
                       </Button>
@@ -187,9 +212,11 @@ function App() {
               </TabsContent>
               
               <TabsContent value="sheets" className="space-y-4">
-                <div className="border-2 border-dashed border-gray-300 hover:border-blue-400 transition-colors rounded-lg p-8">
+                <div className="border-2 border-dashed border-gray-300 hover:border-green-400 transition-all duration-300 rounded-2xl p-8 hover:bg-green-50/30">
                   <div className="flex flex-col items-center">
-                    <Link className="h-16 w-16 text-green-500 mb-4" />
+                    <div className="bg-gradient-to-br from-green-100 to-emerald-100 p-6 rounded-full mb-4">
+                      <Link className="h-16 w-16 text-green-600" />
+                    </div>
                     <h3 className="text-2xl font-semibold text-gray-900 mb-2">
                       Analyze Google Sheets directly
                     </h3>
@@ -207,7 +234,7 @@ function App() {
                             setGoogleSheetsUrl(e.target.value)
                             validateGoogleSheetsUrl(e.target.value)
                           }}
-                          className="pr-10"
+                          className="pr-10 border-gray-200 focus:border-green-400 bg-white/80"
                         />
                         {urlValidation && (
                           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -228,7 +255,7 @@ function App() {
                       
                       <Button 
                         size="lg" 
-                        className="w-full bg-green-600 hover:bg-green-700"
+                        className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg"
                         onClick={handleGoogleSheetsAnalysis}
                         disabled={!urlValidation?.valid}
                       >
@@ -246,6 +273,7 @@ function App() {
           <Button 
             variant="outline" 
             size="lg" 
+            className="bg-white/50 hover:bg-white/80 border-gray-200 shadow-lg"
             onClick={() => {
               setCurrentView('analysis')
               setUploadedFile({ name: 'sample-sales-data.xlsx' })
@@ -277,13 +305,13 @@ function App() {
               })
             }}
           >
-            Try Demo with Sample Data
+            ✨ Try Demo with Sample Data
           </Button>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white/80 backdrop-blur-md relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h3 className="text-3xl font-bold text-gray-900 mb-4">
@@ -294,50 +322,50 @@ function App() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-8">
-            <Card className="hover:shadow-lg transition-shadow">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <Card className="hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-md border-white/20">
               <CardHeader>
-                <div className="bg-blue-100 p-3 rounded-lg w-fit">
+                <div className="bg-gradient-to-br from-blue-100 to-indigo-100 p-3 rounded-xl w-fit">
                   <Brain className="h-8 w-8 text-blue-600" />
                 </div>
-                <CardTitle>Smart Analysis</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-gray-800">Smart Analysis</CardTitle>
+                <CardDescription className="text-gray-600">
                   AI-powered insights that automatically detect patterns, trends, and anomalies in your data
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card className="hover:shadow-lg transition-shadow">
+            <Card className="hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-md border-white/20">
               <CardHeader>
-                <div className="bg-green-100 p-3 rounded-lg w-fit">
+                <div className="bg-gradient-to-br from-green-100 to-emerald-100 p-3 rounded-xl w-fit">
                   <Link className="h-8 w-8 text-green-600" />
                 </div>
-                <CardTitle>Google Sheets Integration</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-gray-800">Google Sheets Integration</CardTitle>
+                <CardDescription className="text-gray-600">
                   Analyze data directly from Google Sheets URLs without downloading files
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card className="hover:shadow-lg transition-shadow">
+            <Card className="hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-md border-white/20">
               <CardHeader>
-                <div className="bg-orange-100 p-3 rounded-lg w-fit">
+                <div className="bg-gradient-to-br from-orange-100 to-red-100 p-3 rounded-xl w-fit">
                   <MessageSquare className="h-8 w-8 text-orange-600" />
                 </div>
-                <CardTitle>Natural Language Queries</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-gray-800">Natural Language Queries</CardTitle>
+                <CardDescription className="text-gray-600">
                   Ask questions about your data in plain English and get instant, intelligent responses
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card className="hover:shadow-lg transition-shadow">
+            <Card className="hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-md border-white/20">
               <CardHeader>
-                <div className="bg-purple-100 p-3 rounded-lg w-fit">
+                <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-3 rounded-xl w-fit">
                   <Zap className="h-8 w-8 text-purple-600" />
                 </div>
-                <CardTitle>Formula Generation</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-gray-800">Formula Generation</CardTitle>
+                <CardDescription className="text-gray-600">
                   Generate Excel formulas automatically based on your data structure and analysis needs
                 </CardDescription>
               </CardHeader>
@@ -349,33 +377,43 @@ function App() {
   )
 
   const AnalysisPage = () => (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-slate-50 to-blue-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Button 
                 variant="ghost" 
                 onClick={() => setCurrentView('home')}
-                className="mr-4"
+                className="mr-4 bg-white/50 hover:bg-white/80"
               >
                 ← Back
               </Button>
-              <div className="bg-blue-600 p-2 rounded-lg">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg">
                 <FileSpreadsheet className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Analysis Results</h1>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  Analysis Results
+                </h1>
                 {uploadedFile && (
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 flex items-center">
+                    <FileSpreadsheet className="h-3 w-3 mr-1" />
                     {uploadedFile.source === 'google_sheets' ? 'Google Sheets Data' : uploadedFile.name}
                   </p>
                 )}
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline">
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  // Scroll to export section
+                  document.querySelector('#export-section')?.scrollIntoView({ behavior: 'smooth' })
+                }}
+                className="bg-white/50 hover:bg-white/80"
+              >
                 <Download className="h-4 w-4 mr-2" />
                 Export Report
               </Button>
@@ -418,7 +456,7 @@ function App() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-blue-50 p-4 rounded-lg">
                     <div className="text-2xl font-bold text-blue-600">
                       {analysisResults.insights.data_quality.total_rows.toLocaleString()}
@@ -525,35 +563,26 @@ function App() {
               </CardContent>
             </Card>
 
+            {/* Data Visualization */}
+            <DataVisualization 
+              data={analysisResults.file_info?.preview || []} 
+              analysisResults={analysisResults}
+            />
+
             {/* Chat Interface */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <MessageSquare className="h-5 w-5 mr-2" />
-                  Ask Questions About Your Data
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    placeholder="Ask anything about your data..."
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <Button>
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    Ask
-                  </Button>
-                </div>
-                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-600">
-                    Try asking: "What are the top performing products?" or "Show me the revenue trend over time"
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <ChatInterface 
+              data={analysisResults.file_info?.preview || []} 
+              onError={setError}
+            />
+
+            {/* Export Reports */}
+            <div id="export-section">
+              <ExportReports 
+                analysisResults={analysisResults}
+                fileName={uploadedFile?.name || 'analysis'}
+              />
+            </div>
           </div>
-          )
         ) : (
           <div className="text-center py-20">
             <p className="text-gray-600">No data to display. Please upload a file or enter a Google Sheets URL.</p>
