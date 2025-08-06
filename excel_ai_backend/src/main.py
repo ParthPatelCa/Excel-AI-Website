@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from dotenv import load_dotenv
 # DON'T CHANGE THIS !!!
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
@@ -21,6 +22,12 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 # Enable CORS for all routes
 CORS(app)
 
+# API versioning
+app.register_blueprint(user_bp, url_prefix='/api/v1')
+app.register_blueprint(excel_bp, url_prefix='/api/v1/excel')
+app.register_blueprint(google_sheets_bp, url_prefix='/api/v1/google-sheets')
+
+# Legacy support - redirect old API calls to v1
 app.register_blueprint(user_bp, url_prefix='/api')
 app.register_blueprint(excel_bp, url_prefix='/api/excel')
 app.register_blueprint(google_sheets_bp, url_prefix='/api/google-sheets')
@@ -31,6 +38,40 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 with app.app_context():
     db.create_all()
+
+# Health check endpoint
+@app.route('/health')
+def health_check():
+    return jsonify({
+        'status': 'healthy',
+        'version': '1.0.0',
+        'timestamp': time.time(),
+        'environment': os.getenv('FLASK_ENV', 'production')
+    })
+
+# API info endpoint
+@app.route('/api/v1')
+def api_info():
+    return jsonify({
+        'version': '1.0.0',
+        'endpoints': {
+            'excel': {
+                'upload': '/api/v1/excel/upload',
+                'analyze': '/api/v1/excel/analyze',
+                'query': '/api/v1/excel/query',
+                'formulas': '/api/v1/excel/formulas'
+            },
+            'google_sheets': {
+                'analyze_url': '/api/v1/google-sheets/analyze_url',
+                'query_url': '/api/v1/google-sheets/query_url'
+            },
+            'users': {
+                'list': '/api/v1/users',
+                'create': '/api/v1/users',
+                'get': '/api/v1/users/{id}'
+            }
+        }
+    })
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')

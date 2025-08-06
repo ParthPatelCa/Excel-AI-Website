@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
+import { LoadingSpinner, ErrorAlert, ProgressBar } from '@/components/ui/alerts.jsx'
+import { validateFile, validateGoogleSheetsUrl } from '@/utils/validation.js'
 import apiService from '@/services/api.js'
 import './App.css'
 
@@ -13,22 +15,37 @@ function App() {
   const [uploadedFile, setUploadedFile] = useState(null)
   const [analysisResults, setAnalysisResults] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
   const [googleSheetsUrl, setGoogleSheetsUrl] = useState('')
   const [urlValidation, setUrlValidation] = useState(null)
+  const [error, setError] = useState(null)
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0]
     if (!file) return
 
+    // Validate file
+    const validation = validateFile(file)
+    if (!validation.isValid) {
+      setError(validation.errors.join(', '))
+      return
+    }
+
     setUploadedFile(file)
     setIsLoading(true)
     setCurrentView('analysis')
+    setError(null)
+    setUploadProgress(0)
 
     try {
-      // Upload and get file info
-      const uploadResponse = await apiService.uploadFile(file)
+      // Upload and get file info with progress
+      const uploadResponse = await apiService.uploadFile(file, (progress) => {
+        setUploadProgress(progress)
+      })
       
       if (uploadResponse.success) {
+        setUploadProgress(100)
+        
         // Analyze the uploaded data
         const analysisResponse = await apiService.analyzeData(uploadResponse.data)
         
@@ -46,22 +63,26 @@ function App() {
       }
     } catch (error) {
       console.error('Error processing file:', error)
-      setAnalysisResults({
-        error: `Failed to process file: ${error.message}`,
-        insights: null,
-        ai_insights: null
-      })
+      setError(`Failed to process file: ${error.message}`)
+      setAnalysisResults(null)
     } finally {
       setIsLoading(false)
+      setUploadProgress(0)
     }
   }
 
   const handleGoogleSheetsAnalysis = async () => {
-    if (!googleSheetsUrl.trim()) return
+    // Validate URL
+    const validation = validateGoogleSheetsUrl(googleSheetsUrl)
+    if (!validation.isValid) {
+      setError(validation.errors.join(', '))
+      return
+    }
 
     setIsLoading(true)
     setCurrentView('analysis')
     setUploadedFile({ name: 'Google Sheets Data', source: 'google_sheets' })
+    setError(null)
 
     try {
       const response = await apiService.analyzeGoogleSheetsUrl(googleSheetsUrl)
@@ -77,30 +98,19 @@ function App() {
       }
     } catch (error) {
       console.error('Error analyzing Google Sheets:', error)
-      setAnalysisResults({
-        error: `Failed to analyze Google Sheets: ${error.message}`,
-        insights: null,
-        ai_insights: null
-      })
+      setError(`Failed to analyze Google Sheets: ${error.message}`)
+      setAnalysisResults(null)
     } finally {
       setIsLoading(false)
     }
   }
 
   const validateGoogleSheetsUrl = async (url) => {
-    if (!url.trim()) {
-      setUrlValidation(null)
-      return
-    }
-
-    // Basic URL validation
-    const isGoogleSheetsUrl = url.includes('docs.google.com/spreadsheets')
-    if (!isGoogleSheetsUrl) {
-      setUrlValidation({ valid: false, message: 'Please enter a valid Google Sheets URL' })
-      return
-    }
-
-    setUrlValidation({ valid: true, message: 'Valid Google Sheets URL detected' })
+    const validation = validateGoogleSheetsUrl(url)
+    setUrlValidation(validation.isValid ? 
+      { valid: true, message: 'Valid Google Sheets URL detected' } :
+      { valid: false, message: validation.errors[0] }
+    )
   }
 
   const HomePage = () => (
@@ -375,39 +385,29 @@ function App() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {error && (
+          <div className="mb-6">
+            <ErrorAlert 
+              error={error} 
+              onRetry={() => setCurrentView('home')}
+              onDismiss={() => setError(null)}
+            />
+          </div>
+        )}
+
         {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Analyzing Your Data</h3>
-              <p className="text-gray-600">Our AI is processing your file and generating insights...</p>
-            </div>
+          <div className="space-y-6">
+            <LoadingSpinner message="Analyzing Your Data" />
+            {uploadProgress > 0 && uploadProgress < 100 && (
+              <div className="max-w-md mx-auto">
+                <ProgressBar 
+                  progress={uploadProgress} 
+                  message={`Uploading file... ${Math.round(uploadProgress)}%`}
+                />
+              </div>
+            )}
           </div>
         ) : analysisResults ? (
-          analysisResults.error ? (
-            <div className="space-y-8">
-              <Card className="border-red-200 bg-red-50">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-red-600">
-                    <AlertCircle className="h-5 w-5 mr-2" />
-                    Error Processing Data
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-red-700">{analysisResults.error}</p>
-                  <div className="mt-4">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setCurrentView('home')}
-                      className="mr-2"
-                    >
-                      Try Again
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          ) : (
           <div className="space-y-8">
             {/* Data Overview */}
             <Card>
@@ -554,7 +554,17 @@ function App() {
             </Card>
           </div>
           )
-        ) : null}
+        ) : (
+          <div className="text-center py-20">
+            <p className="text-gray-600">No data to display. Please upload a file or enter a Google Sheets URL.</p>
+            <Button 
+              onClick={() => setCurrentView('home')}
+              className="mt-4"
+            >
+              Go Back
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -3,13 +3,23 @@ import pandas as pd
 import numpy as np
 import io
 import os
+import time
 from openai import OpenAI
 import json
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 excel_bp = Blueprint('excel', __name__)
 
 # Initialize OpenAI client with API key from environment
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+# Only initialize if API key is properly set
+api_key = os.getenv('OPENAI_API_KEY')
+if api_key and api_key != 'sk-test-key-replace-with-real-key':
+    client = OpenAI(api_key=api_key)
+else:
+    client = None
 
 @excel_bp.route('/upload', methods=['POST'])
 def upload_file():
@@ -22,19 +32,39 @@ def upload_file():
         if file.filename == '':
             return jsonify({'error': 'No file selected'}), 400
         
+        # Validate file size (16MB limit)
+        file.seek(0, 2)  # Seek to end
+        file_size = file.tell()
+        file.seek(0)  # Reset to beginning
+        
+        max_size = 16 * 1024 * 1024  # 16MB
+        if file_size > max_size:
+            return jsonify({'error': 'File size exceeds 16MB limit'}), 400
+        
         # Read the file based on its extension
         filename = file.filename.lower()
         
-        if filename.endswith('.xlsx') or filename.endswith('.xls'):
-            df = pd.read_excel(file)
-        elif filename.endswith('.csv'):
-            df = pd.read_csv(file)
-        else:
-            return jsonify({'error': 'Unsupported file format. Please upload Excel (.xlsx, .xls) or CSV files.'}), 400
+        try:
+            if filename.endswith('.xlsx') or filename.endswith('.xls'):
+                df = pd.read_excel(file)
+            elif filename.endswith('.csv'):
+                df = pd.read_csv(file)
+            else:
+                return jsonify({'error': 'Unsupported file format. Please upload Excel (.xlsx, .xls) or CSV files.'}), 400
+        except Exception as e:
+            return jsonify({'error': f'Error reading file: {str(e)}. Please ensure the file is not corrupted and is in a supported format.'}), 400
+        
+        # Validate DataFrame
+        if df.empty:
+            return jsonify({'error': 'The uploaded file appears to be empty'}), 400
+        
+        if len(df.columns) == 0:
+            return jsonify({'error': 'The uploaded file has no columns'}), 400
         
         # Basic file information
         file_info = {
             'filename': file.filename,
+            'file_size': file_size,
             'rows': len(df),
             'columns': len(df.columns),
             'column_names': df.columns.tolist(),
@@ -178,69 +208,103 @@ def generate_insights(df):
     return insights
 
 def generate_ai_insights(df, basic_insights):
-    """Generate AI-powered insights using OpenAI"""
-    try:
-        # Prepare data summary for AI
-        data_summary = {
-            'columns': df.columns.tolist(),
-            'data_types': df.dtypes.astype(str).to_dict(),
-            'shape': df.shape,
-            'sample_data': df.head(3).to_dict('records'),
-            'basic_insights': basic_insights
-        }
-        
-        prompt = f"""
-        Analyze this dataset and provide actionable insights:
-        
-        Dataset Summary:
-        {json.dumps(data_summary, indent=2)}
-        
-        Please provide:
-        1. Key findings and trends
-        2. Potential data quality issues
-        3. Recommendations for further analysis
-        4. Business insights (if applicable)
-        
-        Format your response as a JSON object with these keys:
-        - key_findings: array of strings
-        - data_quality_issues: array of strings
-        - recommendations: array of strings
-        - business_insights: array of strings
-        """
-        
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a data analyst expert. Provide clear, actionable insights about datasets."},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=1000,
-            temperature=0.3
-        )
-        
-        # Parse the AI response
-        ai_response = response.choices[0].message.content
-        
-        # Try to parse as JSON, fallback to structured text
-        try:
-            ai_insights = json.loads(ai_response)
-        except:
-            ai_insights = {
-                'key_findings': [ai_response],
-                'data_quality_issues': [],
-                'recommendations': [],
-                'business_insights': []
-            }
-        
-        return ai_insights
-        
-    except Exception as e:
+    """Generate AI-powered insights using OpenAI with retry mechanism"""
+    max_retries = 3
+    retry_delay = 1
+    
+    # Check if OpenAI client is available
+    if not client:
         return {
-            'key_findings': [f"AI analysis unavailable: {str(e)}"],
-            'data_quality_issues': [],
-            'recommendations': [],
+            'key_findings': ['AI analysis requires a valid OpenAI API key. Please configure your API key in the .env file.'],
+            'data_quality_issues': ['API key not configured'],
+            'recommendations': ['Add your OpenAI API key to the .env file to enable AI-powered insights'],
             'business_insights': []
         }
+    
+    for attempt in range(max_retries):
+        try:
+            # Prepare data summary for AI
+            data_summary = {
+                'columns': df.columns.tolist(),
+                'data_types': df.dtypes.astype(str).to_dict(),
+                'shape': df.shape,
+                'sample_data': df.head(3).to_dict('records'),
+                'basic_insights': basic_insights
+            }
+            
+            prompt = f"""
+            Analyze this dataset and provide actionable insights:
+            
+            Dataset Summary:
+            {json.dumps(data_summary, indent=2)}
+            
+            Please provide:
+            1. Key findings and trends
+            2. Potential data quality issues
+            3. Recommendations for further analysis
+            4. Business insights (if applicable)
+            
+            Format your response as a JSON object with these keys:
+            - key_findings: array of strings
+            - data_quality_issues: array of strings
+            - recommendations: array of strings
+            - business_insights: array of strings
+            """
+            
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a data analyst expert. Provide clear, actionable insights about datasets."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=1000,
+                temperature=0.3,
+                timeout=30
+            )
+            
+            # Parse the AI response
+            ai_response = response.choices[0].message.content
+            
+            # Try to parse as JSON, fallback to structured text
+            try:
+                ai_insights = json.loads(ai_response)
+                
+                # Validate the response structure
+                required_keys = ['key_findings', 'data_quality_issues', 'recommendations', 'business_insights']
+                for key in required_keys:
+                    if key not in ai_insights:
+                        ai_insights[key] = []
+                        
+                return ai_insights
+                
+            except json.JSONDecodeError:
+                return {
+                    'key_findings': [ai_response[:500] + "..." if len(ai_response) > 500 else ai_response],
+                    'data_quality_issues': [],
+                    'recommendations': [],
+                    'business_insights': []
+                }
+                
+        except Exception as e:
+            if attempt < max_retries - 1:
+                time.sleep(retry_delay * (2 ** attempt))  # Exponential backoff
+                continue
+            else:
+                error_msg = str(e)
+                if "API key" in error_msg:
+                    return {
+                        'key_findings': ['AI analysis requires a valid OpenAI API key'],
+                        'data_quality_issues': ['API key configuration issue'],
+                        'recommendations': ['Please check your OpenAI API key configuration'],
+                        'business_insights': []
+                    }
+                else:
+                    return {
+                        'key_findings': [f"AI analysis temporarily unavailable: {error_msg}"],
+                        'data_quality_issues': [],
+                        'recommendations': ['Try again later or contact support if the issue persists'],
+                        'business_insights': []
+                    }
 
 def process_natural_language_query(df, query):
     """Process natural language queries about the data"""

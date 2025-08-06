@@ -25,7 +25,8 @@ class ApiService {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
 
       return await response.json();
@@ -35,15 +36,69 @@ class ApiService {
     }
   }
 
-  // Excel Analysis endpoints
-  async uploadFile(file) {
+  // Helper method for file uploads with progress
+  async uploadFileWithProgress(endpoint, file, onProgress = null) {
+    const url = `${API_BASE_URL}${endpoint}`;
     const formData = new FormData();
     formData.append('file', file);
 
-    return this.makeRequest('/excel/upload', {
-      method: 'POST',
-      body: formData,
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+
+      if (onProgress) {
+        xhr.upload.addEventListener('progress', (event) => {
+          if (event.lengthComputable) {
+            const percentComplete = (event.loaded / event.total) * 100;
+            onProgress(percentComplete);
+          }
+        });
+      }
+
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            resolve(response);
+          } catch (error) {
+            reject(new Error('Invalid JSON response'));
+          }
+        } else {
+          try {
+            const errorData = JSON.parse(xhr.responseText);
+            reject(new Error(errorData.error || `HTTP error! status: ${xhr.status}`));
+          } catch {
+            reject(new Error(`HTTP error! status: ${xhr.status}`));
+          }
+        }
+      });
+
+      xhr.addEventListener('error', () => {
+        reject(new Error('Network error occurred'));
+      });
+
+      xhr.addEventListener('timeout', () => {
+        reject(new Error('Request timed out'));
+      });
+
+      xhr.open('POST', url);
+      xhr.timeout = 300000; // 5 minutes timeout
+      xhr.send(formData);
     });
+  }
+
+  // Excel Analysis endpoints
+  async uploadFile(file, onProgress = null) {
+    if (onProgress) {
+      return this.uploadFileWithProgress('/excel/upload', file, onProgress);
+    } else {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      return this.makeRequest('/excel/upload', {
+        method: 'POST',
+        body: formData,
+      });
+    }
   }
 
   async analyzeData(data) {
