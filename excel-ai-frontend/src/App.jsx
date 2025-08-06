@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
+import apiService from '@/services/api.js'
 import './App.css'
 
 function App() {
@@ -23,36 +24,36 @@ function App() {
     setIsLoading(true)
     setCurrentView('analysis')
 
-    // Simulate API call for demo
-    setTimeout(() => {
-      setAnalysisResults({
-        insights: {
-          summary_stats: {
-            'Revenue': { mean: 45000, median: 42000, std: 12000, min: 15000, max: 85000 },
-            'Units Sold': { mean: 150, median: 140, std: 45, min: 50, max: 300 }
-          },
-          data_quality: {
-            total_rows: 1250,
-            total_columns: 8,
-            missing_values: 23,
-            duplicate_rows: 5
-          }
-        },
-        ai_insights: {
-          key_findings: [
-            "Revenue shows strong seasonal patterns with Q4 being the highest performing quarter",
-            "There's a positive correlation (0.85) between marketing spend and revenue",
-            "Product category 'Electronics' accounts for 60% of total revenue"
-          ],
-          recommendations: [
-            "Consider increasing marketing budget during Q3 to boost Q4 performance",
-            "Focus inventory planning on Electronics category",
-            "Investigate and clean 23 missing values in the dataset"
-          ]
+    try {
+      // Upload and get file info
+      const uploadResponse = await apiService.uploadFile(file)
+      
+      if (uploadResponse.success) {
+        // Analyze the uploaded data
+        const analysisResponse = await apiService.analyzeData(uploadResponse.data)
+        
+        if (analysisResponse.success) {
+          setAnalysisResults({
+            insights: analysisResponse.insights,
+            ai_insights: analysisResponse.ai_insights,
+            file_info: uploadResponse.file_info
+          })
+        } else {
+          throw new Error('Analysis failed')
         }
+      } else {
+        throw new Error('File upload failed')
+      }
+    } catch (error) {
+      console.error('Error processing file:', error)
+      setAnalysisResults({
+        error: `Failed to process file: ${error.message}`,
+        insights: null,
+        ai_insights: null
       })
+    } finally {
       setIsLoading(false)
-    }, 2000)
+    }
   }
 
   const handleGoogleSheetsAnalysis = async () => {
@@ -62,36 +63,28 @@ function App() {
     setCurrentView('analysis')
     setUploadedFile({ name: 'Google Sheets Data', source: 'google_sheets' })
 
-    // Simulate API call for demo
-    setTimeout(() => {
+    try {
+      const response = await apiService.analyzeGoogleSheetsUrl(googleSheetsUrl)
+      
+      if (response.success) {
+        setAnalysisResults({
+          insights: response.insights,
+          ai_insights: response.ai_insights,
+          file_info: response.file_info
+        })
+      } else {
+        throw new Error('Google Sheets analysis failed')
+      }
+    } catch (error) {
+      console.error('Error analyzing Google Sheets:', error)
       setAnalysisResults({
-        insights: {
-          summary_stats: {
-            'Sales': { mean: 52000, median: 48000, std: 15000, min: 18000, max: 95000 },
-            'Quantity': { mean: 180, median: 165, std: 55, min: 60, max: 350 }
-          },
-          data_quality: {
-            total_rows: 890,
-            total_columns: 6,
-            missing_values: 12,
-            duplicate_rows: 2
-          }
-        },
-        ai_insights: {
-          key_findings: [
-            "Google Sheets data shows consistent growth trend over the analyzed period",
-            "Strong correlation (0.78) between quantity and sales performance",
-            "Data quality is excellent with minimal missing values"
-          ],
-          recommendations: [
-            "Continue monitoring the growth trend for forecasting",
-            "Consider expanding successful product lines",
-            "Maintain current data collection practices"
-          ]
-        }
+        error: `Failed to analyze Google Sheets: ${error.message}`,
+        insights: null,
+        ai_insights: null
       })
+    } finally {
       setIsLoading(false)
-    }, 2000)
+    }
   }
 
   const validateGoogleSheetsUrl = async (url) => {
@@ -391,6 +384,30 @@ function App() {
             </div>
           </div>
         ) : analysisResults ? (
+          analysisResults.error ? (
+            <div className="space-y-8">
+              <Card className="border-red-200 bg-red-50">
+                <CardHeader>
+                  <CardTitle className="flex items-center text-red-600">
+                    <AlertCircle className="h-5 w-5 mr-2" />
+                    Error Processing Data
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-red-700">{analysisResults.error}</p>
+                  <div className="mt-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setCurrentView('home')}
+                      className="mr-2"
+                    >
+                      Try Again
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
           <div className="space-y-8">
             {/* Data Overview */}
             <Card>
@@ -536,6 +553,7 @@ function App() {
               </CardContent>
             </Card>
           </div>
+          )
         ) : null}
       </div>
     </div>

@@ -1,7 +1,11 @@
 import os
 import sys
+from dotenv import load_dotenv
 # DON'T CHANGE THIS !!!
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+
+# Load environment variables
+load_dotenv()
 
 from flask import Flask, send_from_directory
 from flask_cors import CORS
@@ -11,7 +15,7 @@ from src.routes.excel_analysis import excel_bp
 from src.routes.google_sheets import google_sheets_bp
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
-app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
+app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'fallback-secret-key')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
 # Enable CORS for all routes
@@ -46,4 +50,7 @@ def serve(path):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+    host = os.getenv('HOST', '0.0.0.0')
+    port = int(os.getenv('PORT', 5001))
+    app.run(host=host, port=port, debug=debug_mode)

@@ -8,8 +8,8 @@ import json
 
 excel_bp = Blueprint('excel', __name__)
 
-# Initialize OpenAI client
-client = OpenAI()
+# Initialize OpenAI client with API key from environment
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 @excel_bp.route('/upload', methods=['POST'])
 def upload_file():
