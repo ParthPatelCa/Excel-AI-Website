@@ -14,16 +14,37 @@ load_dotenv()
 
 excel_bp = Blueprint('excel', __name__)
 
-# Initialize OpenAI client with API key from environment
-# Only initialize if API key is properly set
+# Initialize OpenAI client with API key from environment (lazy / defensive)
 api_key = os.getenv('OPENAI_API_KEY')
 if api_key and api_key != 'sk-test-key-replace-with-real-key':
     client = OpenAI(api_key=api_key)
 else:
     client = None
 
-def call_openai_with_retry(messages, max_retries=3, model="gpt-3.5-turbo"):
-    """Enhanced OpenAI API call with retry logic and better error handling"""
+# Model resolution logic with preview + fallback chain
+PREFERRED_MODEL = os.getenv('OPENAI_MODEL', 'gpt-5-preview')  # allow override
+FALLBACK_MODELS = [
+    'gpt-5-preview',      # preview target
+    'gpt-4.1-mini',       # fast general
+    'gpt-4o-mini',        # economical
+    'gpt-4o',             # higher quality
+    'gpt-3.5-turbo'       # legacy fallback
+]
+
+def resolve_model(explicit: str | None = None):
+    """Return the first usable model from (explicit -> env -> fallback list)."""
+    if explicit:
+        return explicit
+    # Ensure preferred model is first in list (may already be)
+    ordered = [PREFERRED_MODEL] + [m for m in FALLBACK_MODELS if m != PREFERRED_MODEL]
+    return ordered[0]
+
+def call_openai_with_retry(messages, max_retries=3, model: str | None = None):
+    """Enhanced OpenAI API call with retry logic and better error handling.
+
+    Supports preview model enablement via OPENAI_MODEL env var (default gpt-5-preview)
+    and graceful fallback through a defined model list.
+    """
     if not client:
         return {
             'success': False,
@@ -32,11 +53,13 @@ def call_openai_with_retry(messages, max_retries=3, model="gpt-3.5-turbo"):
         }
     
     last_error = None
+    resolved_model = resolve_model(model)
+    attempted_models = []
     
     for attempt in range(max_retries):
         try:
             response = client.chat.completions.create(
-                model=model,
+                model=resolved_model,
                 messages=messages,
                 max_tokens=1000,
                 temperature=0.1,
@@ -46,12 +69,23 @@ def call_openai_with_retry(messages, max_retries=3, model="gpt-3.5-turbo"):
             return {
                 'success': True,
                 'content': response.choices[0].message.content,
-                'usage': response.usage.total_tokens if response.usage else 0
+                'usage': response.usage.total_tokens if response.usage else 0,
+                'model_used': resolved_model
             }
             
         except Exception as e:
             last_error = e
             error_str = str(e).lower()
+            attempted_models.append(resolved_model)
+
+            # If the error indicates an invalid model name, advance to next fallback immediately
+            if any(kw in error_str for kw in ['does not exist', 'invalid model', 'not found']) and attempt < max_retries - 1:
+                # Choose next model in fallback order that hasn't been tried
+                for candidate in FALLBACK_MODELS:
+                    if candidate not in attempted_models:
+                        resolved_model = candidate
+                        break
+                continue
             
             # Handle specific error types
             if 'rate limit' in error_str or 'quota' in error_str:
@@ -95,8 +129,9 @@ def call_openai_with_retry(messages, max_retries=3, model="gpt-3.5-turbo"):
     # All retries failed
     return {
         'success': False,
-        'error': f'OpenAI API request failed after {max_retries} attempts: {str(last_error)}',
-        'retry_after': 30
+        'error': f'OpenAI API request failed after {max_retries} attempts (models tried: {", ".join(attempted_models)}): {str(last_error)}',
+        'retry_after': 30,
+        'models_tried': attempted_models
     }
 
 def validate_file_structure(df, filename):
@@ -501,7 +536,7 @@ def generate_ai_insights(df, basic_insights):
             """
             
             response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model=resolve_model(),
                 messages=[
                     {"role": "system", "content": "You are a data analyst expert. Provide clear, actionable insights about datasets."},
                     {"role": "user", "content": prompt}
@@ -581,7 +616,7 @@ def process_natural_language_query(df, query):
         """
         
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=resolve_model(),
             messages=[
                 {"role": "system", "content": "You are a helpful data analyst assistant. Provide clear, practical responses about data analysis."},
                 {"role": "user", "content": prompt}

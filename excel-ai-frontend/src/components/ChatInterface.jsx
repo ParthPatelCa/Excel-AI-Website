@@ -172,6 +172,9 @@ export const ChatInterface = ({ data, onError, messages: externalMessages, onMes
             <div className="flex items-center space-x-2">
               <span>AI Data Chat</span>
               <Sparkles className="h-4 w-4 text-blue-500" />
+              <span className="text-[10px] px-2 py-0.5 rounded bg-blue-600/10 text-blue-700 border border-blue-200 uppercase tracking-wide">
+                {import.meta.env.VITE_OPENAI_MODEL || 'gpt-5-preview'}
+              </span>
             </div>
             <p className="text-sm text-gray-600 font-normal mt-1">
               Powered by advanced AI • {messages.length - 1} {messages.length === 2 ? 'message' : 'messages'}
