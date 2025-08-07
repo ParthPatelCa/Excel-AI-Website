@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.j
 import { LoadingSpinner, ErrorAlert, ProgressBar } from '@/components/ui/alerts.jsx'
 import { DataVisualization } from '@/components/DataVisualization.jsx'
 import { ChatInterface } from '@/components/ChatInterface.jsx'
+import { FormulaWorkspace } from '@/components/FormulaWorkspace.jsx'
 import { ChatHistory } from '@/components/ChatHistory.jsx'
 import { ExportReports } from '@/components/ExportReports.jsx'
 import { AuthForm } from '@/components/AuthForm.jsx'
@@ -523,7 +524,7 @@ function App() {
           <div className="space-y-8">
             {/* Enhanced Analysis Interface with Tabs */}
             <Tabs value={currentActiveTab} onValueChange={setCurrentActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-5 bg-gray-100">
+              <TabsList className="grid w-full grid-cols-6 bg-gray-100">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="visualize">Visualize</TabsTrigger>
                 <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
@@ -531,6 +532,7 @@ function App() {
                   <History className="h-4 w-4 mr-2" />
                   History
                 </TabsTrigger>
+                <TabsTrigger value="formulas">Formulas</TabsTrigger>
                 <TabsTrigger value="export">Export</TabsTrigger>
               </TabsList>
 
@@ -678,6 +680,10 @@ function App() {
                     setCurrentActiveTab('ai-chat')
                   }}
                 />
+              </TabsContent>
+
+              <TabsContent value="formulas" className="space-y-6">
+                <FormulaWorkspace columns={analysisResults.file_info?.column_names || []} />
               </TabsContent>
 
               <TabsContent value="export" className="space-y-6">

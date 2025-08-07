@@ -15,6 +15,7 @@ from src.models.auth import db, User, Analysis, ChatConversation
 from src.routes.user import user_bp
 from src.routes.auth import auth_bp
 from src.routes.excel_analysis import excel_bp
+from src.routes.formula import formula_bp
 from src.routes.google_sheets import google_sheets_bp
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
@@ -28,11 +29,13 @@ CORS(app)
 app.register_blueprint(auth_bp, url_prefix='/api/v1/auth', name='auth_v1')
 app.register_blueprint(user_bp, url_prefix='/api/v1', name='user_v1')
 app.register_blueprint(excel_bp, url_prefix='/api/v1/excel', name='excel_v1')
+app.register_blueprint(formula_bp, url_prefix='/api/v1/formula', name='formula_v1')
 app.register_blueprint(google_sheets_bp, url_prefix='/api/v1/google-sheets', name='google_sheets_v1')
 
 # Legacy support - redirect old API calls to v1
 app.register_blueprint(user_bp, url_prefix='/api', name='user_legacy')
 app.register_blueprint(excel_bp, url_prefix='/api/excel', name='excel_legacy')
+app.register_blueprint(formula_bp, url_prefix='/api/formula', name='formula_legacy')
 app.register_blueprint(google_sheets_bp, url_prefix='/api/google-sheets', name='google_sheets_legacy')
 
 # uncomment if you need to use database
@@ -63,6 +66,11 @@ def api_info():
                 'analyze': '/api/v1/excel/analyze',
                 'query': '/api/v1/excel/query',
                 'formulas': '/api/v1/excel/formulas'
+            },
+            'formula': {
+                'generate': '/api/v1/formula/generate',
+                'explain': '/api/v1/formula/explain',
+                'debug': '/api/v1/formula/debug'
             },
             'google_sheets': {
                 'analyze_url': '/api/v1/google-sheets/analyze_url',

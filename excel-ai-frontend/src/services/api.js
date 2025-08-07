@@ -122,6 +122,28 @@ class ApiService {
     });
   }
 
+  // Formula Intelligence endpoints
+  async generateFormula(description, { columns = [], platform = 'excel', examples = [] } = {}) {
+    return this.makeRequest('/formula/generate', {
+      method: 'POST',
+      body: JSON.stringify({ description, columns, platform, examples })
+    });
+  }
+
+  async explainFormula(formula, { columns = [], platform = 'excel' } = {}) {
+    return this.makeRequest('/formula/explain', {
+      method: 'POST',
+      body: JSON.stringify({ formula, columns, platform })
+    });
+  }
+
+  async debugFormula(formula, { error_message = null, columns = [], platform = 'excel' } = {}) {
+    return this.makeRequest('/formula/debug', {
+      method: 'POST',
+      body: JSON.stringify({ formula, error_message, columns, platform })
+    });
+  }
+
   // Google Sheets endpoints
   async analyzeGoogleSheetsUrl(url) {
     return this.makeRequest('/google-sheets/analyze_url', {
