@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Upload, BarChart3, MessageSquare, Download, FileSpreadsheet, Zap, TrendingUp, Brain, Link, CheckCircle, AlertCircle } from 'lucide-react'
+import { Upload, BarChart3, MessageSquare, Download, FileSpreadsheet, Zap, TrendingUp, Brain, Link, CheckCircle, AlertCircle, History } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.j
 import { LoadingSpinner, ErrorAlert, ProgressBar } from '@/components/ui/alerts.jsx'
 import { DataVisualization } from '@/components/DataVisualization.jsx'
 import { ChatInterface } from '@/components/ChatInterface.jsx'
+import { ChatHistory } from '@/components/ChatHistory.jsx'
 import { ExportReports } from '@/components/ExportReports.jsx'
 import { validateFile, validateGoogleSheetsUrl } from '@/utils/validation.js'
 import apiService from '@/services/api.js'
@@ -22,6 +23,8 @@ function App() {
   const [googleSheetsUrl, setGoogleSheetsUrl] = useState('')
   const [urlValidation, setUrlValidation] = useState(null)
   const [error, setError] = useState(null)
+  const [chatMessages, setChatMessages] = useState([])
+  const [currentActiveTab, setCurrentActiveTab] = useState('overview')
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0]
@@ -447,8 +450,22 @@ function App() {
           </div>
         ) : analysisResults ? (
           <div className="space-y-8">
-            {/* Data Overview */}
-            <Card>
+            {/* Enhanced Analysis Interface with Tabs */}
+            <Tabs value={currentActiveTab} onValueChange={setCurrentActiveTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-5 bg-gray-100">
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="visualize">Visualize</TabsTrigger>
+                <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
+                <TabsTrigger value="history">
+                  <History className="h-4 w-4 mr-2" />
+                  History
+                </TabsTrigger>
+                <TabsTrigger value="export">Export</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="overview" className="space-y-6">
+                {/* Data Overview */}
+                <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <BarChart3 className="h-5 w-5 mr-2" />
@@ -562,26 +579,46 @@ function App() {
                 </div>
               </CardContent>
             </Card>
+              </TabsContent>
 
-            {/* Data Visualization */}
-            <DataVisualization 
-              data={analysisResults.file_info?.preview || []} 
-              analysisResults={analysisResults}
-            />
+              <TabsContent value="visualize" className="space-y-6">
+                {/* Data Visualization */}
+                <DataVisualization 
+                  data={analysisResults.file_info?.preview || []} 
+                  analysisResults={analysisResults}
+                />
+              </TabsContent>
 
-            {/* Chat Interface */}
-            <ChatInterface 
-              data={analysisResults.file_info?.preview || []} 
-              onError={setError}
-            />
+              <TabsContent value="ai-chat" className="space-y-6">
+                {/* Chat Interface */}
+                <ChatInterface 
+                  data={analysisResults.file_info?.preview || []} 
+                  onError={setError}
+                  messages={chatMessages}
+                  onMessagesChange={setChatMessages}
+                />
+              </TabsContent>
 
-            {/* Export Reports */}
-            <div id="export-section">
-              <ExportReports 
-                analysisResults={analysisResults}
-                fileName={uploadedFile?.name || 'analysis'}
-              />
-            </div>
+              <TabsContent value="history" className="space-y-6">
+                {/* Chat History */}
+                <ChatHistory 
+                  onLoadConversation={(messages) => {
+                    setChatMessages(messages)
+                    setCurrentActiveTab('ai-chat')
+                  }}
+                />
+              </TabsContent>
+
+              <TabsContent value="export" className="space-y-6">
+                {/* Export Reports */}
+                <div id="export-section">
+                  <ExportReports 
+                    analysisResults={analysisResults}
+                    fileName={uploadedFile?.name || 'analysis'}
+                  />
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         ) : (
           <div className="text-center py-20">

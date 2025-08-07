@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { MessageSquare, Send, Bot, User, Loader2, Copy, CheckCircle, Sparkles } from 'lucide-react'
+import { MessageSquare, Send, Bot, User, Loader2, Copy, CheckCircle, Sparkles, RefreshCw } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Textarea } from '@/components/ui/textarea.jsx'
@@ -8,8 +8,8 @@ import { ScrollArea } from '@/components/ui/scroll-area.jsx'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip.jsx'
 import apiService from '@/services/api.js'
 
-export const ChatInterface = ({ data, onError }) => {
-  const [messages, setMessages] = useState([
+export const ChatInterface = ({ data, onError, messages: externalMessages, onMessagesChange }) => {
+  const [internalMessages, setInternalMessages] = useState([
     {
       id: 1,
       type: 'bot',
@@ -17,6 +17,10 @@ export const ChatInterface = ({ data, onError }) => {
       timestamp: new Date()
     }
   ])
+  
+  // Use external messages if provided, otherwise use internal state
+  const messages = externalMessages || internalMessages
+  const setMessages = onMessagesChange || setInternalMessages
   const [currentQuestion, setCurrentQuestion] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [copiedMessageId, setCopiedMessageId] = useState(null)
@@ -48,6 +52,45 @@ export const ChatInterface = ({ data, onError }) => {
       textareaRef.current.focus()
     }
   }, [])
+
+  const regenerateResponse = async (originalQuestion) => {
+    if (!originalQuestion || isLoading) return
+
+    setIsLoading(true)
+
+    try {
+      const response = await apiService.queryData(data, originalQuestion)
+      
+      if (response.success) {
+        const botMessage = {
+          id: Date.now(),
+          type: 'bot',
+          content: response.response,
+          timestamp: new Date(),
+          originalQuestion: originalQuestion
+        }
+        setMessages(prev => [...prev, botMessage])
+      } else {
+        throw new Error('Failed to regenerate AI response')
+      }
+    } catch (error) {
+      console.error('Regenerate error:', error)
+      const errorMessage = {
+        id: Date.now(),
+        type: 'bot',
+        content: "I'm sorry, I encountered an error while regenerating the response. Please try asking your question again.",
+        timestamp: new Date(),
+        isError: true
+      }
+      setMessages(prev => [...prev, errorMessage])
+      
+      if (onError) {
+        onError(`Failed to regenerate response: ${error.message}`)
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const copyToClipboard = async (text, messageId) => {
     try {
@@ -81,7 +124,8 @@ export const ChatInterface = ({ data, onError }) => {
           id: Date.now() + 1,
           type: 'bot',
           content: response.response,
-          timestamp: new Date()
+          timestamp: new Date(),
+          originalQuestion: currentQuestion
         }
         setMessages(prev => [...prev, botMessage])
       } else {
@@ -178,27 +222,46 @@ export const ChatInterface = ({ data, onError }) => {
                           {message.content}
                         </p>
                         {message.type === 'bot' && !message.isError && (
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="ml-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                                  onClick={() => copyToClipboard(message.content, message.id)}
-                                >
-                                  {copiedMessageId === message.id ? (
-                                    <CheckCircle className="h-3 w-3 text-green-500" />
-                                  ) : (
-                                    <Copy className="h-3 w-3 text-gray-500" />
-                                  )}
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>{copiedMessageId === message.id ? 'Copied!' : 'Copy response'}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
+                          <div className="flex items-center space-x-1 ml-2">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onClick={() => regenerateResponse(message.originalQuestion)}
+                                  >
+                                    <RefreshCw className="h-3 w-3 text-gray-500" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Regenerate response</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    onClick={() => copyToClipboard(message.content, message.id)}
+                                  >
+                                    {copiedMessageId === message.id ? (
+                                      <CheckCircle className="h-3 w-3 text-green-500" />
+                                    ) : (
+                                      <Copy className="h-3 w-3 text-gray-500" />
+                                    )}
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>{copiedMessageId === message.id ? 'Copied!' : 'Copy response'}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
                         )}
                       </div>
                       <p className={`text-xs mt-2 flex items-center space-x-1 ${

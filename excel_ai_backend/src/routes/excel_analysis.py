@@ -7,6 +7,7 @@ import time
 from openai import OpenAI
 import json
 from dotenv import load_dotenv
+import random
 
 # Load environment variables
 load_dotenv()
@@ -21,16 +22,155 @@ if api_key and api_key != 'sk-test-key-replace-with-real-key':
 else:
     client = None
 
+def call_openai_with_retry(messages, max_retries=3, model="gpt-3.5-turbo"):
+    """Enhanced OpenAI API call with retry logic and better error handling"""
+    if not client:
+        return {
+            'success': False,
+            'error': 'OpenAI API not configured. Please set OPENAI_API_KEY environment variable.',
+            'fallback': True
+        }
+    
+    last_error = None
+    
+    for attempt in range(max_retries):
+        try:
+            response = client.chat.completions.create(
+                model=model,
+                messages=messages,
+                max_tokens=1000,
+                temperature=0.1,
+                timeout=30  # 30 second timeout
+            )
+            
+            return {
+                'success': True,
+                'content': response.choices[0].message.content,
+                'usage': response.usage.total_tokens if response.usage else 0
+            }
+            
+        except Exception as e:
+            last_error = e
+            error_str = str(e).lower()
+            
+            # Handle specific error types
+            if 'rate limit' in error_str or 'quota' in error_str:
+                if attempt < max_retries - 1:
+                    # Exponential backoff with jitter for rate limits
+                    delay = (2 ** attempt) + random.uniform(0, 1)
+                    time.sleep(delay)
+                    continue
+                else:
+                    return {
+                        'success': False,
+                        'error': 'OpenAI API rate limit exceeded. Please try again in a few minutes.',
+                        'retry_after': 60
+                    }
+            
+            elif 'timeout' in error_str or 'connection' in error_str:
+                if attempt < max_retries - 1:
+                    time.sleep(1)  # Short delay for connection issues
+                    continue
+                else:
+                    return {
+                        'success': False,
+                        'error': 'OpenAI API connection timeout. Please check your internet connection and try again.',
+                        'retry_after': 10
+                    }
+            
+            elif 'invalid' in error_str or 'authentication' in error_str:
+                return {
+                    'success': False,
+                    'error': 'OpenAI API authentication failed. Please check your API key configuration.',
+                    'fatal': True
+                }
+            
+            else:
+                # Generic error - retry with exponential backoff
+                if attempt < max_retries - 1:
+                    delay = (2 ** attempt)
+                    time.sleep(delay)
+                    continue
+    
+    # All retries failed
+    return {
+        'success': False,
+        'error': f'OpenAI API request failed after {max_retries} attempts: {str(last_error)}',
+        'retry_after': 30
+    }
+
+def validate_file_structure(df, filename):
+    """Enhanced file validation with detailed error messages"""
+    errors = []
+    warnings = []
+    
+    # Check if DataFrame is empty
+    if df.empty:
+        errors.append(f"File '{filename}' appears to be empty or contains no readable data.")
+        return {'valid': False, 'errors': errors, 'warnings': warnings}
+    
+    # Check for reasonable size limits
+    if len(df) > 100000:  # 100k rows
+        warnings.append(f"Large dataset detected ({len(df):,} rows). Processing may take longer.")
+    
+    if len(df.columns) > 50:  # 50 columns
+        warnings.append(f"Many columns detected ({len(df.columns)}). Consider focusing on specific columns for better analysis.")
+    
+    # Check for completely empty columns
+    empty_columns = df.columns[df.isnull().all()].tolist()
+    if empty_columns:
+        warnings.append(f"Found {len(empty_columns)} completely empty columns: {', '.join(empty_columns[:5])}")
+    
+    # Check for columns with mostly missing data
+    mostly_empty_cols = []
+    for col in df.columns:
+        missing_pct = (df[col].isnull().sum() / len(df)) * 100
+        if missing_pct > 80:
+            mostly_empty_cols.append(f"{col} ({missing_pct:.1f}% missing)")
+    
+    if mostly_empty_cols:
+        warnings.append(f"Columns with >80% missing data: {', '.join(mostly_empty_cols[:3])}")
+    
+    # Check for duplicate column names
+    duplicate_cols = df.columns[df.columns.duplicated()].tolist()
+    if duplicate_cols:
+        errors.append(f"Duplicate column names found: {', '.join(set(duplicate_cols))}")
+    
+    # Check for very long column names
+    long_cols = [col for col in df.columns if len(str(col)) > 100]
+    if long_cols:
+        warnings.append(f"Very long column names detected ({len(long_cols)} columns). This may affect readability.")
+    
+    return {
+        'valid': len(errors) == 0,
+        'errors': errors,
+        'warnings': warnings,
+        'stats': {
+            'rows': len(df),
+            'columns': len(df.columns),
+            'memory_usage': df.memory_usage(deep=True).sum(),
+            'missing_data_pct': (df.isnull().sum().sum() / (len(df) * len(df.columns))) * 100
+        }
+    }
+
 @excel_bp.route('/upload', methods=['POST'])
 def upload_file():
-    """Handle file upload and return basic file information"""
+    """Handle file upload and return basic file information with enhanced validation"""
     try:
         if 'file' not in request.files:
-            return jsonify({'error': 'No file provided'}), 400
+            return jsonify({'error': 'No file provided. Please select an Excel (.xlsx, .xls) or CSV file.'}), 400
         
         file = request.files['file']
         if file.filename == '':
-            return jsonify({'error': 'No file selected'}), 400
+            return jsonify({'error': 'No file selected. Please choose a file to upload.'}), 400
+        
+        # Validate file extension
+        filename = file.filename.lower()
+        allowed_extensions = ['.xlsx', '.xls', '.csv']
+        if not any(filename.endswith(ext) for ext in allowed_extensions):
+            return jsonify({
+                'error': f'Unsupported file type. Please upload files with extensions: {", ".join(allowed_extensions)}'
+            }), 400
         
         # Validate file size (16MB limit)
         file.seek(0, 2)  # Seek to end
@@ -39,18 +179,57 @@ def upload_file():
         
         max_size = 16 * 1024 * 1024  # 16MB
         if file_size > max_size:
-            return jsonify({'error': 'File size exceeds 16MB limit'}), 400
+            return jsonify({
+                'error': f'File size ({file_size / 1024 / 1024:.1f}MB) exceeds the 16MB limit. Please use a smaller file or split your data.'
+            }), 400
         
-        # Read the file based on its extension
-        filename = file.filename.lower()
+        if file_size < 100:  # Less than 100 bytes
+            return jsonify({
+                'error': 'File appears to be too small or empty. Please check your file and try again.'
+            }), 400
         
+        # Read the file based on its extension with enhanced error handling
         try:
             if filename.endswith('.xlsx') or filename.endswith('.xls'):
-                df = pd.read_excel(file)
+                try:
+                    df = pd.read_excel(file, engine='openpyxl' if filename.endswith('.xlsx') else 'xlrd')
+                except Exception as e:
+                    return jsonify({
+                        'error': f'Failed to read Excel file: {str(e)}. Please ensure the file is not corrupted and try again.'
+                    }), 400
             elif filename.endswith('.csv'):
-                df = pd.read_csv(file)
+                try:
+                    # Try different encodings for CSV files
+                    df = pd.read_csv(file, encoding='utf-8')
+                except UnicodeDecodeError:
+                    file.seek(0)
+                    try:
+                        df = pd.read_csv(file, encoding='latin1')
+                    except Exception as e:
+                        return jsonify({
+                            'error': f'Failed to read CSV file with encoding issues: {str(e)}. Please save your CSV with UTF-8 encoding.'
+                        }), 400
+                except Exception as e:
+                    return jsonify({
+                        'error': f'Failed to read CSV file: {str(e)}. Please check the file format and try again.'
+                    }), 400
             else:
-                return jsonify({'error': 'Unsupported file format. Please upload Excel (.xlsx, .xls) or CSV files.'}), 400
+                return jsonify({
+                    'error': 'Unsupported file format. Please upload Excel (.xlsx, .xls) or CSV files.'
+                }), 400
+                
+        except Exception as e:
+            return jsonify({
+                'error': f'Failed to process file: {str(e)}. Please check that your file is valid and not corrupted.'
+            }), 400
+        
+        # Enhanced file validation
+        validation_result = validate_file_structure(df, file.filename)
+        if not validation_result['valid']:
+            return jsonify({
+                'error': 'File validation failed',
+                'details': validation_result['errors']
+            }), 400
         except Exception as e:
             return jsonify({'error': f'Error reading file: {str(e)}. Please ensure the file is not corrupted and is in a supported format.'}), 400
         
