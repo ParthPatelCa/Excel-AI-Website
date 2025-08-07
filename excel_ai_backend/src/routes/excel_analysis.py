@@ -224,12 +224,13 @@ def upload_file():
             }), 400
         
         # Enhanced file validation
-        validation_result = validate_file_structure(df, file.filename)
-        if not validation_result['valid']:
-            return jsonify({
-                'error': 'File validation failed',
-                'details': validation_result['errors']
-            }), 400
+        try:
+            validation_result = validate_file_structure(df, file.filename)
+            if not validation_result['valid']:
+                return jsonify({
+                    'error': 'File validation failed',
+                    'details': validation_result['errors']
+                }), 400
         except Exception as e:
             return jsonify({'error': f'Error reading file: {str(e)}. Please ensure the file is not corrupted and is in a supported format.'}), 400
         
