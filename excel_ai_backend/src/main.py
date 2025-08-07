@@ -10,8 +10,10 @@ load_dotenv()
 
 from flask import Flask, send_from_directory, jsonify
 from flask_cors import CORS
-from src.models.user import db
+from src.models.user import db as old_db
+from src.models.auth import db, User, Analysis, ChatConversation
 from src.routes.user import user_bp
+from src.routes.auth import auth_bp
 from src.routes.excel_analysis import excel_bp
 from src.routes.google_sheets import google_sheets_bp
 
@@ -23,6 +25,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 CORS(app)
 
 # API versioning
+app.register_blueprint(auth_bp, url_prefix='/api/v1/auth', name='auth_v1')
 app.register_blueprint(user_bp, url_prefix='/api/v1', name='user_v1')
 app.register_blueprint(excel_bp, url_prefix='/api/v1/excel', name='excel_v1')
 app.register_blueprint(google_sheets_bp, url_prefix='/api/v1/google-sheets', name='google_sheets_v1')

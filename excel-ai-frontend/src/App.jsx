@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Upload, BarChart3, MessageSquare, Download, FileSpreadsheet, Zap, TrendingUp, Brain, Link, CheckCircle, AlertCircle, History } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
@@ -10,11 +10,20 @@ import { DataVisualization } from '@/components/DataVisualization.jsx'
 import { ChatInterface } from '@/components/ChatInterface.jsx'
 import { ChatHistory } from '@/components/ChatHistory.jsx'
 import { ExportReports } from '@/components/ExportReports.jsx'
+import { AuthForm } from '@/components/AuthForm.jsx'
+import { UserDashboard } from '@/components/UserDashboard.jsx'
 import { validateFile, validateGoogleSheetsUrl } from '@/utils/validation.js'
 import apiService from '@/services/api.js'
+import authService from '@/services/auth.js'
 import './App.css'
 
 function App() {
+  // Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [user, setUser] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
+  
+  // App state
   const [currentView, setCurrentView] = useState('home')
   const [uploadedFile, setUploadedFile] = useState(null)
   const [analysisResults, setAnalysisResults] = useState(null)
@@ -25,6 +34,48 @@ function App() {
   const [error, setError] = useState(null)
   const [chatMessages, setChatMessages] = useState([])
   const [currentActiveTab, setCurrentActiveTab] = useState('overview')
+
+  // Check authentication on app load
+  useEffect(() => {
+    checkAuthStatus()
+  }, [])
+
+  const checkAuthStatus = async () => {
+    setAuthLoading(true)
+    
+    if (authService.isAuthenticated()) {
+      const result = await authService.getCurrentUser()
+      if (result.success) {
+        setIsAuthenticated(true)
+        setUser(result.user)
+      } else {
+        setIsAuthenticated(false)
+        setUser(null)
+      }
+    } else {
+      setIsAuthenticated(false)
+      setUser(null)
+    }
+    
+    setAuthLoading(false)
+  }
+
+  const handleAuthSuccess = (userData) => {
+    setIsAuthenticated(true)
+    setUser(userData)
+    setCurrentView('home')
+  }
+
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+    setUser(null)
+    setCurrentView('home')
+    // Reset app state
+    setUploadedFile(null)
+    setAnalysisResults(null)
+    setChatMessages([])
+    setError(null)
+  }
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0]
@@ -131,12 +182,32 @@ function App() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  Excel AI Insights
+                  DataSense AI
                 </h1>
-                <p className="text-xs text-gray-500">Powered by Advanced AI</p>
+                <p className="text-xs text-gray-500">Transform Your Data Into Intelligence</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              {/* User Menu */}
+              <div className="flex items-center space-x-3">
+                <span className="text-sm text-gray-600">
+                  Welcome, {user?.first_name}!
+                </span>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setCurrentView('dashboard')}
+                >
+                  Dashboard
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={handleLogout}
+                >
+                  Sign Out
+                </Button>
+              </div>
               <Button variant="outline" className="bg-white/50 hover:bg-white/80">Sign In</Button>
               <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg">
                 Get Started
@@ -634,6 +705,28 @@ function App() {
       </div>
     </div>
   )
+
+  // Authentication loading state
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <LoadingSpinner />
+          <p className="mt-4 text-gray-600">Loading DataSense AI...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show auth form if not authenticated
+  if (!isAuthenticated) {
+    return <AuthForm onAuthSuccess={handleAuthSuccess} />
+  }
+
+  // Show dashboard if user wants to see dashboard, otherwise show main app
+  if (currentView === 'dashboard') {
+    return <UserDashboard user={user} onLogout={handleLogout} />
+  }
 
   return currentView === 'home' ? <HomePage /> : <AnalysisPage />
 }
