@@ -19,6 +19,7 @@ from src.routes.formula import formula_bp
 from src.routes.google_sheets import google_sheets_bp
 from src.routes.telemetry import telemetry_bp
 from src.routes.chat import chat_bp
+from src.routes.features import features_bp
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'fallback-secret-key')
@@ -35,6 +36,7 @@ app.register_blueprint(formula_bp, url_prefix='/api/v1/formula', name='formula_v
 app.register_blueprint(google_sheets_bp, url_prefix='/api/v1/google-sheets', name='google_sheets_v1')
 app.register_blueprint(telemetry_bp, url_prefix='/api/v1/telemetry', name='telemetry_v1')
 app.register_blueprint(chat_bp, url_prefix='/api/v1/chat', name='chat_v1')
+app.register_blueprint(features_bp, url_prefix='/api/v1/features', name='features_v1')
 
 # Legacy support - redirect old API calls to v1
 app.register_blueprint(user_bp, url_prefix='/api', name='user_legacy')
@@ -98,6 +100,18 @@ def api_info():
                 'list': '/api/v1/users',
                 'create': '/api/v1/users',
                 'get': '/api/v1/users/{id}'
+            },
+            'features': {
+                'data_cleaning': '/api/v1/features/data-cleaning',
+                'chart_builder': '/api/v1/features/chart-builder',
+                'templates': '/api/v1/features/templates',
+                'macro_generation': '/api/v1/features/macro-generation',
+                'predictive_analytics': '/api/v1/features/predictive-analytics',
+                'collaboration': '/api/v1/features/collaboration',
+                'developer_api': '/api/v1/features/developer-api',
+                'add_in': '/api/v1/features/add-in',
+                'multilingual': '/api/v1/features/multilingual',
+                'usage_analytics': '/api/v1/features/usage-analytics'
             }
         }
     })
