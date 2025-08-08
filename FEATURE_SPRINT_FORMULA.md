@@ -1,6 +1,6 @@
-# Formula Intelligence Sprint (Phase 1)
+# Formula Intelligence Sprint (Phase 1 & Incremental Enhancements)
 
-This document captures the initial implementation of Formula Intelligence features added on 2025-08-07.
+This living document captures the initial implementation (2025-08-07) plus the 2025-08-08 incremental enhancements (history retrieval, usage enforcement expansion, query metadata transparency, fallback UI).
 
 ## Summary
 Implemented backend + frontend support for three core formula capabilities:
@@ -8,7 +8,7 @@ Implemented backend + frontend support for three core formula capabilities:
 2. Explain: Paste an existing formula -> structured breakdown (purpose, steps, optimizations, edge cases)
 3. Debug: Paste a broken/incorrect formula -> likely issues, fixes, diagnostic steps, optimized rewrite
 
-## Backend Additions
+## Backend Additions (Phase 1)
 File: `excel_ai_backend/src/routes/formula.py`
 
 ### Endpoints
@@ -51,7 +51,7 @@ Body:
 ```
 Response includes: likely_issues, fixes, diagnostic_steps, optimized_formula, notes.
 
-### Technical Notes
+### Technical Notes (Phase 1)
 - Model fallback chain (preview-first) now surfaces `fallback_used` flag in responses.
 - Defensive OpenAI client initialization; returns fatal error if API key missing.
 - JSON parsing tolerant: stores raw content if strict JSON not returned.
@@ -61,7 +61,7 @@ Response includes: likely_issues, fixes, diagnostic_steps, optimized_formula, no
 - Platform guidance injection: Google Sheets requests receive ARRAYFORMULA/INDEX-MATCH guidance vs Excel dynamic array guidance.
 - Persistence: `FormulaInteraction` table records input/output, model_used, fallback_used for future history & analytics.
 
-## Frontend Additions
+## Frontend Additions (Phase 1)
 
 ### New Component
 `excel-ai-frontend/src/components/FormulaWorkspace.jsx`
@@ -82,17 +82,116 @@ Response includes: likely_issues, fixes, diagnostic_steps, optimized_formula, no
 `excel_ai_backend/src/main.py` updated `api_info` to list formula endpoints.
 Blueprints registered for both versioned and legacy prefixes.
 
-## Follow-Up / Next Iterations
-1. Persistence: (DONE initial) Extend with retrieval endpoints & user history UI (add pagination & filters, opt-out flag).
-2. Usage Enforcement: (DONE formula endpoints) Apply uniformly to chat/query & analysis endpoints + UI counters.
-3. Variant Scoring: Rank variants by simplicity vs flexibility.
-4. Multi-Platform: Add `platform` branching for Google Sheets nuance (e.g., ARRAYFORMULA, LET differences).
-5. Guardrails: Inject column name validation to reduce hallucinated references.
-6. Telemetry: Capture model_used, latency_ms, token estimate, success/failure type.
-7. UI Enhancements: Diff view for debug fixes; quick insert into chat; share/save formula snippets library.
-8. Internationalization: Locale-aware date and separator guidance.
-9. Batch Mode: Accept multiple descriptions to produce a library in one call.
-10. Fallback Notice: (DONE basic) Improve with global session toast & analytics dashboard metric.
+## Incremental Enhancements (2025-08-08)
+
+### New / Extended Endpoints
+`GET /api/v1/formula/history` (auth required)
+Query Params:
+- `page` (default 1)
+- `page_size` (default 10)
+
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": 42,
+        "interaction_type": "generate",
+        "created_at": "2025-08-08T12:34:56Z",
+        "model_used": "gpt-5-preview",
+        "fallback_used": false,
+        "input_preview": "sum revenue for west region...",
+        "output_preview": "=SUMIFS(Revenue,Region,\"West\",...)",
+        "tokens_estimate": null
+      }
+    ],
+    "page": 1,
+    "page_size": 10,
+    "total": 1
+  }
+}
+```
+
+`GET /api/v1/formula/history/<id>` (auth required)
+Response:
+```json
+{
+  "success": true,
+  "data": {
+    "id": 42,
+    "interaction_type": "generate",
+    "input_payload": {"description": "...", "columns": ["Region"], "platform": "excel"},
+    "output_payload": {"primary_formula": "=SUMIFS(...)", "variants": []},
+    "model_used": "gpt-4.1-mini",
+    "fallback_used": true,
+    "models_tried": ["gpt-5-preview", "gpt-4.1-mini"],
+    "created_at": "2025-08-08T12:34:56Z"
+  }
+}
+```
+
+### Structured Query Metadata (Excel Analysis)
+`POST /api/v1/excel/query` now returns:
+```json
+{
+  "success": true,
+  "response": "Plain text answer to user question...",
+  "model_used": "gpt-4.1-mini",
+  "fallback_used": true
+}
+```
+Internally (not yet fully exposed) the processing retains `models_tried` for analytics.
+
+### Usage Enforcement Expansion
+- Added JWT auth + quota checks to `/api/v1/excel/analyze` and `/api/v1/excel/query` (consistent with formula endpoints).
+- Returns `429` with body: `{ "error": "Query limit reached for current plan", "limit_reached": true }`.
+
+### Persistence Layer
+- `FormulaInteraction` model now actively populated for each generate/explain/debug call.
+- History endpoints paginate & summarize interactions (lightweight previews to keep payloads small).
+
+### Fallback Transparency
+- Query & formula responses include `model_used` + `fallback_used` (boolean) enabling precise UI signals.
+- Backend retry helper tracks `models_tried` for future telemetry.
+
+### Frontend Additions (Incremental)
+- `FormulaHistory.jsx`: paginated list, fallback badge, interaction type chips.
+- `ChatInterface.jsx`: appends fallback downgrade notice to AI responses when `fallback_used` true.
+- `api.js`: added `listFormulaHistory`, `getFormulaHistoryItem` methods, universal Authorization header injection.
+- Dashboard (future work): will surface aggregate usage + fallback rate (not yet wired to new endpoints).
+
+### Resilience / Observability Changes
+- Retry helper now returns `models_tried`; fallback detection compares final `model_used` vs first attempted.
+- Structured query result prepared for future token/latency metrics injection (placeholders reserved in model layer idea list).
+
+## Follow-Up / Next Iterations (Updated)
+1. Telemetry: Capture latency_ms, token usage (estimated), fallback counts; expose metrics endpoint.
+2. Chat Persistence: Store conversation turns (model metadata) analogous to formula history; provide retrieval & purge.
+3. Variant Scoring: Rank generated variants (simplicity, performance, maintainability) and annotate.
+4. Multi-Platform Deepening: More granular guidance for Sheets vs Excel (dynamic arrays, LAMBDA, LET, MAP, BYROW).
+5. Enhanced Guardrails: Stricter column reference parser; highlight unknown columns inline with diff style.
+6. Usage Dashboard: Aggregate charts (queries used %, fallback rate, average latency, top formula types).
+7. UI Enhancements: Debug diff comparator, one-click copy into Chat, saved snippet library with tagging.
+8. Internationalization: Locale-aware date delimiters, decimal separators in formula guidance.
+9. Batch Mode: Multi-description ingestion returning structured library.
+10. Global Fallback Analytics: Session-level toast & periodic banner summarizing downgrade frequency.
+11. Model Selector: User-facing toggle (Speed / Balanced / Quality / Preview) influencing model ordering.
+12. Export / Share: Shareable link or export for formula histories for compliance / audit.
+
+Status Legend:
+- DONE: Implemented & documented
+- PARTIAL: Some functionality present, more depth required
+- PLANNED: Not yet started
+
+Current Status Snapshot:
+- History Retrieval: DONE (formula) / PLANNED (chat)
+- Usage Enforcement: DONE (formula/analyze/query)
+- Fallback Transparency: DONE (formula/query UI)
+- Telemetry: PLANNED
+- Guardrails: PARTIAL (basic unknown column warning)
+- Dashboard: PLANNED
 
 ## Testing Notes (Manual)
 - Basic happy paths executed locally (requires valid OPENAI_API_KEY).
