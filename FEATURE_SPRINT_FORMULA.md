@@ -82,7 +82,121 @@ Response includes: likely_issues, fixes, diagnostic_steps, optimized_formula, no
 `excel_ai_backend/src/main.py` updated `api_info` to list formula endpoints.
 Blueprints registered for both versioned and legacy prefixes.
 
-## Incremental Enhancements (2025-08-08)
+## Latest Sprint: Telemetry & Observability Infrastructure (2025-08-08)
+
+### Comprehensive Telemetry System
+**New Models:**
+- `TelemetryMetric`: System-wide API call tracking (latency, tokens, success rate, model usage)
+- Enhanced `FormulaInteraction`: Added `latency_ms`, `tokens_used`, `success`, `error_message`
+- `ChatMessage`: Individual chat messages with AI metadata (model, fallback, latency, tokens)
+- Enhanced `ChatConversation`: Proper relationship with ChatMessage, data context storage
+
+**Telemetry Infrastructure:**
+- `TelemetryTracker`: Context manager for automatic metrics collection
+- `utils/telemetry.py`: Utilities for token estimation, metrics aggregation
+- Auto-tracking decorators for API endpoints
+
+**New Endpoints:**
+- `GET /api/v1/telemetry/metrics`: User metrics (30-day default, configurable)
+- `GET /api/v1/telemetry/health`: Enhanced health check with system metrics  
+- `GET /api/v1/telemetry/admin/metrics`: System-wide analytics (admin-only)
+
+**Metrics Captured:**
+- API call latency (ms) and success rates
+- Model usage distribution and fallback frequency
+- Token consumption estimates
+- Formula interaction performance breakdown
+- Chat conversation metadata
+
+### Chat Persistence System
+**Endpoints:**
+- `GET /api/v1/chat/conversations`: List conversations with pagination
+- `POST /api/v1/chat/conversations`: Create new conversation
+- `GET /api/v1/chat/conversations/{id}`: Get conversation with full message history
+- `POST /api/v1/chat/conversations/{id}/messages`: Add message to conversation
+- `PUT /api/v1/chat/conversations/{id}`: Update conversation title/context
+- `DELETE /api/v1/chat/conversations/{id}`: Delete conversation and messages
+- `GET /api/v1/chat/conversations/{id}/export`: Export as JSON/text
+
+**Features:**
+- Full conversation persistence with AI metadata
+- Message-level telemetry (latency, tokens, model used, fallback status)
+- Data context storage for conversation continuity
+- Export capabilities for compliance/audit
+
+### Enhanced Frontend Components
+
+**UsageDashboard Component:**
+- Real-time usage metrics visualization
+- API call breakdown by feature type
+- Model usage distribution charts
+- Success rate and latency monitoring
+- Fallback rate tracking with color-coded alerts
+- Current usage vs limits progress bars
+
+**ModelSelector Component:**
+- User preference management for AI model selection
+- Speed/Balanced/Quality/Preview options
+- Performance comparison table
+- Subscription tier validation (Preview requires Pro)
+- Model fallback chain visualization
+- Preference persistence (ready for backend integration)
+
+**Integration:**
+- Enhanced UserDashboard with tabbed interface
+- Analytics tab shows comprehensive usage dashboard
+- Preferences tab includes model selector
+- API service updated with telemetry and chat methods
+
+### Backend Integration Updates
+- All formula endpoints (`generate`, `explain`, `debug`) now persist telemetry
+- Excel analysis endpoints (`analyze`, `query`) track API call metrics
+- Main.py registers telemetry and chat blueprints
+- Database schema auto-migration for new models
+
+## Follow-Up / Next Iterations (Updated)
+
+### Completed (2025-08-08)
+1. ✅ **Telemetry Infrastructure**: Comprehensive tracking (latency, tokens, success rates)
+2. ✅ **Chat Persistence**: Full conversation management with export capabilities  
+3. ✅ **Usage Dashboard**: Real-time metrics visualization and breakdown
+4. ✅ **Model Selector**: User preference management with performance comparison
+5. ✅ **Enhanced Health Check**: System metrics and error rate monitoring
+
+### Next Priority
+1. **Model Preference Backend**: Wire ModelSelector to user preferences API
+2. **Real-time Notifications**: Toast system for fallback alerts and quota warnings
+3. **Advanced Analytics**: 
+   - Time-series charts for usage trends
+   - Comparative analysis across subscription tiers
+   - Predictive usage forecasting
+4. **Performance Optimization**:
+   - Model response caching for common queries
+   - Batch processing for multiple formula requests
+   - Background task queuing for non-critical operations
+
+### Future Enhancements
+1. **Enhanced Guardrails**: Stricter column validation with diff-style highlighting
+2. **Multi-Platform Deepening**: Advanced Sheets vs Excel formula guidance
+3. **Collaboration Features**: Team workspaces, shared formula libraries
+4. **Advanced Export**: PDF reports with telemetry summaries
+5. **Internationalization**: Multi-language support for formula guidance
+
+**Status Summary:**
+- Core Infrastructure: ✅ COMPLETE
+- Telemetry & Observability: ✅ COMPLETE  
+- Chat Persistence: ✅ COMPLETE
+- Usage Dashboard: ✅ COMPLETE
+- Model Selection UI: ✅ COMPLETE
+- Documentation: ✅ CURRENT
+
+**Technical Debt Addressed:**
+- Unified telemetry across all AI endpoints
+- Proper database relationships for chat system
+- Consistent error handling and retry logic
+- Frontend state management for user preferences
+
+## Current Status Snapshot (Updated)
 
 ### New / Extended Endpoints
 `GET /api/v1/formula/history` (auth required)
@@ -185,13 +299,17 @@ Status Legend:
 - PARTIAL: Some functionality present, more depth required
 - PLANNED: Not yet started
 
-Current Status Snapshot:
-- History Retrieval: DONE (formula) / PLANNED (chat)
-- Usage Enforcement: DONE (formula/analyze/query)
-- Fallback Transparency: DONE (formula/query UI)
-- Telemetry: PLANNED
-- Guardrails: PARTIAL (basic unknown column warning)
-- Dashboard: PLANNED
+## Current Status Snapshot (Updated 2025-08-08)
+- History Retrieval: ✅ DONE (formula + chat)
+- Usage Enforcement: ✅ DONE (formula/analyze/query)  
+- Fallback Transparency: ✅ DONE (formula/query/chat UI)
+- Telemetry Infrastructure: ✅ DONE (comprehensive tracking)
+- Chat Persistence: ✅ DONE (full CRUD + export)
+- Usage Dashboard: ✅ DONE (real-time metrics)
+- Model Selector UI: ✅ DONE (preference management)
+- Guardrails: 🔶 PARTIAL (basic column validation)
+- Advanced Analytics: 📋 PLANNED
+- Collaboration Features: 📋 PLANNED
 
 ## Testing Notes (Manual)
 - Basic happy paths executed locally (requires valid OPENAI_API_KEY).
