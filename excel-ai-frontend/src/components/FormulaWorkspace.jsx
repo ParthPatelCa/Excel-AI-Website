@@ -6,29 +6,37 @@ import { Input } from '@/components/ui/input.jsx'
 import { Textarea } from '@/components/ui/textarea.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import apiService from '@/services/api.js'
-import { Loader2, Beaker, Bug, Lightbulb } from 'lucide-react'
+import { Loader2, Beaker, Bug, Lightbulb, AlertCircle } from 'lucide-react'
 
 export function FormulaWorkspace({ columns = [] }) {
   const [activeTab, setActiveTab] = useState('generate')
   const [description, setDescription] = useState('')
   const [generateResult, setGenerateResult] = useState(null)
+  const [generateFallback, setGenerateFallback] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   const [explainFormulaInput, setExplainFormulaInput] = useState('')
   const [explainResult, setExplainResult] = useState(null)
+  const [explainFallback, setExplainFallback] = useState(false)
 
   const [debugFormulaInput, setDebugFormulaInput] = useState('')
   const [debugError, setDebugError] = useState('')
   const [debugResult, setDebugResult] = useState(null)
+  const [debugFallback, setDebugFallback] = useState(false)
+  const [quotaError, setQuotaError] = useState(null)
 
   const handleGenerate = async () => {
     if (!description.trim()) return
     setIsLoading(true)
     setGenerateResult(null)
     try {
+      setQuotaError(null)
       const res = await apiService.generateFormula(description, { columns })
-      if (res.success) {
+      if (res.limit_reached) {
+        setQuotaError('Query limit reached for your plan. Upgrade to continue.')
+      } else if (res.success) {
         setGenerateResult(res.data)
+        setGenerateFallback(!!res.fallback_used)
       } else {
         setGenerateResult({ error: res.error })
       }
@@ -44,8 +52,11 @@ export function FormulaWorkspace({ columns = [] }) {
     setIsLoading(true)
     setExplainResult(null)
     try {
+      setQuotaError(null)
       const res = await apiService.explainFormula(explainFormulaInput, { columns })
-      if (res.success) setExplainResult(res.data) ; else setExplainResult({ error: res.error })
+      if (res.limit_reached) {
+        setQuotaError('Query limit reached for your plan. Upgrade to continue.')
+      } else if (res.success) { setExplainResult(res.data); setExplainFallback(!!res.fallback_used) } else setExplainResult({ error: res.error })
     } catch (e) {
       setExplainResult({ error: e.message })
     } finally { setIsLoading(false) }
@@ -56,8 +67,11 @@ export function FormulaWorkspace({ columns = [] }) {
     setIsLoading(true)
     setDebugResult(null)
     try {
+      setQuotaError(null)
       const res = await apiService.debugFormula(debugFormulaInput, { error_message: debugError, columns })
-      if (res.success) setDebugResult(res.data); else setDebugResult({ error: res.error })
+      if (res.limit_reached) {
+        setQuotaError('Query limit reached for your plan. Upgrade to continue.')
+      } else if (res.success) { setDebugResult(res.data); setDebugFallback(!!res.fallback_used) } else setDebugResult({ error: res.error })
     } catch (e) { setDebugResult({ error: e.message }) } finally { setIsLoading(false) }
   }
 
@@ -70,6 +84,12 @@ export function FormulaWorkspace({ columns = [] }) {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {quotaError && (
+          <div className="mb-4 p-3 rounded-md bg-amber-50 border border-amber-200 text-amber-800 text-sm flex items-start space-x-2">
+            <AlertCircle className="h-4 w-4 mt-0.5" />
+            <span>{quotaError}</span>
+          </div>
+        )}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-4">
             <TabsTrigger value="generate">Generate</TabsTrigger>
@@ -91,6 +111,9 @@ export function FormulaWorkspace({ columns = [] }) {
             <Button onClick={handleGenerate} disabled={isLoading}>{isLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin"/> : <Beaker className="h-4 w-4 mr-2"/>}Generate</Button>
             {generateResult && (
               <div className="mt-4 space-y-4">
+                {generateFallback && !generateResult.error && (
+                  <div className="text-xs text-blue-700 bg-blue-50 border border-blue-200 p-2 rounded-md">Model fallback used for this response – performance model engaged.</div>
+                )}
                 {generateResult.error && <div className="text-sm text-red-600">{generateResult.error}</div>}
                 {generateResult.primary_formula && (
                   <div className="p-3 rounded-md bg-gray-100 font-mono text-sm flex items-start justify-between">
@@ -138,6 +161,9 @@ export function FormulaWorkspace({ columns = [] }) {
             <Button onClick={handleExplain} disabled={isLoading}>{isLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin"/> : <Lightbulb className="h-4 w-4 mr-2"/>}Explain</Button>
             {explainResult && (
               <div className="mt-4 space-y-4">
+                {explainFallback && !explainResult.error && (
+                  <div className="text-xs text-blue-700 bg-blue-50 border border-blue-200 p-2 rounded-md">Model fallback used for this explanation.</div>
+                )}
                 {explainResult.error && <div className="text-sm text-red-600">{explainResult.error}</div>}
                 {explainResult.purpose && <div><h4 className="font-semibold text-sm mb-1">Purpose</h4><p className="text-sm text-gray-700">{explainResult.purpose}</p></div>}
                 {explainResult.steps && explainResult.steps.length>0 && (
@@ -183,6 +209,9 @@ export function FormulaWorkspace({ columns = [] }) {
             <Button onClick={handleDebug} disabled={isLoading}>{isLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin"/> : <Bug className="h-4 w-4 mr-2"/>}Debug</Button>
             {debugResult && (
               <div className="mt-4 space-y-4">
+                {debugFallback && !debugResult.error && (
+                  <div className="text-xs text-blue-700 bg-blue-50 border border-blue-200 p-2 rounded-md">Model fallback used for this debug session.</div>
+                )}
                 {debugResult.error && <div className="text-sm text-red-600">{debugResult.error}</div>}
                 {debugResult.likely_issues && debugResult.likely_issues.length>0 && (
                   <div>

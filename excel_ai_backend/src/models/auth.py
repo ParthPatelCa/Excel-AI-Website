@@ -158,3 +158,27 @@ class ChatConversation(db.Model):
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }
+
+
+class FormulaInteraction(db.Model):
+    __tablename__ = 'formula_interactions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    interaction_type = db.Column(db.String(20), nullable=False)  # generate|explain|debug
+    input_payload = db.Column(db.JSON, nullable=False)
+    output_payload = db.Column(db.JSON)
+    model_used = db.Column(db.String(100))
+    fallback_used = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'interaction_type': self.interaction_type,
+            'input_payload': self.input_payload,
+            'output_payload': self.output_payload,
+            'model_used': self.model_used,
+            'fallback_used': self.fallback_used,
+            'created_at': self.created_at.isoformat()
+        }

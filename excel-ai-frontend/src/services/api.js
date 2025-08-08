@@ -5,10 +5,13 @@ class ApiService {
   // Helper method for making HTTP requests
   async makeRequest(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
+  // Attach auth token if exists
+  const token = localStorage.getItem('authToken');
     
     const defaultOptions = {
       headers: {
         'Content-Type': 'application/json',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         ...options.headers,
       },
     };

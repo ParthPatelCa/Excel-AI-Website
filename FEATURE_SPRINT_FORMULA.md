@@ -52,19 +52,24 @@ Body:
 Response includes: likely_issues, fixes, diagnostic_steps, optimized_formula, notes.
 
 ### Technical Notes
-- Shares model fallback approach (preview-first) with other OpenAI usage.
+- Model fallback chain (preview-first) now surfaces `fallback_used` flag in responses.
 - Defensive OpenAI client initialization; returns fatal error if API key missing.
 - JSON parsing tolerant: stores raw content if strict JSON not returned.
 - Temperature kept low (0.2) for determinism.
+- Auth & usage enforcement: All formula endpoints require JWT (`Authorization: Bearer <token>`) and enforce `User.can_query()` with 429 & `limit_reached` marker.
+- Column reference validation: heuristic detection of referenced columns; warns if any not in supplied list and appends guidance in tips.
+- Platform guidance injection: Google Sheets requests receive ARRAYFORMULA/INDEX-MATCH guidance vs Excel dynamic array guidance.
+- Persistence: `FormulaInteraction` table records input/output, model_used, fallback_used for future history & analytics.
 
 ## Frontend Additions
 
 ### New Component
 `excel-ai-frontend/src/components/FormulaWorkspace.jsx`
 - Three tabs: Generate / Explain / Debug
-- Displays structured responses
-- Copy button for primary and optimized formulas
+- Structured responses with copy actions
 - Shows available columns context inline
+- Fallback notifications (per-result) when downgraded model used
+- Quota limit banner (amber) when 429 encountered
 
 ### Integration
 - Added new "Formulas" tab to Analysis interface (`App.jsx`): now 6 tabs.
@@ -78,8 +83,8 @@ Response includes: likely_issues, fixes, diagnostic_steps, optimized_formula, no
 Blueprints registered for both versioned and legacy prefixes.
 
 ## Follow-Up / Next Iterations
-1. Persistence: Log formula requests & responses for user history (with opt-out & privacy safeguards).
-2. Usage Enforcement: Tie into user subscription & monthly quotas.
+1. Persistence: (DONE initial) Extend with retrieval endpoints & user history UI (add pagination & filters, opt-out flag).
+2. Usage Enforcement: (DONE formula endpoints) Apply uniformly to chat/query & analysis endpoints + UI counters.
 3. Variant Scoring: Rank variants by simplicity vs flexibility.
 4. Multi-Platform: Add `platform` branching for Google Sheets nuance (e.g., ARRAYFORMULA, LET differences).
 5. Guardrails: Inject column name validation to reduce hallucinated references.
@@ -87,7 +92,7 @@ Blueprints registered for both versioned and legacy prefixes.
 7. UI Enhancements: Diff view for debug fixes; quick insert into chat; share/save formula snippets library.
 8. Internationalization: Locale-aware date and separator guidance.
 9. Batch Mode: Accept multiple descriptions to produce a library in one call.
-10. Fallback Notice: Surface when model downgraded from preferred (toast + badge state change).
+10. Fallback Notice: (DONE basic) Improve with global session toast & analytics dashboard metric.
 
 ## Testing Notes (Manual)
 - Basic happy paths executed locally (requires valid OPENAI_API_KEY).
