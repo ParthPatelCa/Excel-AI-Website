@@ -1,0 +1,3122 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\playwright.config.js",
+    "rootDir": "C:/Users/parth/OneDrive/Desktop/Github/Excel-AI-Website/Excel-AI-Website/excel-ai-frontend/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 6
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "test-results/results.xml"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Users/parth/OneDrive/Desktop/Github/Excel-AI-Website/Excel-AI-Website/excel-ai-frontend/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/parth/OneDrive/Desktop/Github/Excel-AI-Website/Excel-AI-Website/excel-ai-frontend/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "C:/Users/parth/OneDrive/Desktop/Github/Excel-AI-Website/Excel-AI-Website/excel-ai-frontend/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "C:/Users/parth/OneDrive/Desktop/Github/Excel-AI-Website/Excel-AI-Website/excel-ai-frontend/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "C:/Users/parth/OneDrive/Desktop/Github/Excel-AI-Website/Excel-AI-Website/excel-ai-frontend/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "C:/Users/parth/OneDrive/Desktop/Github/Excel-AI-Website/Excel-AI-Website/excel-ai-frontend/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "C:/Users/parth/OneDrive/Desktop/Github/Excel-AI-Website/Excel-AI-Website/excel-ai-frontend/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "C:/Users/parth/OneDrive/Desktop/Github/Excel-AI-Website/Excel-AI-Website/excel-ai-frontend/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "C:/Users/parth/OneDrive/Desktop/Github/Excel-AI-Website/Excel-AI-Website/excel-ai-frontend/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "C:/Users/parth/OneDrive/Desktop/Github/Excel-AI-Website/Excel-AI-Website/excel-ai-frontend/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.2",
+    "workers": 6,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:5173",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "e2e\\auth.spec.js",
+      "file": "e2e/auth.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Authentication Flow",
+          "file": "e2e/auth.spec.js",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should register new user successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 38929,
+                      "error": {
+                        "message": "TimeoutError: page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"register-tab\"]')\u001b[22m\n",
+                        "stack": "TimeoutError: page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"register-tab\"]')\u001b[22m\n\n    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js:9:16",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js",
+                          "column": 16,
+                          "line": 9
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  7 |\u001b[39m     \n \u001b[90m  8 |\u001b[39m     \u001b[90m// Switch to registration mode\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"register-tab\"]'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     \n \u001b[90m 11 |\u001b[39m     \u001b[90m// Fill registration form\u001b[39m\n \u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"first-name-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'John'\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js",
+                            "column": 16,
+                            "line": 9
+                          },
+                          "message": "TimeoutError: page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"register-tab\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m  7 |\u001b[39m     \n \u001b[90m  8 |\u001b[39m     \u001b[90m// Switch to registration mode\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"register-tab\"]'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     \n \u001b[90m 11 |\u001b[39m     \u001b[90m// Fill registration form\u001b[39m\n \u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"first-name-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'John'\u001b[39m)\u001b[0m\n\u001b[2m    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js:9:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:53:43.698Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-auth-Authentication-Fl-43dcb-ister-new-user-successfully-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-auth-Authentication-Fl-43dcb-ister-new-user-successfully-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js",
+                        "column": 16,
+                        "line": 9
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-8f79e76589fa95aa5eff",
+              "file": "e2e/auth.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should login existing user successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 38670,
+                      "error": {
+                        "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js:30:16",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js",
+                          "column": 16,
+                          "line": 30
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 28 |\u001b[39m     \n \u001b[90m 29 |\u001b[39m     \u001b[90m// Fill login form\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 30 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 32 |\u001b[39m     \n \u001b[90m 33 |\u001b[39m     \u001b[90m// Submit login\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js",
+                            "column": 16,
+                            "line": 30
+                          },
+                          "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 28 |\u001b[39m     \n \u001b[90m 29 |\u001b[39m     \u001b[90m// Fill login form\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 30 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 32 |\u001b[39m     \n \u001b[90m 33 |\u001b[39m     \u001b[90m// Submit login\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js:30:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:53:43.741Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-auth-Authentication-Fl-94c18--existing-user-successfully-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-auth-Authentication-Fl-94c18--existing-user-successfully-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js",
+                        "column": 16,
+                        "line": 30
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-856a220a4697fd11552e",
+              "file": "e2e/auth.spec.js",
+              "line": 26,
+              "column": 3
+            },
+            {
+              "title": "should show error for invalid credentials",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 39208,
+                      "error": {
+                        "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js:45:16",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js",
+                          "column": 16,
+                          "line": 45
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 43 |\u001b[39m     \n \u001b[90m 44 |\u001b[39m     \u001b[90m// Fill with invalid credentials\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 45 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'invalid@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 46 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'wrongpassword'\u001b[39m)\n \u001b[90m 47 |\u001b[39m     \n \u001b[90m 48 |\u001b[39m     \u001b[90m// Submit login\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js",
+                            "column": 16,
+                            "line": 45
+                          },
+                          "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 43 |\u001b[39m     \n \u001b[90m 44 |\u001b[39m     \u001b[90m// Fill with invalid credentials\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 45 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'invalid@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 46 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'wrongpassword'\u001b[39m)\n \u001b[90m 47 |\u001b[39m     \n \u001b[90m 48 |\u001b[39m     \u001b[90m// Submit login\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js:45:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:53:43.729Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-auth-Authentication-Fl-5a1b3-ror-for-invalid-credentials-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-auth-Authentication-Fl-5a1b3-ror-for-invalid-credentials-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js",
+                        "column": 16,
+                        "line": 45
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-37542976edb59c19aafd",
+              "file": "e2e/auth.spec.js",
+              "line": 41,
+              "column": 3
+            },
+            {
+              "title": "should logout user successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 38758,
+                      "error": {
+                        "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                          "column": 16,
+                          "line": 12
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                            "column": 16,
+                            "line": 12
+                          },
+                          "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m\n\u001b[2m    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:53:43.680Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-auth-Authentication-Flow-should-logout-user-successfully-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-auth-Authentication-Flow-should-logout-user-successfully-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                        "column": 16,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-8cf22023bbcd66e9320a",
+              "file": "e2e/auth.spec.js",
+              "line": 56,
+              "column": 3
+            },
+            {
+              "title": "should persist authentication across page reloads",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 38765,
+                      "error": {
+                        "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                          "column": 16,
+                          "line": 12
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                            "column": 16,
+                            "line": 12
+                          },
+                          "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m\n\u001b[2m    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:53:43.729Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-auth-Authentication-Fl-94f73-ication-across-page-reloads-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-auth-Authentication-Fl-94f73-ication-across-page-reloads-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                        "column": 16,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-428e1d5d67a017582b08",
+              "file": "e2e/auth.spec.js",
+              "line": 68,
+              "column": 3
+            },
+            {
+              "title": "should handle password reset flow",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 38580,
+                      "error": {
+                        "message": "TimeoutError: page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"forgot-password-link\"]')\u001b[22m\n",
+                        "stack": "TimeoutError: page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"forgot-password-link\"]')\u001b[22m\n\n    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js:83:16",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js",
+                          "column": 16,
+                          "line": 83
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 81 |\u001b[39m     \n \u001b[90m 82 |\u001b[39m     \u001b[90m// Click forgot password\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 83 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"forgot-password-link\"]'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 84 |\u001b[39m     \n \u001b[90m 85 |\u001b[39m     \u001b[90m// Fill email\u001b[39m\n \u001b[90m 86 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"reset-email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js",
+                            "column": 16,
+                            "line": 83
+                          },
+                          "message": "TimeoutError: page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"forgot-password-link\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 81 |\u001b[39m     \n \u001b[90m 82 |\u001b[39m     \u001b[90m// Click forgot password\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 83 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"forgot-password-link\"]'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 84 |\u001b[39m     \n \u001b[90m 85 |\u001b[39m     \u001b[90m// Fill email\u001b[39m\n \u001b[90m 86 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"reset-email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\u001b[0m\n\u001b[2m    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js:83:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:53:43.695Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-auth-Authentication-Fl-68d3c--handle-password-reset-flow-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-auth-Authentication-Fl-68d3c--handle-password-reset-flow-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\e2e\\auth.spec.js",
+                        "column": 16,
+                        "line": 83
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-31c0c8c6ce97f1fcbf06",
+              "file": "e2e/auth.spec.js",
+              "line": 79,
+              "column": 3
+            },
+            {
+              "title": "should register new user successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-06feed3e59e50f01458b",
+              "file": "e2e/auth.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should login existing user successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-15c0d32d02a3627f92d7",
+              "file": "e2e/auth.spec.js",
+              "line": 26,
+              "column": 3
+            },
+            {
+              "title": "should show error for invalid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-d8513248dd9e44fcfa51",
+              "file": "e2e/auth.spec.js",
+              "line": 41,
+              "column": 3
+            },
+            {
+              "title": "should logout user successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-90b5ea8e7a022bc5f569",
+              "file": "e2e/auth.spec.js",
+              "line": 56,
+              "column": 3
+            },
+            {
+              "title": "should persist authentication across page reloads",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-86247059f3b8ce1c7050",
+              "file": "e2e/auth.spec.js",
+              "line": 68,
+              "column": 3
+            },
+            {
+              "title": "should handle password reset flow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-71205bbfc88b588890c3",
+              "file": "e2e/auth.spec.js",
+              "line": 79,
+              "column": 3
+            },
+            {
+              "title": "should register new user successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-06c3e5b11dfe3b831727",
+              "file": "e2e/auth.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should login existing user successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-9a67be98707926fd55cd",
+              "file": "e2e/auth.spec.js",
+              "line": 26,
+              "column": 3
+            },
+            {
+              "title": "should show error for invalid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-1ac5c49e3003623682bf",
+              "file": "e2e/auth.spec.js",
+              "line": 41,
+              "column": 3
+            },
+            {
+              "title": "should logout user successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-ad9c6c1a3911dd5d1290",
+              "file": "e2e/auth.spec.js",
+              "line": 56,
+              "column": 3
+            },
+            {
+              "title": "should persist authentication across page reloads",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-63d37247185ef1aea2d4",
+              "file": "e2e/auth.spec.js",
+              "line": 68,
+              "column": 3
+            },
+            {
+              "title": "should handle password reset flow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-cbcceca30991c564cc81",
+              "file": "e2e/auth.spec.js",
+              "line": 79,
+              "column": 3
+            },
+            {
+              "title": "should register new user successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-db2319439eb8addc65d8",
+              "file": "e2e/auth.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should login existing user successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-ca661e9bda89d4dd3dcd",
+              "file": "e2e/auth.spec.js",
+              "line": 26,
+              "column": 3
+            },
+            {
+              "title": "should show error for invalid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-07ffeed5b9e334dc247e",
+              "file": "e2e/auth.spec.js",
+              "line": 41,
+              "column": 3
+            },
+            {
+              "title": "should logout user successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-44b8a363e572732a064e",
+              "file": "e2e/auth.spec.js",
+              "line": 56,
+              "column": 3
+            },
+            {
+              "title": "should persist authentication across page reloads",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-4543ae692c08844485da",
+              "file": "e2e/auth.spec.js",
+              "line": 68,
+              "column": 3
+            },
+            {
+              "title": "should handle password reset flow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-d71678fcb7fd16ceaab9",
+              "file": "e2e/auth.spec.js",
+              "line": 79,
+              "column": 3
+            },
+            {
+              "title": "should register new user successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-78b8ace48b89608d7d19",
+              "file": "e2e/auth.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should login existing user successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-173146c03ae6f1a91959",
+              "file": "e2e/auth.spec.js",
+              "line": 26,
+              "column": 3
+            },
+            {
+              "title": "should show error for invalid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-d83960607e46351a9222",
+              "file": "e2e/auth.spec.js",
+              "line": 41,
+              "column": 3
+            },
+            {
+              "title": "should logout user successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-e8f393708c5d00187fbc",
+              "file": "e2e/auth.spec.js",
+              "line": 56,
+              "column": 3
+            },
+            {
+              "title": "should persist authentication across page reloads",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-77fc855aacd32bceb0ed",
+              "file": "e2e/auth.spec.js",
+              "line": 68,
+              "column": 3
+            },
+            {
+              "title": "should handle password reset flow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "befb461a1b20d77baf9a-a14f3fe4cb3bdc9e373d",
+              "file": "e2e/auth.spec.js",
+              "line": 79,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "e2e\\file-upload.spec.js",
+      "file": "e2e/file-upload.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "File Upload and Analysis",
+          "file": "e2e/file-upload.spec.js",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should upload CSV file and show analysis",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 38188,
+                      "error": {
+                        "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                          "column": 16,
+                          "line": 12
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                            "column": 16,
+                            "line": 12
+                          },
+                          "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m\n\u001b[2m    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:54:29.937Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-file-upload-File-Uploa-516fa--CSV-file-and-show-analysis-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-file-upload-File-Uploa-516fa--CSV-file-and-show-analysis-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                        "column": 16,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-b0bca2c944ca60d96b98",
+              "file": "e2e/file-upload.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should handle large file upload with progress",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 38345,
+                      "error": {
+                        "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                          "column": 16,
+                          "line": 12
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                            "column": 16,
+                            "line": 12
+                          },
+                          "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m\n\u001b[2m    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:54:29.901Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-file-upload-File-Uploa-10db5-e-file-upload-with-progress-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-file-upload-File-Uploa-10db5-e-file-upload-with-progress-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                        "column": 16,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-6b39c9ca858bcdc73c9b",
+              "file": "e2e/file-upload.spec.js",
+              "line": 23,
+              "column": 3
+            },
+            {
+              "title": "should validate file types and show appropriate errors",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 38313,
+                      "error": {
+                        "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                          "column": 16,
+                          "line": 12
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                            "column": 16,
+                            "line": 12
+                          },
+                          "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m\n\u001b[2m    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:54:29.941Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-file-upload-File-Uploa-96df6-and-show-appropriate-errors-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-file-upload-File-Uploa-96df6-and-show-appropriate-errors-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                        "column": 16,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-af541ac93af56ffa8dc4",
+              "file": "e2e/file-upload.spec.js",
+              "line": 42,
+              "column": 3
+            },
+            {
+              "title": "should handle file size limits",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 38217,
+                      "error": {
+                        "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                          "column": 16,
+                          "line": 12
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                            "column": 16,
+                            "line": 12
+                          },
+                          "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m\n\u001b[2m    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:54:30.020Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-file-upload-File-Uploa-1ee81-uld-handle-file-size-limits-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-file-upload-File-Uploa-1ee81-uld-handle-file-size-limits-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                        "column": 16,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-d02a09a4014a794b59b9",
+              "file": "e2e/file-upload.spec.js",
+              "line": 55,
+              "column": 3
+            },
+            {
+              "title": "should analyze Google Sheets URL",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 37704,
+                      "error": {
+                        "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                          "column": 16,
+                          "line": 12
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                            "column": 16,
+                            "line": 12
+                          },
+                          "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m\n\u001b[2m    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:54:30.701Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-file-upload-File-Uploa-163ca-d-analyze-Google-Sheets-URL-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-file-upload-File-Uploa-163ca-d-analyze-Google-Sheets-URL-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                        "column": 16,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-292867a92de4b1fa9524",
+              "file": "e2e/file-upload.spec.js",
+              "line": 68,
+              "column": 3
+            },
+            {
+              "title": "should validate Google Sheets URL format",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 37288,
+                      "error": {
+                        "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                          "column": 16,
+                          "line": 12
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                            "column": 16,
+                            "line": 12
+                          },
+                          "message": "TimeoutError: page.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m\n\u001b[2m    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:54:30.797Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-file-upload-File-Uploa-f32d2-te-Google-Sheets-URL-format-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\e2e-file-upload-File-Uploa-f32d2-te-Google-Sheets-URL-format-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                        "column": 16,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-87027b7e05a2d5c6e516",
+              "file": "e2e/file-upload.spec.js",
+              "line": 89,
+              "column": 3
+            },
+            {
+              "title": "should show file preview before analysis",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 5,
+                      "status": "interrupted",
+                      "duration": 16849,
+                      "error": {
+                        "message": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                          "column": 16,
+                          "line": 12
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                            "column": 16,
+                            "line": 12
+                          },
+                          "message": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m\n\u001b[2m    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:55:10.072Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                        "column": 16,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-11acec008a28a346d02d",
+              "file": "e2e/file-upload.spec.js",
+              "line": 103,
+              "column": 3
+            },
+            {
+              "title": "should upload CSV file and show analysis",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-8048b949f81471d9a583",
+              "file": "e2e/file-upload.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should handle large file upload with progress",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-27a36c00eee8eb9a02ab",
+              "file": "e2e/file-upload.spec.js",
+              "line": 23,
+              "column": 3
+            },
+            {
+              "title": "should validate file types and show appropriate errors",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-95a3efa4399d01cd7c1c",
+              "file": "e2e/file-upload.spec.js",
+              "line": 42,
+              "column": 3
+            },
+            {
+              "title": "should handle file size limits",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-a631c76322e7c8e8de05",
+              "file": "e2e/file-upload.spec.js",
+              "line": 55,
+              "column": 3
+            },
+            {
+              "title": "should analyze Google Sheets URL",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-8ea0da7a5086fc6bd1ea",
+              "file": "e2e/file-upload.spec.js",
+              "line": 68,
+              "column": 3
+            },
+            {
+              "title": "should validate Google Sheets URL format",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-dbda24a0b18ab6260af1",
+              "file": "e2e/file-upload.spec.js",
+              "line": 89,
+              "column": 3
+            },
+            {
+              "title": "should show file preview before analysis",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-472ab2fee5ce646ec8b8",
+              "file": "e2e/file-upload.spec.js",
+              "line": 103,
+              "column": 3
+            },
+            {
+              "title": "should upload CSV file and show analysis",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-6050a468ff5788e3ee8c",
+              "file": "e2e/file-upload.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should handle large file upload with progress",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-cc03cbd432a9eca71b42",
+              "file": "e2e/file-upload.spec.js",
+              "line": 23,
+              "column": 3
+            },
+            {
+              "title": "should validate file types and show appropriate errors",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-0189aa8a4ee4d7616695",
+              "file": "e2e/file-upload.spec.js",
+              "line": 42,
+              "column": 3
+            },
+            {
+              "title": "should handle file size limits",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-31f1eef13358deae1f6e",
+              "file": "e2e/file-upload.spec.js",
+              "line": 55,
+              "column": 3
+            },
+            {
+              "title": "should analyze Google Sheets URL",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-b2e813092348f9f63299",
+              "file": "e2e/file-upload.spec.js",
+              "line": 68,
+              "column": 3
+            },
+            {
+              "title": "should validate Google Sheets URL format",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-2bb8b0315abbb5ad8b41",
+              "file": "e2e/file-upload.spec.js",
+              "line": 89,
+              "column": 3
+            },
+            {
+              "title": "should show file preview before analysis",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-eed1aed5b1778b63fb2d",
+              "file": "e2e/file-upload.spec.js",
+              "line": 103,
+              "column": 3
+            },
+            {
+              "title": "should upload CSV file and show analysis",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-321f293ae911a02cf1c6",
+              "file": "e2e/file-upload.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should handle large file upload with progress",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-002ce1453749ac5ca6be",
+              "file": "e2e/file-upload.spec.js",
+              "line": 23,
+              "column": 3
+            },
+            {
+              "title": "should validate file types and show appropriate errors",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-4d4a82a7b2794ef2a4a5",
+              "file": "e2e/file-upload.spec.js",
+              "line": 42,
+              "column": 3
+            },
+            {
+              "title": "should handle file size limits",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-3578be22956d2e94bc17",
+              "file": "e2e/file-upload.spec.js",
+              "line": 55,
+              "column": 3
+            },
+            {
+              "title": "should analyze Google Sheets URL",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-9c522dcd53bc667ea07b",
+              "file": "e2e/file-upload.spec.js",
+              "line": 68,
+              "column": 3
+            },
+            {
+              "title": "should validate Google Sheets URL format",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-08bb0bf46e29e7ed0258",
+              "file": "e2e/file-upload.spec.js",
+              "line": 89,
+              "column": 3
+            },
+            {
+              "title": "should show file preview before analysis",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-84927448eb527757ecbd",
+              "file": "e2e/file-upload.spec.js",
+              "line": 103,
+              "column": 3
+            },
+            {
+              "title": "should upload CSV file and show analysis",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-587910c8744c37fd8b94",
+              "file": "e2e/file-upload.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should handle large file upload with progress",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-e58fcf58e02189e5517d",
+              "file": "e2e/file-upload.spec.js",
+              "line": 23,
+              "column": 3
+            },
+            {
+              "title": "should validate file types and show appropriate errors",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-1fe41d20c1e5ca22730b",
+              "file": "e2e/file-upload.spec.js",
+              "line": 42,
+              "column": 3
+            },
+            {
+              "title": "should handle file size limits",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-6f690f7314d068cd6b91",
+              "file": "e2e/file-upload.spec.js",
+              "line": 55,
+              "column": 3
+            },
+            {
+              "title": "should analyze Google Sheets URL",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-44426c7b1f0aad68a58d",
+              "file": "e2e/file-upload.spec.js",
+              "line": 68,
+              "column": 3
+            },
+            {
+              "title": "should validate Google Sheets URL format",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-71c6d140bf4842d7b213",
+              "file": "e2e/file-upload.spec.js",
+              "line": 89,
+              "column": 3
+            },
+            {
+              "title": "should show file preview before analysis",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "5ab2d46a849c648ec654-7921d3048684976f6932",
+              "file": "e2e/file-upload.spec.js",
+              "line": 103,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "performance\\performance.spec.js",
+      "file": "performance/performance.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Performance Tests",
+          "file": "performance/performance.spec.js",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should load homepage within performance budget",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 3782,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: < \u001b[32m3000\u001b[39m\nReceived:   \u001b[31m3241\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: < \u001b[32m3000\u001b[39m\nReceived:   \u001b[31m3241\u001b[39m\n    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js:17:22",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js",
+                          "column": 22,
+                          "line": 17
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 15 |\u001b[39m     \n \u001b[90m 16 |\u001b[39m     \u001b[90m// Performance assertions\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 17 |\u001b[39m     expect(loadTime)\u001b[33m.\u001b[39mtoBeLessThan(\u001b[35m3000\u001b[39m) \u001b[90m// Should load within 3 seconds\u001b[39m\n \u001b[90m    |\u001b[39m                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 18 |\u001b[39m     \n \u001b[90m 19 |\u001b[39m     \u001b[90m// Check Core Web Vitals\u001b[39m\n \u001b[90m 20 |\u001b[39m     \u001b[36mconst\u001b[39m metrics \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(() \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js",
+                            "column": 22,
+                            "line": 17
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: < \u001b[32m3000\u001b[39m\nReceived:   \u001b[31m3241\u001b[39m\n\n\u001b[0m \u001b[90m 15 |\u001b[39m     \n \u001b[90m 16 |\u001b[39m     \u001b[90m// Performance assertions\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 17 |\u001b[39m     expect(loadTime)\u001b[33m.\u001b[39mtoBeLessThan(\u001b[35m3000\u001b[39m) \u001b[90m// Should load within 3 seconds\u001b[39m\n \u001b[90m    |\u001b[39m                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 18 |\u001b[39m     \n \u001b[90m 19 |\u001b[39m     \u001b[90m// Check Core Web Vitals\u001b[39m\n \u001b[90m 20 |\u001b[39m     \u001b[36mconst\u001b[39m metrics \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(() \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js:17:22\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:55:10.110Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\performance-performance-Pe-3ea0b-e-within-performance-budget-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\performance-performance-Pe-3ea0b-e-within-performance-budget-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js",
+                        "column": 22,
+                        "line": 17
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-e556f1d38e34404c880e",
+              "file": "performance/performance.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should handle API response times efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 4,
+                      "status": "interrupted",
+                      "duration": 16681,
+                      "error": {
+                        "message": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                          "column": 16,
+                          "line": 12
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                            "column": 16,
+                            "line": 12
+                          },
+                          "message": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m\n\u001b[2m    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)\u001b[22m"
+                        },
+                        {
+                          "message": "Error: browserContext._wrapApiCall: Target page, context or browser has been closed"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:55:10.146Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                        "column": 16,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-f3c74378e10861af2888",
+              "file": "performance/performance.spec.js",
+              "line": 51,
+              "column": 3
+            },
+            {
+              "title": "should efficiently render large datasets",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 2,
+                      "status": "interrupted",
+                      "duration": 16535,
+                      "error": {
+                        "message": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                          "column": 16,
+                          "line": 12
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                            "column": 16,
+                            "line": 12
+                          },
+                          "message": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m\n\u001b[2m    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)\u001b[22m"
+                        },
+                        {
+                          "message": "Error: browserContext._wrapApiCall: Target page, context or browser has been closed"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:55:10.199Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                        "column": 16,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-afbcbf103e3715760bc8",
+              "file": "performance/performance.spec.js",
+              "line": 76,
+              "column": 3
+            },
+            {
+              "title": "should optimize bundle size and loading",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 3574,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: < \u001b[32m2097152\u001b[39m\nReceived:   \u001b[31m9014309\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: < \u001b[32m2097152\u001b[39m\nReceived:   \u001b[31m9014309\u001b[39m\n    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js:124:25",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js",
+                          "column": 25,
+                          "line": 124
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 122 |\u001b[39m     \n \u001b[90m 123 |\u001b[39m     \u001b[90m// Bundle size assertions (adjust based on your targets)\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 124 |\u001b[39m     expect(totalJSSize)\u001b[33m.\u001b[39mtoBeLessThan(\u001b[35m2\u001b[39m \u001b[33m*\u001b[39m \u001b[35m1024\u001b[39m \u001b[33m*\u001b[39m \u001b[35m1024\u001b[39m) \u001b[90m// JS should be under 2MB\u001b[39m\n \u001b[90m     |\u001b[39m                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 125 |\u001b[39m     expect(totalCSSSize)\u001b[33m.\u001b[39mtoBeLessThan(\u001b[35m500\u001b[39m \u001b[33m*\u001b[39m \u001b[35m1024\u001b[39m) \u001b[90m// CSS should be under 500KB\u001b[39m\n \u001b[90m 126 |\u001b[39m     \n \u001b[90m 127 |\u001b[39m     \u001b[90m// Check for code splitting\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js",
+                            "column": 25,
+                            "line": 124
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: < \u001b[32m2097152\u001b[39m\nReceived:   \u001b[31m9014309\u001b[39m\n\n\u001b[0m \u001b[90m 122 |\u001b[39m     \n \u001b[90m 123 |\u001b[39m     \u001b[90m// Bundle size assertions (adjust based on your targets)\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 124 |\u001b[39m     expect(totalJSSize)\u001b[33m.\u001b[39mtoBeLessThan(\u001b[35m2\u001b[39m \u001b[33m*\u001b[39m \u001b[35m1024\u001b[39m \u001b[33m*\u001b[39m \u001b[35m1024\u001b[39m) \u001b[90m// JS should be under 2MB\u001b[39m\n \u001b[90m     |\u001b[39m                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 125 |\u001b[39m     expect(totalCSSSize)\u001b[33m.\u001b[39mtoBeLessThan(\u001b[35m500\u001b[39m \u001b[33m*\u001b[39m \u001b[35m1024\u001b[39m) \u001b[90m// CSS should be under 500KB\u001b[39m\n \u001b[90m 126 |\u001b[39m     \n \u001b[90m 127 |\u001b[39m     \u001b[90m// Check for code splitting\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js:124:25\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:55:10.190Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\performance-performance-Pe-87d60-ize-bundle-size-and-loading-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\test-results\\performance-performance-Pe-87d60-ize-bundle-size-and-loading-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js",
+                        "column": 25,
+                        "line": 124
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-0b7f0ad61cba070f0d69",
+              "file": "performance/performance.spec.js",
+              "line": 98,
+              "column": 3
+            },
+            {
+              "title": "should handle memory usage efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 0,
+                      "status": "interrupted",
+                      "duration": 15623,
+                      "error": {
+                        "message": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                          "column": 16,
+                          "line": 12
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                            "column": 16,
+                            "line": 12
+                          },
+                          "message": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m\n\u001b[2m    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:55:11.017Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                        "column": 16,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-fabebf33c5741432fd18",
+              "file": "performance/performance.spec.js",
+              "line": 132,
+              "column": 3
+            },
+            {
+              "title": "should lazy load components efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 1,
+                      "status": "interrupted",
+                      "duration": 11633,
+                      "error": {
+                        "message": "Error: page.click: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"chart-builder-tab\"]')\u001b[22m\n",
+                        "stack": "Error: page.click: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"chart-builder-tab\"]')\u001b[22m\n\n    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js:182:16",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js",
+                          "column": 16,
+                          "line": 182
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 180 |\u001b[39m     \n \u001b[90m 181 |\u001b[39m     \u001b[90m// Navigate to a tab that should lazy load\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 182 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"chart-builder-tab\"]'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 183 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m 184 |\u001b[39m     \n \u001b[90m 185 |\u001b[39m     \u001b[36mconst\u001b[39m afterNavigationRequests \u001b[33m=\u001b[39m [\u001b[33m...\u001b[39mnetworkRequests]\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js",
+                            "column": 16,
+                            "line": 182
+                          },
+                          "message": "Error: page.click: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"chart-builder-tab\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 180 |\u001b[39m     \n \u001b[90m 181 |\u001b[39m     \u001b[90m// Navigate to a tab that should lazy load\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 182 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"chart-builder-tab\"]'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 183 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m 184 |\u001b[39m     \n \u001b[90m 185 |\u001b[39m     \u001b[36mconst\u001b[39m afterNavigationRequests \u001b[33m=\u001b[39m [\u001b[33m...\u001b[39mnetworkRequests]\u001b[0m\n\u001b[2m    at C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js:182:16\u001b[22m"
+                        },
+                        {
+                          "message": "Error: browserContext._wrapApiCall: Test ended.\nBrowser logs:\n\n<launching> C:\\Users\\parth\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1181\\chrome-win\\headless_shell.exe --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AcceptCHFrame,AutoExpandDetailsElement,AvoidUnnecessaryBeforeUnloadCheckSync,CertificateTransparencyComponentUpdater,DestroyProfileOnBrowserClose,DialMediaRouteProvider,ExtensionManifestV2Disabled,GlobalMediaControls,HttpsUpgrades,ImprovedCookieControls,LazyFrameLoading,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=C:\\Users\\parth\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-CITyfB --remote-debugging-pipe --no-startup-window\n<launched> pid=25448"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:55:15.234Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\performance\\performance.spec.js",
+                        "column": 16,
+                        "line": 182
+                      }
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-8c5b366303e25ab1801d",
+              "file": "performance/performance.spec.js",
+              "line": 168,
+              "column": 3
+            },
+            {
+              "title": "should cache API responses effectively",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 3,
+                      "status": "interrupted",
+                      "duration": 11606,
+                      "error": {
+                        "message": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n",
+                        "stack": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)",
+                        "location": {
+                          "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                          "column": 16,
+                          "line": 12
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                            "column": 16,
+                            "line": 12
+                          },
+                          "message": "Error: page.fill: Target page, context or browser has been closed\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"email-input\"]')\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures\\test-utils.js:12\n\n\u001b[0m \u001b[90m 10 |\u001b[39m     \u001b[90m// Login before each test that needs authentication\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/auth'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"email-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'test@example.com'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mfill(\u001b[32m'[data-testid=\"password-input\"]'\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'testpassword123'\u001b[39m)\n \u001b[90m 14 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mclick(\u001b[32m'[data-testid=\"login-button\"]'\u001b[39m)\n \u001b[90m 15 |\u001b[39m     \u001b[0m\n\u001b[2m    at Object.authenticatedPage (C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js:12:16)\u001b[22m"
+                        },
+                        {
+                          "message": "Error: browserContext._wrapApiCall: Test ended.\nBrowser logs:\n\n<launching> C:\\Users\\parth\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1181\\chrome-win\\headless_shell.exe --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AcceptCHFrame,AutoExpandDetailsElement,AvoidUnnecessaryBeforeUnloadCheckSync,CertificateTransparencyComponentUpdater,DestroyProfileOnBrowserClose,DialMediaRouteProvider,ExtensionManifestV2Disabled,GlobalMediaControls,HttpsUpgrades,ImprovedCookieControls,LazyFrameLoading,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=C:\\Users\\parth\\AppData\\Local\\Temp\\playwright_chromiumdev_profile-rtnMTB --remote-debugging-pipe --no-startup-window\n<launched> pid=14708"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-08T22:55:15.268Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Users\\parth\\OneDrive\\Desktop\\Github\\Excel-AI-Website\\Excel-AI-Website\\excel-ai-frontend\\tests\\fixtures\\test-utils.js",
+                        "column": 16,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-4b4456c3743d2146f6cb",
+              "file": "performance/performance.spec.js",
+              "line": 197,
+              "column": 3
+            },
+            {
+              "title": "should load homepage within performance budget",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-1230e5e4e0c36bfac97e",
+              "file": "performance/performance.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should handle API response times efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-f602007bcc6a38f6ce93",
+              "file": "performance/performance.spec.js",
+              "line": 51,
+              "column": 3
+            },
+            {
+              "title": "should efficiently render large datasets",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-bc4bf2dd351df86924e3",
+              "file": "performance/performance.spec.js",
+              "line": 76,
+              "column": 3
+            },
+            {
+              "title": "should optimize bundle size and loading",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-b11ef3d6c278af7cf72a",
+              "file": "performance/performance.spec.js",
+              "line": 98,
+              "column": 3
+            },
+            {
+              "title": "should handle memory usage efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-e63364b68c6cb92fe656",
+              "file": "performance/performance.spec.js",
+              "line": 132,
+              "column": 3
+            },
+            {
+              "title": "should lazy load components efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-8ee7b0d4b497524d7a19",
+              "file": "performance/performance.spec.js",
+              "line": 168,
+              "column": 3
+            },
+            {
+              "title": "should cache API responses effectively",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-e0cefa5f5e75a94669e0",
+              "file": "performance/performance.spec.js",
+              "line": 197,
+              "column": 3
+            },
+            {
+              "title": "should load homepage within performance budget",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-0fc107c1e35952ece36b",
+              "file": "performance/performance.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should handle API response times efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-7791c5b7dcb700ccada1",
+              "file": "performance/performance.spec.js",
+              "line": 51,
+              "column": 3
+            },
+            {
+              "title": "should efficiently render large datasets",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-5fe1ab5411ee1ef62ee5",
+              "file": "performance/performance.spec.js",
+              "line": 76,
+              "column": 3
+            },
+            {
+              "title": "should optimize bundle size and loading",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-de0d6ee5bc839f7f053b",
+              "file": "performance/performance.spec.js",
+              "line": 98,
+              "column": 3
+            },
+            {
+              "title": "should handle memory usage efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-18a23f82a30a7ed0f657",
+              "file": "performance/performance.spec.js",
+              "line": 132,
+              "column": 3
+            },
+            {
+              "title": "should lazy load components efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-f10a094244917d29b1c2",
+              "file": "performance/performance.spec.js",
+              "line": 168,
+              "column": 3
+            },
+            {
+              "title": "should cache API responses effectively",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-ffed35a137d7b1d8d601",
+              "file": "performance/performance.spec.js",
+              "line": 197,
+              "column": 3
+            },
+            {
+              "title": "should load homepage within performance budget",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-2098f76fcdd4defb6228",
+              "file": "performance/performance.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should handle API response times efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-1cf64fcb4bd43f390471",
+              "file": "performance/performance.spec.js",
+              "line": 51,
+              "column": 3
+            },
+            {
+              "title": "should efficiently render large datasets",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-7879d29af239eaf8809d",
+              "file": "performance/performance.spec.js",
+              "line": 76,
+              "column": 3
+            },
+            {
+              "title": "should optimize bundle size and loading",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-347d41aaf43be9a18731",
+              "file": "performance/performance.spec.js",
+              "line": 98,
+              "column": 3
+            },
+            {
+              "title": "should handle memory usage efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-d34c3e4a9e481761c241",
+              "file": "performance/performance.spec.js",
+              "line": 132,
+              "column": 3
+            },
+            {
+              "title": "should lazy load components efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-6ba4951a35e31404aa00",
+              "file": "performance/performance.spec.js",
+              "line": 168,
+              "column": 3
+            },
+            {
+              "title": "should cache API responses effectively",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-2cce7821162a12e4e1d3",
+              "file": "performance/performance.spec.js",
+              "line": 197,
+              "column": 3
+            },
+            {
+              "title": "should load homepage within performance budget",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-c288c1d38116dc3d1886",
+              "file": "performance/performance.spec.js",
+              "line": 5,
+              "column": 3
+            },
+            {
+              "title": "should handle API response times efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-e66b7babdb67b2030836",
+              "file": "performance/performance.spec.js",
+              "line": 51,
+              "column": 3
+            },
+            {
+              "title": "should efficiently render large datasets",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-fd191de59538c5e0a1e9",
+              "file": "performance/performance.spec.js",
+              "line": 76,
+              "column": 3
+            },
+            {
+              "title": "should optimize bundle size and loading",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-215b4a57d43fef46bf7e",
+              "file": "performance/performance.spec.js",
+              "line": 98,
+              "column": 3
+            },
+            {
+              "title": "should handle memory usage efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-ee584101dbc1e1fea86a",
+              "file": "performance/performance.spec.js",
+              "line": 132,
+              "column": 3
+            },
+            {
+              "title": "should lazy load components efficiently",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-8b3edd31d9f49304f594",
+              "file": "performance/performance.spec.js",
+              "line": 168,
+              "column": 3
+            },
+            {
+              "title": "should cache API responses effectively",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e4767ef4dda8941d15c6-518f663346feec839748",
+              "file": "performance/performance.spec.js",
+              "line": 197,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-08-08T22:53:41.844Z",
+    "duration": 105996.712,
+    "expected": 0,
+    "skipped": 86,
+    "unexpected": 14,
+    "flaky": 0
+  }
+}

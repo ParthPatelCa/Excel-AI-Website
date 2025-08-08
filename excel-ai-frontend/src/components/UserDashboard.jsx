@@ -5,10 +5,12 @@ import { Badge } from '@/components/ui/badge.jsx'
 import { Progress } from '@/components/ui/progress.jsx'
 import { Separator } from '@/components/ui/separator.jsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
-import { User, LogOut, Settings, BarChart3, MessageSquare, Crown, Zap, TrendingUp } from 'lucide-react'
+import { User, LogOut, Settings, BarChart3, MessageSquare, Crown, Zap, TrendingUp, Code, Users } from 'lucide-react'
 import authService from '@/services/auth.js'
 import { UsageDashboard } from './UsageDashboard.jsx'
 import { ModelSelector } from './ModelSelector.jsx'
+import { DeveloperAPI } from './DeveloperAPI.jsx'
+import { TeamCollaboration } from './TeamCollaboration.jsx'
 
 export const UserDashboard = ({ user, onLogout }) => {
   const [usage, setUsage] = useState(null)
@@ -107,10 +109,12 @@ export const UserDashboard = ({ user, onLogout }) => {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="preferences">Preferences</TabsTrigger>
+            <TabsTrigger value="api">API</TabsTrigger>
+            <TabsTrigger value="team">Team</TabsTrigger>
             <TabsTrigger value="account">Account</TabsTrigger>
           </TabsList>
 
@@ -249,6 +253,14 @@ export const UserDashboard = ({ user, onLogout }) => {
               onChange={(model) => console.log('Model selected:', model)}
               disabled={user.subscription_tier === 'free'}
             />
+          </TabsContent>
+
+          <TabsContent value="api" className="space-y-6">
+            <DeveloperAPI />
+          </TabsContent>
+
+          <TabsContent value="team" className="space-y-6">
+            <TeamCollaboration user={user} />
           </TabsContent>
 
           <TabsContent value="account" className="space-y-6">

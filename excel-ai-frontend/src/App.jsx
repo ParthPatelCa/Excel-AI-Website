@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react'
-import { Upload, BarChart3, MessageSquare, Download, FileSpreadsheet, Zap, TrendingUp, Brain, Link, CheckCircle, AlertCircle, History } from 'lucide-react'
+import { useState, useEffect, Suspense } from 'react'
+import { Upload, BarChart3, MessageSquare, Download, FileSpreadsheet, Zap, TrendingUp, Brain, Link, CheckCircle, AlertCircle, History, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
 import { LoadingSpinner, ErrorAlert, ProgressBar } from '@/components/ui/alerts.jsx'
+import { ThemeProvider } from '@/contexts/ThemeContext.jsx'
+import { ThemeToggle } from '@/components/ui/ThemeToggle.jsx'
+import { AdvancedDropZone } from '@/components/ui/AdvancedDropZone.jsx'
 import { DataVisualization } from '@/components/DataVisualization.jsx'
 import { ChatInterface } from '@/components/ChatInterface.jsx'
 import { FormulaWorkspace } from '@/components/FormulaWorkspace.jsx'
@@ -14,8 +17,27 @@ import { ChatHistory } from '@/components/ChatHistory.jsx'
 import { ExportReports } from '@/components/ExportReports.jsx'
 import { AuthForm } from '@/components/AuthForm.jsx'
 import { UserDashboard } from '@/components/UserDashboard.jsx'
+import { DataCleaning } from '@/components/DataCleaning.jsx'
+import { ChartBuilder } from '@/components/ChartBuilder.jsx'
+import { PredictiveAnalytics } from '@/components/PredictiveAnalytics.jsx'
+import { TemplateLibrary } from '@/components/TemplateLibrary.jsx'
+import { MacroGenerator } from '@/components/MacroGenerator.jsx'
+import { UIShowcase } from '@/components/UIShowcase.jsx'
+import { PerformanceMonitor } from '@/components/PerformanceMonitor.jsx'
+import { 
+  LazyDataVisualization, 
+  LazyChartBuilder, 
+  LazyPredictiveAnalytics,
+  LazyDataCleaning,
+  LazyTemplateLibrary,
+  LazyMacroGenerator,
+  LazyUIShowcase,
+  ComponentLoader,
+  preloadComponents
+} from '@/utils/lazyComponents.jsx'
 import { validateFile, validateGoogleSheetsUrl } from '@/utils/validation.js'
 import apiService from '@/services/api.js'
+import enhancedApiService from '@/services/enhancedApi.js'
 import authService from '@/services/auth.js'
 import './App.css'
 
@@ -40,6 +62,27 @@ function App() {
   // Check authentication on app load
   useEffect(() => {
     checkAuthStatus()
+  }, [])
+
+  // Initialize performance optimizations
+  useEffect(() => {
+    // Preload critical components
+    preloadComponents()
+    
+    // Preload critical API data
+    enhancedApiService.preloadCriticalData()
+    
+    // Performance monitoring
+    if ('performance' in window && performance.mark) {
+      performance.mark('app-init-start')
+    }
+    
+    return () => {
+      if ('performance' in window && performance.mark) {
+        performance.mark('app-init-end')
+        performance.measure('app-init', 'app-init-start', 'app-init-end')
+      }
+    }
   }, [])
 
   const checkAuthStatus = async () => {
@@ -195,6 +238,7 @@ function App() {
                 <span className="text-sm text-gray-600">
                   Welcome, {user?.first_name}!
                 </span>
+                <ThemeToggle />
                 <Button 
                   variant="outline" 
                   size="sm"
@@ -210,10 +254,6 @@ function App() {
                   Sign Out
                 </Button>
               </div>
-              <Button variant="outline" className="bg-white/50 hover:bg-white/80">Sign In</Button>
-              <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg">
-                Get Started
-              </Button>
             </div>
           </div>
         </div>
@@ -525,16 +565,19 @@ function App() {
           <div className="space-y-8">
             {/* Enhanced Analysis Interface with Tabs */}
             <Tabs value={currentActiveTab} onValueChange={setCurrentActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-6 bg-gray-100">
+              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-12 bg-gray-100">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="visualize">Visualize</TabsTrigger>
                 <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
-                <TabsTrigger value="history">
-                  <History className="h-4 w-4 mr-2" />
-                  History
-                </TabsTrigger>
+                <TabsTrigger value="data-cleaning">Clean Data</TabsTrigger>
+                <TabsTrigger value="chart-builder">Charts</TabsTrigger>
+                <TabsTrigger value="predictive">Analytics</TabsTrigger>
+                <TabsTrigger value="templates">Templates</TabsTrigger>
+                <TabsTrigger value="macros">Macros</TabsTrigger>
                 <TabsTrigger value="formulas">Formulas</TabsTrigger>
                 <TabsTrigger value="export">Export</TabsTrigger>
+                <TabsTrigger value="ui-test">UI Test</TabsTrigger>
+                <TabsTrigger value="performance">Performance</TabsTrigger>
               </TabsList>
 
               <TabsContent value="overview" className="space-y-6">
@@ -673,14 +716,43 @@ function App() {
                 />
               </TabsContent>
 
-              <TabsContent value="history" className="space-y-6">
-                {/* Chat History */}
-                <ChatHistory 
-                  onLoadConversation={(messages) => {
-                    setChatMessages(messages)
-                    setCurrentActiveTab('ai-chat')
+              <TabsContent value="data-cleaning" className="space-y-6">
+                {/* Data Cleaning */}
+                <DataCleaning 
+                  data={analysisResults.file_info?.preview || []}
+                  columns={analysisResults.file_info?.column_names || []}
+                />
+              </TabsContent>
+
+              <TabsContent value="chart-builder" className="space-y-6">
+                {/* Chart Builder */}
+                <ChartBuilder 
+                  data={analysisResults.file_info?.preview || []}
+                  columns={analysisResults.file_info?.column_names || []}
+                />
+              </TabsContent>
+
+              <TabsContent value="predictive" className="space-y-6">
+                {/* Predictive Analytics */}
+                <PredictiveAnalytics 
+                  data={analysisResults.file_info?.preview || []}
+                  columns={analysisResults.file_info?.column_names || []}
+                />
+              </TabsContent>
+
+              <TabsContent value="templates" className="space-y-6">
+                {/* Template Library */}
+                <TemplateLibrary 
+                  onApplyTemplate={(template) => {
+                    // Handle template application
+                    console.log('Applied template:', template)
                   }}
                 />
+              </TabsContent>
+
+              <TabsContent value="macros" className="space-y-6">
+                {/* Macro Generator */}
+                <MacroGenerator />
               </TabsContent>
 
               <TabsContent value="formulas" className="space-y-6">
@@ -695,6 +767,22 @@ function App() {
                     analysisResults={analysisResults}
                     fileName={uploadedFile?.name || 'analysis'}
                   />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="ui-test" className="space-y-6">
+                {/* UI Components Test */}
+                <div id="ui-test-section">
+                  <Suspense fallback={<ComponentLoader message="Loading UI showcase..." />}>
+                    <LazyUIShowcase />
+                  </Suspense>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="performance" className="space-y-6">
+                {/* Performance Monitor */}
+                <div id="performance-section">
+                  <PerformanceMonitor />
                 </div>
               </TabsContent>
             </Tabs>
@@ -739,5 +827,13 @@ function App() {
   return currentView === 'home' ? <HomePage /> : <AnalysisPage />
 }
 
-export default App
+function WrappedApp() {
+  return (
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  )
+}
+
+export default WrappedApp
 
