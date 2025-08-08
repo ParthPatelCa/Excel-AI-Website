@@ -7,6 +7,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from models.auth import User, db, FormulaInteraction
 from routes.auth import token_required
+from utils.telemetry import estimate_tokens
 
 load_dotenv()
 
@@ -151,10 +152,13 @@ tips (array of strings) - practical usage/edge case tips
 IMPORTANT: Only reference available columns exactly as provided. If user description mentions columns not in list, warn in tips and DO NOT hallucinate.
 """
 
+    # Track timing for telemetry
+    start_time = time.time()
     result = call_openai_with_retry([
         {"role": "system", "content": system_msg},
         {"role": "user", "content": user_prompt}
     ], max_tokens=900)
+    latency_ms = int((time.time() - start_time) * 1000)
 
     fallback_used = False
     if not result['success']:
@@ -163,6 +167,9 @@ IMPORTANT: Only reference available columns exactly as provided. If user descrip
         tried = result.get('models_tried', [])
         if tried and tried[0] != result['model_used']:
             fallback_used = True
+
+    # Calculate tokens for telemetry
+    tokens_used = result.get('usage') or estimate_tokens(result['content'])
 
     parsed = parse_json_safely(result['content'], 'raw')
     parsed_columns = _detect_referenced_columns(parsed.get('primary_formula','') or '')
@@ -186,14 +193,17 @@ IMPORTANT: Only reference available columns exactly as provided. If user descrip
         'model_used': result.get('model_used'),
         'fallback_used': fallback_used
     }
-    # persist
+    # persist with telemetry
     interaction = FormulaInteraction(
         user_id=current_user.id,
         interaction_type='generate',
         input_payload=payload,
         output_payload=response_payload['data'],
         model_used=response_payload['model_used'],
-        fallback_used=fallback_used
+        fallback_used=fallback_used,
+        latency_ms=latency_ms,
+        tokens_used=tokens_used,
+        success=True
     )
     db.session.add(interaction)
     current_user.increment_usage('query')
@@ -227,13 +237,19 @@ simplified_alternative (string) - if shorter equivalent exists, else null
     if not current_user.can_query():
         return jsonify({'error': 'Query limit reached for current plan', 'limit_reached': True}), 429
 
+    # Track timing for telemetry
+    start_time = time.time()
     result = call_openai_with_retry([
         {"role": "system", "content": system_msg},
         {"role": "user", "content": user_prompt}
     ], max_tokens=700)
+    latency_ms = int((time.time() - start_time) * 1000)
 
     if not result['success']:
         return jsonify({'success': False, 'error': result.get('error', 'Unknown error')}), 500
+
+    # Calculate tokens for telemetry
+    tokens_used = result.get('usage') or estimate_tokens(result['content'])
 
     parsed = parse_json_safely(result['content'], 'raw')
     fallback_used = False
@@ -256,7 +272,10 @@ simplified_alternative (string) - if shorter equivalent exists, else null
         input_payload=payload,
         output_payload=data,
         model_used=result.get('model_used'),
-        fallback_used=fallback_used
+        fallback_used=fallback_used,
+        latency_ms=latency_ms,
+        tokens_used=tokens_used,
+        success=True
     )
     db.session.add(interaction)
     current_user.increment_usage('query')
@@ -291,13 +310,19 @@ notes (array) - any additional helpful notes
     if not current_user.can_query():
         return jsonify({'error': 'Query limit reached for current plan', 'limit_reached': True}), 429
 
+    # Track timing for telemetry
+    start_time = time.time()
     result = call_openai_with_retry([
         {"role": "system", "content": system_msg},
         {"role": "user", "content": user_prompt}
     ], max_tokens=750)
+    latency_ms = int((time.time() - start_time) * 1000)
 
     if not result['success']:
         return jsonify({'success': False, 'error': result.get('error', 'Unknown error')}), 500
+
+    # Calculate tokens for telemetry
+    tokens_used = result.get('usage') or estimate_tokens(result['content'])
 
     parsed = parse_json_safely(result['content'], 'raw')
     fallback_used = False
@@ -320,7 +345,10 @@ notes (array) - any additional helpful notes
         input_payload=payload,
         output_payload=data,
         model_used=result.get('model_used'),
-        fallback_used=fallback_used
+        fallback_used=fallback_used,
+        latency_ms=latency_ms,
+        tokens_used=tokens_used,
+        success=True
     )
     db.session.add(interaction)
     current_user.increment_usage('query')

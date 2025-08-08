@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import random
 from routes.auth import token_required
 from models.auth import db
+from utils.telemetry import TelemetryTracker, estimate_tokens
 
 # Load environment variables
 load_dotenv()
@@ -306,59 +307,83 @@ def upload_file():
 @token_required
 def analyze_data(current_user):
     """Perform AI-powered analysis on the uploaded data"""
-    try:
-        data = request.json
-        if 'data' not in data:
-            return jsonify({'error': 'No data provided for analysis'}), 400
-        
-        # Convert data back to DataFrame
-        df = pd.DataFrame(data['data'])
-        
-        # Generate basic statistics
-        insights = generate_insights(df)
-        
-        if not current_user.can_query():
-            return jsonify({'error': 'Query limit reached for current plan', 'limit_reached': True}), 429
-        # Generate AI-powered insights
-        ai_insights = generate_ai_insights(df, insights)
-        current_user.increment_usage('query')
-        
-        return jsonify({
-            'success': True,
-            'insights': insights,
-            'ai_insights': ai_insights
-        })
-        
-    except Exception as e:
-        return jsonify({'error': f'Error analyzing data: {str(e)}'}), 500
+    with TelemetryTracker(current_user.id, 'analysis', '/excel/analyze') as tracker:
+        try:
+            data = request.json
+            if 'data' not in data:
+                return jsonify({'error': 'No data provided for analysis'}), 400
+            
+            # Convert data back to DataFrame
+            df = pd.DataFrame(data['data'])
+            
+            # Generate basic statistics
+            insights = generate_insights(df)
+            
+            if not current_user.can_query():
+                return jsonify({'error': 'Query limit reached for current plan', 'limit_reached': True}), 429
+            
+            # Generate AI-powered insights with telemetry
+            start_time = time.time()
+            ai_insights = generate_ai_insights(df, insights)
+            
+            # Track AI call metrics
+            if isinstance(ai_insights, dict) and 'error' not in ai_insights:
+                estimated_tokens = estimate_tokens(str(ai_insights))
+                tracker.set_ai_metadata(
+                    model_used=resolve_model(),
+                    tokens_used=estimated_tokens
+                )
+            
+            current_user.increment_usage('query')
+            
+            return jsonify({
+                'success': True,
+                'insights': insights,
+                'ai_insights': ai_insights
+            })
+            
+        except Exception as e:
+            return jsonify({'error': f'Error analyzing data: {str(e)}'}), 500
 
 @excel_bp.route('/query', methods=['POST'])
 @token_required
 def query_data(current_user):
     """Handle natural language queries about the data"""
-    try:
-        data = request.json
-        if 'query' not in data or 'data' not in data:
-            return jsonify({'error': 'Query and data are required'}), 400
-        
-        query = data['query']
-        df = pd.DataFrame(data['data'])
-        
-        if not current_user.can_query():
-            return jsonify({'error': 'Query limit reached for current plan', 'limit_reached': True}), 429
-        # Generate response using AI (structured dict)
-        ai_resp = process_natural_language_query(df, query)
-        current_user.increment_usage('query')
-        # Backward compatibility: expose 'response' as plain string content
-        return jsonify({
-            'success': True,
-            'response': ai_resp.get('content') if isinstance(ai_resp, dict) else ai_resp,
-            'model_used': ai_resp.get('model_used') if isinstance(ai_resp, dict) else None,
-            'fallback_used': ai_resp.get('fallback_used') if isinstance(ai_resp, dict) else False
-        })
-        
-    except Exception as e:
-        return jsonify({'error': f'Error processing query: {str(e)}'}), 500
+    with TelemetryTracker(current_user.id, 'query', '/excel/query') as tracker:
+        try:
+            data = request.json
+            if 'query' not in data or 'data' not in data:
+                return jsonify({'error': 'Query and data are required'}), 400
+            
+            query = data['query']
+            df = pd.DataFrame(data['data'])
+            
+            if not current_user.can_query():
+                return jsonify({'error': 'Query limit reached for current plan', 'limit_reached': True}), 429
+            
+            # Generate response using AI (structured dict) with telemetry
+            ai_resp = process_natural_language_query(df, query)
+            
+            # Track telemetry from AI response
+            if isinstance(ai_resp, dict):
+                tracker.set_ai_metadata(
+                    model_used=ai_resp.get('model_used'),
+                    fallback_used=ai_resp.get('fallback_used', False),
+                    tokens_used=estimate_tokens(ai_resp.get('content', ''))
+                )
+            
+            current_user.increment_usage('query')
+            
+            # Backward compatibility: expose 'response' as plain string content
+            return jsonify({
+                'success': True,
+                'response': ai_resp.get('content') if isinstance(ai_resp, dict) else ai_resp,
+                'model_used': ai_resp.get('model_used') if isinstance(ai_resp, dict) else None,
+                'fallback_used': ai_resp.get('fallback_used') if isinstance(ai_resp, dict) else False
+            })
+            
+        except Exception as e:
+            return jsonify({'error': f'Error processing query: {str(e)}'}), 500
 
 @excel_bp.route('/formulas', methods=['POST'])
 def suggest_formulas():

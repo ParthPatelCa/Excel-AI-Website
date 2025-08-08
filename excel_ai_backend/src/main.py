@@ -11,12 +11,14 @@ load_dotenv()
 from flask import Flask, send_from_directory, jsonify
 from flask_cors import CORS
 from src.models.user import db as old_db
-from src.models.auth import db, User, Analysis, ChatConversation
+from src.models.auth import db, User, Analysis, ChatConversation, FormulaInteraction, ChatMessage, TelemetryMetric
 from src.routes.user import user_bp
 from src.routes.auth import auth_bp
 from src.routes.excel_analysis import excel_bp
 from src.routes.formula import formula_bp
 from src.routes.google_sheets import google_sheets_bp
+from src.routes.telemetry import telemetry_bp
+from src.routes.chat import chat_bp
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'fallback-secret-key')
@@ -31,6 +33,8 @@ app.register_blueprint(user_bp, url_prefix='/api/v1', name='user_v1')
 app.register_blueprint(excel_bp, url_prefix='/api/v1/excel', name='excel_v1')
 app.register_blueprint(formula_bp, url_prefix='/api/v1/formula', name='formula_v1')
 app.register_blueprint(google_sheets_bp, url_prefix='/api/v1/google-sheets', name='google_sheets_v1')
+app.register_blueprint(telemetry_bp, url_prefix='/api/v1/telemetry', name='telemetry_v1')
+app.register_blueprint(chat_bp, url_prefix='/api/v1/chat', name='chat_v1')
 
 # Legacy support - redirect old API calls to v1
 app.register_blueprint(user_bp, url_prefix='/api', name='user_legacy')
@@ -77,6 +81,18 @@ def api_info():
             'google_sheets': {
                 'analyze_url': '/api/v1/google-sheets/analyze_url',
                 'query_url': '/api/v1/google-sheets/query_url'
+            },
+            'chat': {
+                'list_conversations': '/api/v1/chat/conversations',
+                'create_conversation': '/api/v1/chat/conversations',
+                'get_conversation': '/api/v1/chat/conversations/{id}',
+                'add_message': '/api/v1/chat/conversations/{id}/messages',
+                'export': '/api/v1/chat/conversations/{id}/export'
+            },
+            'telemetry': {
+                'user_metrics': '/api/v1/telemetry/metrics',
+                'health': '/api/v1/telemetry/health',
+                'admin_metrics': '/api/v1/telemetry/admin/metrics'
             },
             'users': {
                 'list': '/api/v1/users',

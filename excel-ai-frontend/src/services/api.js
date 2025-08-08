@@ -159,6 +159,73 @@ class ApiService {
     return this.makeRequest(`/formula/history/${id}`, { method: 'GET' })
   }
 
+  // Telemetry endpoints
+  async getTelemetryMetrics(days = 30) {
+    return this.makeRequest(`/telemetry/metrics?days=${days}`, { method: 'GET' })
+  }
+
+  async getHealthStatus() {
+    return this.makeRequest('/telemetry/health', { method: 'GET' })
+  }
+
+  // Chat conversation endpoints
+  async listChatConversations({ page = 1, page_size = 10 } = {}) {
+    const params = new URLSearchParams()
+    params.set('page', page)
+    params.set('page_size', page_size)
+    return this.makeRequest(`/chat/conversations?${params.toString()}`, { method: 'GET' })
+  }
+
+  async getChatConversation(id) {
+    return this.makeRequest(`/chat/conversations/${id}`, { method: 'GET' })
+  }
+
+  async createChatConversation(data = {}) {
+    return this.makeRequest('/chat/conversations', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async addChatMessage(conversationId, messageData) {
+    return this.makeRequest(`/chat/conversations/${conversationId}/messages`, {
+      method: 'POST',
+      body: JSON.stringify(messageData)
+    })
+  }
+
+  async updateChatConversation(id, updates) {
+    return this.makeRequest(`/chat/conversations/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates)
+    })
+  }
+
+  async deleteChatConversation(id) {
+    return this.makeRequest(`/chat/conversations/${id}`, { method: 'DELETE' })
+  }
+
+  async exportChatConversation(id, format = 'json') {
+    return this.makeRequest(`/chat/conversations/${id}/export?format=${format}`, { method: 'GET' })
+  }
+
+  // Telemetry endpoints
+  async getUserMetrics(days = 30) {
+    return this.makeRequest(`/v1/telemetry/metrics?days=${days}`, { method: 'GET' })
+  }
+
+  async getTelemetryMetrics(days = 30) {
+    return this.makeRequest(`/v1/telemetry/metrics?days=${days}`, { method: 'GET' })
+  }
+
+  async getSystemHealth() {
+    return this.makeRequest('/v1/telemetry/health', { method: 'GET' })
+  }
+
+  async getAdminMetrics(days = 7) {
+    return this.makeRequest(`/v1/telemetry/admin/metrics?days=${days}`, { method: 'GET' })
+  }
+
   // Google Sheets endpoints
   async analyzeGoogleSheetsUrl(url) {
     return this.makeRequest('/google-sheets/analyze_url', {
