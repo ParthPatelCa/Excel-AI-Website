@@ -12,6 +12,7 @@ This project provides an AI-powered web application that helps users get insight
 - **Statistical Summary**: View basic statistical summaries of your data.
 - **Natural Language Queries**: Ask questions about your data in plain English.
 - **Formula Generation**: Get suggestions for Excel formulas based on your data.
+- **Upcoming Features**: Initial placeholders exist for automated data cleaning, chart generation, template library, macro generation, predictive analytics, collaboration, developer API, spreadsheet add-ins, multilingual support, and usage analytics.
 
 ## Project Structure
 
