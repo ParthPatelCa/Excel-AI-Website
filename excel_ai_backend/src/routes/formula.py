@@ -326,3 +326,45 @@ notes (array) - any additional helpful notes
     current_user.increment_usage('query')
     db.session.commit()
     return jsonify({'success': True, 'data': data, 'model_used': result.get('model_used'), 'fallback_used': fallback_used})
+
+
+@formula_bp.route('/history', methods=['GET'])
+@token_required
+def list_history(current_user):
+    """List formula interactions for the current user with pagination & filtering"""
+    try:
+        interaction_type = request.args.get('type')  # optional filter
+        limit = min(int(request.args.get('limit', 20)), 100)
+        offset = int(request.args.get('offset', 0))
+        q = FormulaInteraction.query.filter_by(user_id=current_user.id)
+        if interaction_type in ['generate', 'explain', 'debug']:
+            q = q.filter_by(interaction_type=interaction_type)
+        total = q.count()
+        rows = (q.order_by(FormulaInteraction.created_at.desc())
+                  .offset(offset)
+                  .limit(limit)
+                  .all())
+        return jsonify({
+            'success': True,
+            'data': [r.to_dict() for r in rows],
+            'pagination': {
+                'total': total,
+                'limit': limit,
+                'offset': offset,
+                'has_more': offset + limit < total
+            }
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': f'Failed to fetch history: {e}'}), 500
+
+
+@formula_bp.route('/history/<int:interaction_id>', methods=['GET'])
+@token_required
+def get_history_item(current_user, interaction_id):
+    try:
+        item = FormulaInteraction.query.filter_by(id=interaction_id, user_id=current_user.id).first()
+        if not item:
+            return jsonify({'error': 'Not found'}), 404
+        return jsonify({'success': True, 'data': item.to_dict()})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500

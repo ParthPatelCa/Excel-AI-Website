@@ -65,7 +65,7 @@ export const ChatInterface = ({ data, onError, messages: externalMessages, onMes
         const botMessage = {
           id: Date.now(),
           type: 'bot',
-          content: response.response,
+            content: response.response + (response.fallback_used ? '\n\n⚠️ Model fallback engaged – response generated using a backup model.' : ''),
           timestamp: new Date(),
           originalQuestion: originalQuestion
         }
@@ -123,7 +123,7 @@ export const ChatInterface = ({ data, onError, messages: externalMessages, onMes
         const botMessage = {
           id: Date.now() + 1,
           type: 'bot',
-          content: response.response,
+            content: response.response + (response.fallback_used ? '\n\n⚠️ Model fallback engaged – response generated using a backup model.' : ''),
           timestamp: new Date(),
           originalQuestion: currentQuestion
         }

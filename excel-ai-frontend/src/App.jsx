@@ -9,6 +9,7 @@ import { LoadingSpinner, ErrorAlert, ProgressBar } from '@/components/ui/alerts.
 import { DataVisualization } from '@/components/DataVisualization.jsx'
 import { ChatInterface } from '@/components/ChatInterface.jsx'
 import { FormulaWorkspace } from '@/components/FormulaWorkspace.jsx'
+import { FormulaHistory } from '@/components/FormulaHistory.jsx'
 import { ChatHistory } from '@/components/ChatHistory.jsx'
 import { ExportReports } from '@/components/ExportReports.jsx'
 import { AuthForm } from '@/components/AuthForm.jsx'
@@ -684,6 +685,7 @@ function App() {
 
               <TabsContent value="formulas" className="space-y-6">
                 <FormulaWorkspace columns={analysisResults.file_info?.column_names || []} />
+                <FormulaHistory />
               </TabsContent>
 
               <TabsContent value="export" className="space-y-6">

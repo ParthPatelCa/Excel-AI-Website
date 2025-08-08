@@ -147,6 +147,18 @@ class ApiService {
     });
   }
 
+  async listFormulaHistory({ type, limit = 20, offset = 0 } = {}) {
+    const params = new URLSearchParams()
+    if (type) params.set('type', type)
+    params.set('limit', limit)
+    params.set('offset', offset)
+    return this.makeRequest(`/formula/history?${params.toString()}`, { method: 'GET' })
+  }
+
+  async getFormulaHistoryItem(id) {
+    return this.makeRequest(`/formula/history/${id}`, { method: 'GET' })
+  }
+
   // Google Sheets endpoints
   async analyzeGoogleSheetsUrl(url) {
     return this.makeRequest('/google-sheets/analyze_url', {

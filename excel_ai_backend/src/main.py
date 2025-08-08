@@ -70,7 +70,9 @@ def api_info():
             'formula': {
                 'generate': '/api/v1/formula/generate',
                 'explain': '/api/v1/formula/explain',
-                'debug': '/api/v1/formula/debug'
+                'debug': '/api/v1/formula/debug',
+                'history': '/api/v1/formula/history',
+                'history_item': '/api/v1/formula/history/{id}'
             },
             'google_sheets': {
                 'analyze_url': '/api/v1/google-sheets/analyze_url',

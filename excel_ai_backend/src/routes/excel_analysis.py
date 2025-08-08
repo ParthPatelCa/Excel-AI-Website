@@ -8,6 +8,8 @@ from openai import OpenAI
 import json
 from dotenv import load_dotenv
 import random
+from routes.auth import token_required
+from models.auth import db
 
 # Load environment variables
 load_dotenv()
@@ -66,11 +68,13 @@ def call_openai_with_retry(messages, max_retries=3, model: str | None = None):
                 timeout=30  # 30 second timeout
             )
             
+            attempted_models.append(resolved_model)
             return {
                 'success': True,
                 'content': response.choices[0].message.content,
                 'usage': response.usage.total_tokens if response.usage else 0,
-                'model_used': resolved_model
+                'model_used': resolved_model,
+                'models_tried': attempted_models
             }
             
         except Exception as e:
@@ -299,7 +303,8 @@ def upload_file():
         return jsonify({'error': f'Error processing file: {str(e)}'}), 500
 
 @excel_bp.route('/analyze', methods=['POST'])
-def analyze_data():
+@token_required
+def analyze_data(current_user):
     """Perform AI-powered analysis on the uploaded data"""
     try:
         data = request.json
@@ -312,8 +317,11 @@ def analyze_data():
         # Generate basic statistics
         insights = generate_insights(df)
         
+        if not current_user.can_query():
+            return jsonify({'error': 'Query limit reached for current plan', 'limit_reached': True}), 429
         # Generate AI-powered insights
         ai_insights = generate_ai_insights(df, insights)
+        current_user.increment_usage('query')
         
         return jsonify({
             'success': True,
@@ -325,7 +333,8 @@ def analyze_data():
         return jsonify({'error': f'Error analyzing data: {str(e)}'}), 500
 
 @excel_bp.route('/query', methods=['POST'])
-def query_data():
+@token_required
+def query_data(current_user):
     """Handle natural language queries about the data"""
     try:
         data = request.json
@@ -335,12 +344,17 @@ def query_data():
         query = data['query']
         df = pd.DataFrame(data['data'])
         
-        # Generate response using AI
-        response = process_natural_language_query(df, query)
-        
+        if not current_user.can_query():
+            return jsonify({'error': 'Query limit reached for current plan', 'limit_reached': True}), 429
+        # Generate response using AI (structured dict)
+        ai_resp = process_natural_language_query(df, query)
+        current_user.increment_usage('query')
+        # Backward compatibility: expose 'response' as plain string content
         return jsonify({
             'success': True,
-            'response': response
+            'response': ai_resp.get('content') if isinstance(ai_resp, dict) else ai_resp,
+            'model_used': ai_resp.get('model_used') if isinstance(ai_resp, dict) else None,
+            'fallback_used': ai_resp.get('fallback_used') if isinstance(ai_resp, dict) else False
         })
         
     except Exception as e:
@@ -591,44 +605,67 @@ def generate_ai_insights(df, basic_insights):
                     }
 
 def process_natural_language_query(df, query):
-    """Process natural language queries about the data"""
-    try:
-        # Prepare context about the data
-        data_context = {
-            'columns': df.columns.tolist(),
-            'data_types': df.dtypes.astype(str).to_dict(),
-            'shape': df.shape,
-            'sample_data': df.head(3).to_dict('records')
-        }
-        
-        prompt = f"""
-        You have access to a dataset with the following structure:
-        {json.dumps(data_context, indent=2)}
-        
-        User query: "{query}"
-        
-        Please provide a helpful response that:
-        1. Answers the user's question based on the available data
-        2. Suggests specific analysis steps if needed
-        3. Mentions any limitations based on the data structure
-        
-        If the query requires calculations, provide the approach but note that actual calculations would need to be performed on the full dataset.
-        """
-        
-        response = client.chat.completions.create(
-            model=resolve_model(),
-            messages=[
+    """Process natural language queries about the data returning structured info."""
+    # Prepare context about the data
+    data_context = {
+        'columns': df.columns.tolist(),
+        'data_types': df.dtypes.astype(str).to_dict(),
+        'shape': df.shape,
+        'sample_data': df.head(3).to_dict('records')
+    }
+    prompt = f"""
+    You have access to a dataset with the following structure:
+    {json.dumps(data_context, indent=2)}
+
+    User query: "{query}"
+
+    Please provide a helpful response that:
+    1. Answers the user's question based on the available data
+    2. Suggests specific analysis steps if needed
+    3. Mentions any limitations based on the data structure
+
+    If the query requires calculations, provide the approach but note that actual calculations would need to be performed on the full dataset.
+    """
+    # Attempt via retry helper for fallback visibility
+    if client:
+        try:
+            retry_resp = call_openai_with_retry([
                 {"role": "system", "content": "You are a helpful data analyst assistant. Provide clear, practical responses about data analysis."},
                 {"role": "user", "content": prompt}
-            ],
-            max_tokens=500,
-            temperature=0.3
-        )
-        
-        return response.choices[0].message.content
-        
-    except Exception as e:
-        return f"Sorry, I couldn't process your query: {str(e)}"
+            ], max_retries=3)
+            if retry_resp.get('success'):
+                models_tried = retry_resp.get('models_tried', [])
+                model_used = retry_resp.get('model_used')
+                fallback_used = bool(models_tried and model_used and model_used != models_tried[0])
+                return {
+                    'content': retry_resp.get('content'),
+                    'model_used': model_used,
+                    'models_tried': models_tried,
+                    'fallback_used': fallback_used
+                }
+            else:
+                return {
+                    'content': f"AI request failed: {retry_resp.get('error')}",
+                    'error': True,
+                    'model_used': None,
+                    'models_tried': retry_resp.get('models_tried', []),
+                    'fallback_used': False
+                }
+        except Exception as e:
+            return {
+                'content': f"AI request exception: {e}",
+                'error': True,
+                'model_used': None,
+                'models_tried': [],
+                'fallback_used': False
+            }
+    return {
+        'content': 'AI not configured',
+        'error': True,
+        'model_used': None,
+        'models_tried': [],
+        'fallback_used': False
+    }
 
 def generate_formula_suggestions(df, intent):
     """Generate Excel formula suggestions based on data structure"""
