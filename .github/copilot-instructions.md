@@ -1,14 +1,55 @@
-# GitHub Copilot Instructions for Excel AI Website
+# GitHub Copilot Instructions for DataSense AI Platform
 
 ## Project Overview
 
-This is a full-stack AI-powered data analysis application that helps users extract insights from Excel files and Google Sheets. The project consists of a Flask backend with OpenAI integration and a React frontend with modern UI components.
+DataSense AI is a comprehensive business intelligence platform with six integrated sections: Connect, Analyze, Visualize, Data Prep, Enrich, and Tools. The platform transforms raw data into actionable insights using advanced AI capabilities, directly competing with FormulaBot.com and Airtable.
+
+**Primary Value Proposition**: The **Analyze** section is our main selling point - advanced AI-powered data analysis that turns any dataset into comprehensive business insights with natural language querying and automated pattern detection.
 
 ### Architecture
-- **Backend**: Flask 3.1.1 with Python 3.11, pandas for data processing, OpenAI GPT integration
+- **Backend**: Flask 3.1.1 with Python 3.11, pandas for data processing, Plotly for visualizations, OpenAI GPT-4 integration
 - **Frontend**: React 19 with Vite, Tailwind CSS, Radix UI components
 - **API Structure**: RESTful API with versioning (`/api/v1/`)
+- **Database**: SQLite with SQLAlchemy ORM, comprehensive models for all platform features
 - **File Support**: Excel (.xlsx, .xls), CSV files up to 16MB, Google Sheets integration
+
+## Platform Sections Overview
+
+### 1. **Connect** - Data Source Integration (First Step)
+- **Core Features**: File uploads (Excel, CSV), Google Sheets integration, data source management
+- **AI Features**: Automatic data type detection, validation, smart import suggestions
+- **Components**: Connection library, upload interface, data preview
+- **Backend**: File processing, Google Sheets API, connection pooling
+
+### 2. **Analyze** - Advanced AI-Powered Analysis (**MAIN SELLING POINT**)
+- **Core Features**: Statistical analysis, predictive analytics, natural language queries, pattern detection
+- **AI Features**: Automated insights, trend analysis, anomaly detection, smart recommendations
+- **Components**: Analysis dashboard, query interface, results visualization, report generation
+- **Backend**: OpenAI GPT-4 integration, statistical libraries (scipy, scikit-learn), ML model deployment
+
+### 3. **Visualize** - Interactive Data Visualization
+- **7 Chart Types**: Bar, Line, Pie, Scatter, Heatmap, Histogram, Box plots
+- **AI Features**: Smart chart suggestions, confidence scoring, data structure analysis
+- **Components**: Chart builder, configuration UI, chart library management
+- **Backend**: Plotly integration, chart generation APIs, suggestion algorithms
+
+### 4. **Data Prep** - AI-Powered Data Preparation  
+- **Core Features**: Data quality analysis, cleaning operations, blending, transformations
+- **AI Features**: Smart cleaning suggestions, type conversion detection, outlier identification
+- **Components**: Analysis dashboard, operation wizards, progress tracking
+- **Backend**: Pandas processing, operation history, validation systems
+
+### 5. **Enrich** - AI Text Enhancement
+- **5 AI Services**: Sentiment analysis, keyword extraction, classification, summarization, custom prompts
+- **Features**: Batch processing, confidence scoring, emotion detection
+- **Components**: Multi-tab interface, result visualization, export options
+- **Backend**: OpenAI integration, result caching, processing optimization
+
+### 6. **Tools** - Utility Generators
+- **6 Tool Types**: Excel formulas, SQL queries, VBA scripts, text conversion, regex patterns
+- **AI Features**: Natural language processing, code generation, optimization suggestions
+- **Components**: Tool-specific interfaces, testing capabilities, history tracking
+- **Backend**: Code generation, validation, template systems
 
 ## Development Guidelines
 
@@ -17,24 +58,48 @@ This is a full-stack AI-powered data analysis application that helps users extra
 #### Backend Structure (`excel_ai_backend/`)
 ```
 src/
-├── main.py              # Flask app entry point with API versioning
+├── main.py              # Flask app entry point with comprehensive blueprint registration
 ├── routes/              # Blueprint-based route organization
-│   ├── excel_analysis.py    # File upload, analysis, query endpoints
-│   ├── google_sheets.py     # Google Sheets integration
-│   └── user.py             # User management (basic CRUD)
+│   ├── visualize.py         # Chart creation and visualization APIs
+│   ├── data_prep.py         # Data preparation and cleaning endpoints  
+│   ├── enrich.py           # AI text enrichment services
+│   ├── tools.py            # Utility generators (Excel, SQL, VBA, etc.)
+│   ├── analysis.py         # Advanced analysis capabilities
+│   ├── connectors.py       # Data source management
+│   ├── excel_analysis.py   # Legacy Excel analysis endpoints
+│   ├── formula.py          # Formula intelligence system
+│   ├── chat.py             # AI chat interface
+│   ├── auth.py             # Authentication and user management
+│   └── user.py             # User CRUD operations
 ├── models/              # SQLAlchemy models
-│   └── user.py
+│   ├── auth.py             # User, session, and telemetry models
+│   ├── connectors.py       # Data connector and analysis models
+│   ├── visualization.py    # Platform feature models
+│   └── user.py             # Legacy user model
 ├── database/            # SQLite database files
-└── static/              # Served frontend build files
+├── utils/               # Utility functions
+│   └── openai_helper.py    # OpenAI integration utilities
+└── static/              # Compiled frontend build files
 ```
 
 #### Frontend Structure (`excel-ai-frontend/`)
 ```
 src/
-├── App.jsx             # Main application component with state management
+├── App.jsx             # Main application with 12-tab navigation system
 ├── services/           # API service layer
-│   └── api.js          # Centralized API calls with progress tracking
-├── components/ui/      # Reusable UI components (Radix UI based)
+│   └── api.js          # Centralized API calls for all platform sections
+├── components/         # UI components
+│   ├── VisualizePage.jsx       # Complete visualization interface
+│   ├── DataPrepPage.jsx        # Data preparation and cleaning UI
+│   ├── EnrichPage.jsx          # AI text enrichment interface
+│   ├── ToolsPage.jsx           # Utility generators interface
+│   ├── AnalysisPage.jsx        # Advanced analysis dashboard
+│   ├── ConnectorsPage.jsx      # Data source management
+│   ├── FormulaWorkspace.jsx    # Formula intelligence interface
+│   ├── ChatInterface.jsx       # AI chat component
+│   ├── FormulaDisplay.jsx      # Formula display with validation
+│   ├── ColumnValidationAlert.jsx # Column validation feedback
+│   └── ui/                     # Reusable UI components (Radix UI based)
 ├── utils/              # Utility functions
 │   └── validation.js   # Input validation helpers
 └── hooks/              # Custom React hooks
@@ -42,12 +107,54 @@ src/
 
 ### API Patterns
 
-#### Endpoint Structure
+#### Comprehensive Endpoint Structure
 All API endpoints use versioned routes with `/api/v1/` prefix:
 
-**Excel Analysis:**
+**Visualization APIs:**
+- `GET /api/v1/visualize/types` - Available chart types with descriptions
+- `POST /api/v1/visualize/create` - Create new visualization with Plotly
+- `POST /api/v1/visualize/suggest` - AI-powered chart type suggestions
+- `GET /api/v1/visualize/list` - User's visualization library
+
+**Data Preparation APIs:**
+- `POST /api/v1/data-prep/analyze` - Data quality analysis
+- `POST /api/v1/data-prep/clean` - Apply cleaning operations
+- `POST /api/v1/data-prep/blend` - Data blending and merging
+- `POST /api/v1/data-prep/transform` - Data transformations
+
+**AI Enrichment APIs:**
+- `POST /api/v1/enrich/sentiment` - Sentiment analysis with emotions
+- `POST /api/v1/enrich/keywords` - Keyword extraction and ranking
+- `POST /api/v1/enrich/classify` - Text classification
+- `POST /api/v1/enrich/summarize` - Text summarization
+- `POST /api/v1/enrich/custom` - Custom AI enrichment prompts
+
+**Tools APIs:**
+- `POST /api/v1/tools/excel-formula` - Excel formula generation
+- `POST /api/v1/tools/sql-query` - SQL query generation
+- `POST /api/v1/tools/vba-script` - VBA script creation
+- `POST /api/v1/tools/text-to-excel` - Text conversion
+- `POST /api/v1/tools/regex-generator` - Regex pattern generation
+- `GET /api/v1/tools/list` - Available tools overview
+- `GET /api/v1/tools/history` - User tool generation history
+
+**Data Connectors APIs:**
+- `GET /api/v1/connectors/types` - Available connector types
+- `POST /api/v1/connectors/` - Create data connector
+- `GET /api/v1/connectors/` - List user connectors
+- `POST /api/v1/connectors/{id}/upload` - Upload data to connector
+- `POST /api/v1/connectors/{id}/sync` - Sync external data
+
+**Advanced Analysis APIs:**
+- `GET /api/v1/analysis/types` - Available analysis types
+- `POST /api/v1/analysis/` - Create and run analysis
+- `GET /api/v1/analysis/` - List user analyses
+- `GET /api/v1/analysis/{id}` - Get analysis results
+
+**Legacy Excel Analysis (maintained for compatibility):**
 - `POST /api/v1/excel/upload` - File upload with validation
 - `POST /api/v1/excel/analyze` - Data analysis with AI insights
+- `POST /api/v1/excel/query` - Natural language queries
 - `POST /api/v1/excel/query` - Natural language queries
 - `POST /api/v1/excel/formulas` - Formula suggestions
 
