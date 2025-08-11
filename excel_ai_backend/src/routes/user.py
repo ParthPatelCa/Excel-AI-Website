@@ -1,5 +1,27 @@
 from flask import Blueprint, jsonify, request
 from src.models.user import User, db
+from routes.auth import token_required
+
+user_bp = Blueprint('user', __name__)
+
+@user_bp.route('/users/me/model-preference', methods=['GET'])
+@token_required
+def get_model_preference(current_user):
+    return jsonify({'success': True, 'preferred_model': current_user.preferred_model})
+
+@user_bp.route('/users/me/model-preference', methods=['POST'])
+@token_required
+def set_model_preference(current_user):
+    data = request.json or {}
+    model = data.get('preferred_model')
+    allowed = ['speed', 'balanced', 'quality', 'preview']
+    if model not in allowed:
+        return jsonify({'success': False, 'error': 'Invalid model preference'}), 400
+    current_user.preferred_model = model
+    db.session.commit()
+    return jsonify({'success': True, 'preferred_model': current_user.preferred_model})
+from flask import Blueprint, jsonify, request
+from src.models.user import User, db
 
 user_bp = Blueprint('user', __name__)
 

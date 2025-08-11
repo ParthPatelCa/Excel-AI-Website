@@ -5,12 +5,16 @@ import { Button } from '@/components/ui/button.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { Textarea } from '@/components/ui/textarea.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx'
+import { ColumnValidationAlert } from '@/components/ColumnValidationAlert.jsx'
+import { FormulaDisplay } from '@/components/FormulaDisplay.jsx'
 import apiService from '@/services/api.js'
 import { Loader2, Beaker, Bug, Lightbulb, AlertCircle } from 'lucide-react'
 
 export function FormulaWorkspace({ columns = [] }) {
   const [activeTab, setActiveTab] = useState('generate')
   const [description, setDescription] = useState('')
+  const [platform, setPlatform] = useState('excel') // New state for platform
   const [generateResult, setGenerateResult] = useState(null)
   const [generateFallback, setGenerateFallback] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -31,7 +35,7 @@ export function FormulaWorkspace({ columns = [] }) {
     setGenerateResult(null)
     try {
       setQuotaError(null)
-      const res = await apiService.generateFormula(description, { columns })
+      const res = await apiService.generateFormula(description, { columns, platform })
       if (res.limit_reached) {
         setQuotaError('Query limit reached for your plan. Upgrade to continue.')
       } else if (res.success) {
@@ -53,7 +57,7 @@ export function FormulaWorkspace({ columns = [] }) {
     setExplainResult(null)
     try {
       setQuotaError(null)
-      const res = await apiService.explainFormula(explainFormulaInput, { columns })
+      const res = await apiService.explainFormula(explainFormulaInput, { columns, platform })
       if (res.limit_reached) {
         setQuotaError('Query limit reached for your plan. Upgrade to continue.')
       } else if (res.success) { setExplainResult(res.data); setExplainFallback(!!res.fallback_used) } else setExplainResult({ error: res.error })
@@ -68,11 +72,37 @@ export function FormulaWorkspace({ columns = [] }) {
     setDebugResult(null)
     try {
       setQuotaError(null)
-      const res = await apiService.debugFormula(debugFormulaInput, { error_message: debugError, columns })
+      const res = await apiService.debugFormula(debugFormulaInput, { error_message: debugError, columns, platform })
       if (res.limit_reached) {
         setQuotaError('Query limit reached for your plan. Upgrade to continue.')
       } else if (res.success) { setDebugResult(res.data); setDebugFallback(!!res.fallback_used) } else setDebugResult({ error: res.error })
     } catch (e) { setDebugResult({ error: e.message }) } finally { setIsLoading(false) }
+  }
+
+  const handleSuggestionApply = (invalidColumn, suggestedColumn) => {
+    // Apply suggestion to the current formula/description based on active tab
+    if (activeTab === 'generate' && generateResult?.primary_formula) {
+      const regex = new RegExp(`\\b${invalidColumn.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi')
+      const updatedFormula = generateResult.primary_formula.replace(regex, suggestedColumn)
+      
+      setGenerateResult(prev => ({
+        ...prev,
+        primary_formula: updatedFormula,
+        validation: {
+          ...prev.validation,
+          invalid_columns: prev.validation.invalid_columns.filter(col => col !== invalidColumn),
+          suggestions: Object.fromEntries(
+            Object.entries(prev.validation.suggestions || {}).filter(([key]) => key !== invalidColumn)
+          )
+        }
+      }))
+    } else if (activeTab === 'explain') {
+      const regex = new RegExp(`\\b${invalidColumn.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi')
+      setExplainFormulaInput(prev => prev.replace(regex, suggestedColumn))
+    } else if (activeTab === 'debug') {
+      const regex = new RegExp(`\\b${invalidColumn.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi')
+      setDebugFormulaInput(prev => prev.replace(regex, suggestedColumn))
+    }
   }
 
   return (
@@ -98,15 +128,42 @@ export function FormulaWorkspace({ columns = [] }) {
           </TabsList>
 
           <TabsContent value="generate" className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Describe what you need</label>
-              <Textarea
-                placeholder="e.g. Sum Revenue for rows where Region is 'West' and Date is in 2024"
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-                rows={3}
-              />
-              <div className="text-xs text-gray-500">Available columns: {columns.join(', ') || 'n/a'}</div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Target Platform</label>
+                  <Select value={platform} onValueChange={setPlatform}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select platform" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="excel">Microsoft Excel</SelectItem>
+                      <SelectItem value="google_sheets">Google Sheets</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Available Columns</label>
+                  <div className="text-xs text-gray-500 p-2 bg-gray-50 rounded border min-h-[40px] flex items-center">
+                    {columns.join(', ') || 'No columns available'}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Describe what you need</label>
+                <Textarea
+                  placeholder="e.g. Sum Revenue for rows where Region is 'West' and Date is in 2024"
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                  rows={3}
+                />
+                <div className="text-xs text-blue-600">
+                  💡 {platform === 'excel' 
+                    ? 'Excel: Will use modern functions like XLOOKUP, FILTER, LET when appropriate' 
+                    : 'Google Sheets: Will prefer ARRAYFORMULA, INDEX/MATCH, QUERY functions'}
+                </div>
+              </div>
             </div>
             <Button onClick={handleGenerate} disabled={isLoading}>{isLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin"/> : <Beaker className="h-4 w-4 mr-2"/>}Generate</Button>
             {generateResult && (
@@ -115,11 +172,21 @@ export function FormulaWorkspace({ columns = [] }) {
                   <div className="text-xs text-blue-700 bg-blue-50 border border-blue-200 p-2 rounded-md">Model fallback used for this response – performance model engaged.</div>
                 )}
                 {generateResult.error && <div className="text-sm text-red-600">{generateResult.error}</div>}
+                
+                {/* Enhanced Validation Alert */}
+                {generateResult.validation && (
+                  <ColumnValidationAlert 
+                    validation={generateResult.validation} 
+                    onSuggestionApply={handleSuggestionApply}
+                  />
+                )}
+                
+                {/* Enhanced Formula Display */}
                 {generateResult.primary_formula && (
-                  <div className="p-3 rounded-md bg-gray-100 font-mono text-sm flex items-start justify-between">
-                    <span className="break-all">{generateResult.primary_formula}</span>
-                    <Button size="sm" variant="ghost" onClick={() => navigator.clipboard.writeText(generateResult.primary_formula)}>Copy</Button>
-                  </div>
+                  <FormulaDisplay 
+                    formula={generateResult.primary_formula}
+                    validation={generateResult.validation}
+                  />
                 )}
                 {generateResult.explanation && (
                   <div>
@@ -140,8 +207,12 @@ export function FormulaWorkspace({ columns = [] }) {
                     <h4 className="font-semibold mb-1 text-sm">Variants</h4>
                     <div className="space-y-2">
                       {generateResult.variants.map((v,i) => (
-                        <div key={i} className="p-3 border rounded-md bg-white">
-                          <div className="font-mono text-xs bg-gray-50 p-2 rounded mb-2 break-all">{v.formula}</div>
+                        <div key={i} className="p-3 border rounded-md bg-white space-y-2">
+                          <FormulaDisplay 
+                            formula={v.formula}
+                            validation={generateResult.validation}
+                            className="mb-2"
+                          />
                           <div className="text-xs text-gray-700 mb-1">{v.description}</div>
                           {v.tradeoffs && <div className="text-[11px] text-gray-500">Tradeoffs: {v.tradeoffs}</div>}
                         </div>
@@ -165,6 +236,15 @@ export function FormulaWorkspace({ columns = [] }) {
                   <div className="text-xs text-blue-700 bg-blue-50 border border-blue-200 p-2 rounded-md">Model fallback used for this explanation.</div>
                 )}
                 {explainResult.error && <div className="text-sm text-red-600">{explainResult.error}</div>}
+                
+                {/* Enhanced Validation for Explain */}
+                {explainResult.validation && (
+                  <ColumnValidationAlert 
+                    validation={explainResult.validation} 
+                    onSuggestionApply={handleSuggestionApply}
+                  />
+                )}
+                
                 {explainResult.purpose && <div><h4 className="font-semibold text-sm mb-1">Purpose</h4><p className="text-sm text-gray-700">{explainResult.purpose}</p></div>}
                 {explainResult.steps && explainResult.steps.length>0 && (
                   <div>
@@ -213,6 +293,15 @@ export function FormulaWorkspace({ columns = [] }) {
                   <div className="text-xs text-blue-700 bg-blue-50 border border-blue-200 p-2 rounded-md">Model fallback used for this debug session.</div>
                 )}
                 {debugResult.error && <div className="text-sm text-red-600">{debugResult.error}</div>}
+                
+                {/* Enhanced Validation for Debug */}
+                {debugResult.validation && (
+                  <ColumnValidationAlert 
+                    validation={debugResult.validation} 
+                    onSuggestionApply={handleSuggestionApply}
+                  />
+                )}
+                
                 {debugResult.likely_issues && debugResult.likely_issues.length>0 && (
                   <div>
                     <h4 className="font-semibold text-sm mb-1">Likely Issues</h4>
@@ -234,7 +323,10 @@ export function FormulaWorkspace({ columns = [] }) {
                 {debugResult.optimized_formula && (
                   <div>
                     <h4 className="font-semibold text-sm mb-1">Optimized Formula</h4>
-                    <div className="font-mono text-xs bg-gray-50 p-2 rounded break-all">{debugResult.optimized_formula}</div>
+                    <FormulaDisplay 
+                      formula={debugResult.optimized_formula}
+                      validation={debugResult.validation}
+                    />
                   </div>
                 )}
                 {debugResult.notes && debugResult.notes.length>0 && (

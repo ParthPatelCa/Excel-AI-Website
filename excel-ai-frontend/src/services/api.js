@@ -1,3 +1,14 @@
+  // User model preference endpoints
+  async getModelPreference() {
+    return this.makeRequest('/users/me/model-preference', { method: 'GET' })
+  }
+
+  async setModelPreference(preferred_model) {
+    return this.makeRequest('/users/me/model-preference', {
+      method: 'POST',
+      body: JSON.stringify({ preferred_model })
+    })
+  }
 // API Base URL - adjust this based on your environment
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api';
 
@@ -253,6 +264,228 @@ class ApiService {
       method: 'POST',
       body: JSON.stringify(userData),
     });
+  }
+
+  // ============ CONNECTORS API ============
+  
+  async getConnectorTypes() {
+    return this.makeRequest('/v1/connectors/types', { method: 'GET' })
+  }
+
+  async listConnectors(params = {}) {
+    const queryString = new URLSearchParams(params).toString()
+    const endpoint = queryString ? `/v1/connectors?${queryString}` : '/v1/connectors'
+    return this.makeRequest(endpoint, { method: 'GET' })
+  }
+
+  async createConnector(connectorData) {
+    return this.makeRequest('/v1/connectors', {
+      method: 'POST',
+      body: JSON.stringify(connectorData)
+    })
+  }
+
+  async getConnector(connectorId) {
+    return this.makeRequest(`/v1/connectors/${connectorId}`, { method: 'GET' })
+  }
+
+  async updateConnector(connectorId, updateData) {
+    return this.makeRequest(`/v1/connectors/${connectorId}`, {
+      method: 'PUT',
+      body: JSON.stringify(updateData)
+    })
+  }
+
+  async deleteConnector(connectorId) {
+    return this.makeRequest(`/v1/connectors/${connectorId}`, { method: 'DELETE' })
+  }
+
+  async uploadConnectorData(connectorId, file) {
+    const formData = new FormData()
+    formData.append('file', file)
+    
+    return this.makeRequest(`/v1/connectors/${connectorId}/upload`, {
+      method: 'POST',
+      body: formData
+    })
+  }
+
+  async syncConnector(connectorId) {
+    return this.makeRequest(`/v1/connectors/${connectorId}/sync`, { method: 'POST' })
+  }
+
+  // ============ ANALYSIS API ============
+  
+  async getAnalysisTypes() {
+    return this.makeRequest('/v1/analysis/types', { method: 'GET' })
+  }
+
+  async listAnalyses(params = {}) {
+    const queryString = new URLSearchParams(params).toString()
+    const endpoint = queryString ? `/v1/analysis?${queryString}` : '/v1/analysis'
+    return this.makeRequest(endpoint, { method: 'GET' })
+  }
+
+  async createAnalysis(analysisData) {
+    return this.makeRequest('/v1/analysis', {
+      method: 'POST',
+      body: JSON.stringify(analysisData)
+    })
+  }
+
+  async getAnalysis(analysisId) {
+    return this.makeRequest(`/v1/analysis/${analysisId}`, { method: 'GET' })
+  }
+
+  async deleteAnalysis(analysisId) {
+    return this.makeRequest(`/v1/analysis/${analysisId}`, { method: 'DELETE' })
+  }
+
+  // ============ VISUALIZATION API ============
+  
+  async getChartTypes() {
+    return this.makeRequest('/v1/visualize/types', { method: 'GET' })
+  }
+
+  async createVisualization(vizData) {
+    return this.makeRequest('/v1/visualize/create', {
+      method: 'POST',
+      body: JSON.stringify(vizData)
+    })
+  }
+
+  async suggestChartType(data) {
+    return this.makeRequest('/v1/visualize/suggest', {
+      method: 'POST',
+      body: JSON.stringify({ data })
+    })
+  }
+
+  async getVisualizations(params = {}) {
+    const queryString = new URLSearchParams(params).toString()
+    const endpoint = queryString ? `/v1/visualize/list?${queryString}` : '/v1/visualize/list'
+    return this.makeRequest(endpoint, { method: 'GET' })
+  }
+
+  // ============ DATA PREP API ============
+  
+  async analyzeDataQuality(data) {
+    return this.makeRequest('/v1/data-prep/analyze', {
+      method: 'POST',
+      body: JSON.stringify({ data })
+    })
+  }
+
+  async cleanData(cleaningData) {
+    return this.makeRequest('/v1/data-prep/clean', {
+      method: 'POST',
+      body: JSON.stringify(cleaningData)
+    })
+  }
+
+  async blendData(blendData) {
+    return this.makeRequest('/v1/data-prep/blend', {
+      method: 'POST',
+      body: JSON.stringify(blendData)
+    })
+  }
+
+  async transformData(transformData) {
+    return this.makeRequest('/v1/data-prep/transform', {
+      method: 'POST',
+      body: JSON.stringify(transformData)
+    })
+  }
+
+  // ============ ENRICHMENT API ============
+  
+  async analyzeSentiment(data) {
+    return this.makeRequest('/v1/enrich/sentiment', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async extractKeywords(data) {
+    return this.makeRequest('/v1/enrich/keywords', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async classifyText(data) {
+    return this.makeRequest('/v1/enrich/classify', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async summarizeText(data) {
+    return this.makeRequest('/v1/enrich/summarize', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async customEnrichment(data) {
+    return this.makeRequest('/v1/enrich/custom', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  // ============ TOOLS API ============
+  
+  async getTools() {
+    return this.makeRequest('/v1/tools/list', { method: 'GET' })
+  }
+
+  async generateExcelFormula(data) {
+    return this.makeRequest('/v1/tools/excel-formula', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async generateSQLQuery(data) {
+    return this.makeRequest('/v1/tools/sql-query', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async generateVBAScript(data) {
+    return this.makeRequest('/v1/tools/vba-script', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async convertPDFToExcel(data) {
+    return this.makeRequest('/v1/tools/pdf-to-excel', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async convertTextToExcel(data) {
+    return this.makeRequest('/v1/tools/text-to-excel', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async generateRegex(data) {
+    return this.makeRequest('/v1/tools/regex-generator', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
+  async getToolHistory(params = {}) {
+    const queryString = new URLSearchParams(params).toString()
+    const endpoint = queryString ? `/v1/tools/history?${queryString}` : '/v1/tools/history'
+    return this.makeRequest(endpoint, { method: 'GET' })
   }
 }
 

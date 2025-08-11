@@ -94,25 +94,92 @@ def parse_json_safely(raw: str, fallback_key: str):
     return {fallback_key: raw.strip()[:4000]}
 
 def _validate_columns(referenced: list[str], available: list[str]):
+    """Enhanced column validation with detailed feedback"""
     invalid = []
+    suggestions = {}
     norm_available = {c.lower(): c for c in available}
+    
     for r in referenced:
         key = r.lower()
         if key not in norm_available:
             invalid.append(r)
-    return invalid
+            # Find closest match for suggestions
+            best_match = None
+            min_distance = float('inf')
+            for avail in available:
+                # Simple similarity check
+                distance = abs(len(r) - len(avail)) + sum(c1 != c2 for c1, c2 in zip(r.lower(), avail.lower()))
+                if distance < min_distance and distance <= 3:  # Max 3 character differences
+                    min_distance = distance
+                    best_match = avail
+            if best_match:
+                suggestions[r] = best_match
+    
+    return invalid, suggestions
 
 def _detect_referenced_columns(text: str):
-    # Simple heuristic: tokens with letters, numbers, underscores that appear capitalized or match provided columns could be columns.
+    """Enhanced column detection with better heuristics"""
     import re
-    candidates = re.findall(r'[A-Za-z_][A-Za-z0-9_ ]{0,40}', text or '')
-    cleaned = [c.strip() for c in candidates if len(c.strip()) > 1][:50]
-    return list(dict.fromkeys(cleaned))
+    
+    # Pattern 1: Excel-style cell references (A1, B2, etc.) - convert to likely column names
+    cell_refs = re.findall(r'\b[A-Z]+[0-9]+\b', text or '')
+    column_letters = [re.sub(r'[0-9]+', '', ref) for ref in cell_refs]
+    
+    # Pattern 2: Named ranges and column references in formulas
+    formula_refs = re.findall(r'[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)?', text or '')
+    
+    # Pattern 3: Quoted column names
+    quoted_refs = re.findall(r'["\']([^"\']+)["\']', text or '')
+    
+    # Pattern 4: Bracketed column names (Excel table style)
+    bracketed_refs = re.findall(r'\[([^\]]+)\]', text or '')
+    
+    # Combine all candidates
+    all_candidates = column_letters + formula_refs + quoted_refs + bracketed_refs
+    
+    # Filter and clean
+    cleaned = []
+    for candidate in all_candidates:
+        candidate = candidate.strip()
+        # Skip common Excel functions and operators
+        if (len(candidate) > 1 and 
+            not candidate.upper() in ['SUM', 'SUMIF', 'SUMIFS', 'VLOOKUP', 'XLOOKUP', 'INDEX', 'MATCH', 'IF', 'AND', 'OR', 'NOT', 'TRUE', 'FALSE'] and
+            not candidate.isdigit() and
+            not re.match(r'^[A-Z]+$', candidate)):  # Skip pure letter sequences like column letters
+            cleaned.append(candidate)
+    
+    # Remove duplicates while preserving order
+    return list(dict.fromkeys(cleaned)[:50])
 
 def _platform_guidance(platform: str):
+    """Enhanced platform-specific guidance with detailed function recommendations"""
     if platform == 'google_sheets':
-        return "When generating formulas prefer ARRAYFORMULA where appropriate, use functions available in Google Sheets, and avoid Excel-only functions like XLOOKUP unless advising alternatives (e.g., INDEX/MATCH)."
-    return "Use modern Excel dynamic array functions (e.g., FILTER, XLOOKUP, LET) when beneficial."
+        return """
+When generating formulas for Google Sheets:
+- Prefer ARRAYFORMULA for operations across ranges: ARRAYFORMULA(A2:A*B2:B)
+- Use INDEX/MATCH instead of VLOOKUP for better performance: INDEX(C:C,MATCH(lookup_value,A:A,0))
+- Leverage QUERY function for complex data filtering: QUERY(A:C,"SELECT A,B WHERE C > 1000")
+- Use FILTER for dynamic arrays: FILTER(A:A,B:B>criteria)
+- Prefer IMPORTRANGE for cross-sheet references
+- Use UNIQUE, SORT functions available in Sheets
+- Avoid Excel-only functions like XLOOKUP, LET, LAMBDA
+- For dates, use DATE functions compatible with Sheets format
+- Remember Sheets uses different regex patterns in functions like REGEXMATCH
+"""
+    elif platform == 'excel':
+        return """
+When generating formulas for Excel:
+- Utilize modern dynamic array functions: FILTER, SORT, UNIQUE, XLOOKUP
+- Use XLOOKUP instead of VLOOKUP for better flexibility: XLOOKUP(lookup_value,lookup_array,return_array)
+- Leverage LET function for complex calculations: LET(name1,value1,name2,value2,calculation)
+- Use LAMBDA for custom functions: LAMBDA(parameter,calculation)
+- Prefer structured table references: Table1[Column1]
+- Use SPILL functions like SEQUENCE, RANDARRAY when appropriate
+- Leverage MAP, BYROW, BYCOL for array processing
+- Use TEXTJOIN for concatenation: TEXTJOIN(delimiter,ignore_empty,range)
+- Prefer SWITCH over nested IFs: SWITCH(expression,value1,result1,value2,result2,default)
+"""
+    return "Generate formulas compatible with both Excel and Google Sheets when possible, avoiding platform-specific functions."
 
 @formula_bp.route('/generate', methods=['POST'])
 @token_required
@@ -173,14 +240,34 @@ IMPORTANT: Only reference available columns exactly as provided. If user descrip
 
     parsed = parse_json_safely(result['content'], 'raw')
     parsed_columns = _detect_referenced_columns(parsed.get('primary_formula','') or '')
-    invalid_cols = _validate_columns(parsed_columns, columns) if columns else []
+    
+    # Enhanced column validation
+    validation_info = {'invalid_columns': [], 'suggestions': {}, 'warnings': []}
+    if columns:
+        invalid_cols, suggestions = _validate_columns(parsed_columns, columns)
+        validation_info['invalid_columns'] = invalid_cols
+        validation_info['suggestions'] = suggestions
+        
+        if invalid_cols:
+            # Create detailed warning messages
+            warnings = []
+            for col in invalid_cols:
+                if col in suggestions:
+                    warnings.append(f"Column '{col}' not found. Did you mean '{suggestions[col]}'?")
+                else:
+                    warnings.append(f"Column '{col}' not found in available columns.")
+            
+            validation_info['warnings'] = warnings
+            
+            # Add to tips with enhanced guidance
+            tips_list = parsed.get('tips', [])
+            tips_list.append(f"⚠️ Column Validation Issues: {len(invalid_cols)} referenced column(s) not found in your dataset.")
+            for warning in warnings:
+                tips_list.append(f"  • {warning}")
+            tips_list.append("💡 Please verify column names match your data exactly (case-sensitive).")
+            parsed['tips'] = tips_list
 
-    if invalid_cols:
-        # annotate tips
-        tips_list = parsed.get('tips', [])
-        tips_list.append(f"Warning: Model referenced columns not in dataset: {invalid_cols}. Please adjust manually.")
-        parsed['tips'] = tips_list
-
+    # Add validation info to response for frontend highlighting
     response_payload = {
         'success': True,
         'data': {
@@ -188,7 +275,8 @@ IMPORTANT: Only reference available columns exactly as provided. If user descrip
             'variants': parsed.get('variants', []),
             'explanation': parsed.get('explanation'),
             'tips': parsed.get('tips', []),
-            'raw': parsed if 'primary_formula' not in parsed else None
+            'raw': parsed if 'primary_formula' not in parsed else None,
+            'validation': validation_info  # New field for frontend processing
         },
         'model_used': result.get('model_used'),
         'fallback_used': fallback_used
@@ -259,12 +347,30 @@ simplified_alternative (string) - if shorter equivalent exists, else null
     if tried and tried[0] != result['model_used']:
         fallback_used = True
 
+    # Enhanced validation for explain endpoint
+    parsed_columns = _detect_referenced_columns(formula)
+    validation_info = {'invalid_columns': [], 'suggestions': {}, 'warnings': []}
+    if context_cols:
+        invalid_cols, suggestions = _validate_columns(parsed_columns, context_cols)
+        validation_info['invalid_columns'] = invalid_cols
+        validation_info['suggestions'] = suggestions
+        
+        if invalid_cols:
+            warnings = []
+            for col in invalid_cols:
+                if col in suggestions:
+                    warnings.append(f"Referenced column '{col}' not found. Did you mean '{suggestions[col]}'?")
+                else:
+                    warnings.append(f"Referenced column '{col}' not available in your dataset.")
+            validation_info['warnings'] = warnings
+
     data = {
         'steps': parsed.get('steps', []),
         'purpose': parsed.get('purpose'),
         'optimization_suggestions': parsed.get('optimization_suggestions', []),
         'edge_cases': parsed.get('edge_cases', []),
-        'simplified_alternative': parsed.get('simplified_alternative')
+        'simplified_alternative': parsed.get('simplified_alternative'),
+        'validation': validation_info  # Add validation info
     }
     interaction = FormulaInteraction(
         user_id=current_user.id,
@@ -332,12 +438,30 @@ notes (array) - any additional helpful notes
     if tried and tried[0] != result['model_used']:
         fallback_used = True
 
+    # Enhanced validation for debug endpoint
+    parsed_columns = _detect_referenced_columns(formula)
+    validation_info = {'invalid_columns': [], 'suggestions': {}, 'warnings': []}
+    if sample_context:
+        invalid_cols, suggestions = _validate_columns(parsed_columns, sample_context)
+        validation_info['invalid_columns'] = invalid_cols
+        validation_info['suggestions'] = suggestions
+        
+        if invalid_cols:
+            warnings = []
+            for col in invalid_cols:
+                if col in suggestions:
+                    warnings.append(f"Referenced column '{col}' not found. Did you mean '{suggestions[col]}'?")
+                else:
+                    warnings.append(f"Referenced column '{col}' not available in your dataset.")
+            validation_info['warnings'] = warnings
+
     data = {
         'likely_issues': parsed.get('likely_issues', []),
         'fixes': parsed.get('fixes', []),
         'diagnostic_steps': parsed.get('diagnostic_steps', []),
         'optimized_formula': parsed.get('optimized_formula'),
-        'notes': parsed.get('notes', [])
+        'notes': parsed.get('notes', []),
+        'validation': validation_info  # Add validation info
     }
     interaction = FormulaInteraction(
         user_id=current_user.id,

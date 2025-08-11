@@ -29,9 +29,14 @@ class User(db.Model):
     monthly_uploads = db.Column(db.Integer, default=0)
     last_reset_date = db.Column(db.DateTime, default=datetime.utcnow)
     
+    # Model preference
+    preferred_model = db.Column(db.String(50), default='balanced')  # speed|balanced|quality|preview
+    
     # Relationships
     analyses = db.relationship('Analysis', backref='user', lazy=True, cascade='all, delete-orphan')
     chat_conversations = db.relationship('ChatConversation', backref='user', lazy=True, cascade='all, delete-orphan')
+    data_connectors = db.relationship('DataConnector', backref='user', lazy=True, cascade='all, delete-orphan')
+    data_analyses = db.relationship('DataAnalysis', backref='user', lazy=True, cascade='all, delete-orphan')
 
     def __init__(self, email, password, first_name, last_name):
         self.email = email.lower().strip()
@@ -116,7 +121,8 @@ class User(db.Model):
                 'monthly_uploads': self.monthly_uploads,
                 'can_upload': self.can_upload(),
                 'can_query': self.can_query()
-            }
+            },
+            'preferred_model': self.preferred_model
         }
 
 

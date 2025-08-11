@@ -1,5 +1,5 @@
 import { useState, useEffect, Suspense } from 'react'
-import { Upload, BarChart3, MessageSquare, Download, FileSpreadsheet, Zap, TrendingUp, Brain, Link, CheckCircle, AlertCircle, History, Settings } from 'lucide-react'
+import { Upload, BarChart3, MessageSquare, Download, FileSpreadsheet, Zap, TrendingUp, Brain, Link, CheckCircle, AlertCircle, History, Settings, Target, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
@@ -15,6 +15,12 @@ import { FormulaWorkspace } from '@/components/FormulaWorkspace.jsx'
 import { FormulaHistory } from '@/components/FormulaHistory.jsx'
 import { ChatHistory } from '@/components/ChatHistory.jsx'
 import { ExportReports } from '@/components/ExportReports.jsx'
+import { ConnectorsPage } from '@/components/ConnectorsPage.jsx'
+import { AnalysisPage } from '@/components/AnalysisPage.jsx'
+import { VisualizePage } from '@/components/VisualizePage.jsx'
+import { DataPrepPage } from '@/components/DataPrepPage.jsx'
+import { EnrichPage } from '@/components/EnrichPage.jsx'
+import { ToolsPage } from '@/components/ToolsPage.jsx'
 import { AuthForm } from '@/components/AuthForm.jsx'
 import { UserDashboard } from '@/components/UserDashboard.jsx'
 import { DataCleaning } from '@/components/DataCleaning.jsx'
@@ -431,13 +437,87 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h3 className="text-3xl font-bold text-gray-900 mb-4">
-              Powerful AI Features for Your Data
+              Connect, Analyze, and Discover Insights
             </h3>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Our advanced AI engine provides comprehensive analysis and actionable insights
+              Our comprehensive platform supports multiple data sources and advanced analysis types
             </p>
           </div>
 
+          {/* Two-section layout: Connect & Analyze */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+            {/* Connectors Section */}
+            <div className="space-y-6">
+              <div className="text-center">
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-xl w-fit mx-auto mb-4">
+                  <Link className="h-8 w-8 text-white" />
+                </div>
+                <h4 className="text-2xl font-bold text-gray-900 mb-3">Connect</h4>
+                <p className="text-gray-600 mb-6">Connect your data in a few clicks to generate insights in seconds.</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <Card className="hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-md border-white/20">
+                  <CardContent className="p-4 text-center">
+                    <FileSpreadsheet className="h-6 w-6 mx-auto mb-2 text-blue-600" />
+                    <div className="font-medium text-sm">Excel</div>
+                  </CardContent>
+                </Card>
+                <Card className="hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-md border-white/20">
+                  <CardContent className="p-4 text-center">
+                    <BarChart3 className="h-6 w-6 mx-auto mb-2 text-green-600" />
+                    <div className="font-medium text-sm">Google Analytics</div>
+                  </CardContent>
+                </Card>
+                <Card className="hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-md border-white/20">
+                  <CardContent className="p-4 text-center">
+                    <Search className="h-6 w-6 mx-auto mb-2 text-orange-600" />
+                    <div className="font-medium text-sm">Search Console</div>
+                  </CardContent>
+                </Card>
+                <Card className="hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-md border-white/20">
+                  <CardContent className="p-4 text-center">
+                    <TrendingUp className="h-6 w-6 mx-auto mb-2 text-purple-600" />
+                    <div className="font-medium text-sm">Google Trends</div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            {/* Analysis Section */}
+            <div className="space-y-6">
+              <div className="text-center">
+                <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-3 rounded-xl w-fit mx-auto mb-4">
+                  <Brain className="h-8 w-8 text-white" />
+                </div>
+                <h4 className="text-2xl font-bold text-gray-900 mb-3">Analyze</h4>
+                <p className="text-gray-600 mb-6">Discover actionable insights with advanced analysis types and AI-powered recommendations.</p>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3 p-3 bg-white/50 rounded-lg">
+                  <Search className="h-5 w-5 text-blue-600" />
+                  <span className="font-medium">Root cause analysis</span>
+                </div>
+                <div className="flex items-center space-x-3 p-3 bg-white/50 rounded-lg">
+                  <BarChart3 className="h-5 w-5 text-green-600" />
+                  <span className="font-medium">Statistical analysis</span>
+                </div>
+                <div className="flex items-center space-x-3 p-3 bg-white/50 rounded-lg">
+                  <Target className="h-5 w-5 text-orange-600" />
+                  <span className="font-medium">Gap analysis</span>
+                </div>
+                <div className="flex items-center space-x-3 p-3 bg-white/50 rounded-lg">
+                  <TrendingUp className="h-5 w-5 text-purple-600" />
+                  <span className="font-medium">Correlation analysis</span>
+                </div>
+                <div className="flex items-center space-x-3 p-3 bg-white/50 rounded-lg">
+                  <Brain className="h-5 w-5 text-pink-600" />
+                  <span className="font-medium">Machine learning & more</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Legacy Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <Card className="hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-md border-white/20">
               <CardHeader>
@@ -565,9 +645,14 @@ function App() {
           <div className="space-y-8">
             {/* Enhanced Analysis Interface with Tabs */}
             <Tabs value={currentActiveTab} onValueChange={setCurrentActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-4 lg:grid-cols-12 bg-gray-100">
+              <TabsList className="grid w-full grid-cols-12 bg-gray-100">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="visualize">Visualize</TabsTrigger>
+                <TabsTrigger value="dataprep">Data Prep</TabsTrigger>
+                <TabsTrigger value="enrich">Enrich</TabsTrigger>
+                <TabsTrigger value="tools">Tools</TabsTrigger>
+                <TabsTrigger value="connectors">Connect</TabsTrigger>
+                <TabsTrigger value="analyze">Analyze</TabsTrigger>
                 <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
                 <TabsTrigger value="data-cleaning">Clean Data</TabsTrigger>
                 <TabsTrigger value="chart-builder">Charts</TabsTrigger>
@@ -578,7 +663,32 @@ function App() {
                 <TabsTrigger value="export">Export</TabsTrigger>
                 <TabsTrigger value="ui-test">UI Test</TabsTrigger>
                 <TabsTrigger value="performance">Performance</TabsTrigger>
+                <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
               </TabsList>
+
+              <TabsContent value="visualize" className="space-y-6">
+                <VisualizePage />
+              </TabsContent>
+
+              <TabsContent value="dataprep" className="space-y-6">
+                <DataPrepPage />
+              </TabsContent>
+
+              <TabsContent value="enrich" className="space-y-6">
+                <EnrichPage />
+              </TabsContent>
+
+              <TabsContent value="tools" className="space-y-6">
+                <ToolsPage />
+              </TabsContent>
+
+              <TabsContent value="connectors" className="space-y-6">
+                <ConnectorsPage />
+              </TabsContent>
+
+              <TabsContent value="analyze" className="space-y-6">
+                <AnalysisPage />
+              </TabsContent>
 
               <TabsContent value="overview" className="space-y-6">
                 {/* Data Overview */}
@@ -783,6 +893,138 @@ function App() {
                 {/* Performance Monitor */}
                 <div id="performance-section">
                   <PerformanceMonitor />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="dashboard" className="space-y-6">
+                {/* Dashboard Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <BarChart className="h-5 w-5" />
+                        Quick Stats
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span>Total Rows:</span>
+                          <span className="font-semibold">{analysisResults?.basicStats?.totalRows || 0}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Total Columns:</span>
+                          <span className="font-semibold">{analysisResults?.basicStats?.totalColumns || 0}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Missing Values:</span>
+                          <span className="font-semibold">{analysisResults?.basicStats?.missingValues || 0}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <TrendingUp className="h-5 w-5" />
+                        Analysis Summary
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span>Insights Found:</span>
+                          <span className="font-semibold">{analysisResults?.insights?.length || 0}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Recommendations:</span>
+                          <span className="font-semibold">{analysisResults?.recommendations?.length || 0}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Data Quality:</span>
+                          <span className="font-semibold text-green-600">Good</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Activity className="h-5 w-5" />
+                        Recent Activity
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span>File uploaded: {uploadedFile?.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span>Analysis completed</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                          <span>Charts generated</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Main Dashboard Content */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Data Overview</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {analysisResults?.tableData ? (
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="border-b">
+                                {Object.keys(analysisResults.tableData[0] || {}).slice(0, 4).map((header, idx) => (
+                                  <th key={idx} className="text-left p-2">{header}</th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {analysisResults.tableData.slice(0, 5).map((row, idx) => (
+                                <tr key={idx} className="border-b">
+                                  {Object.values(row).slice(0, 4).map((cell, cellIdx) => (
+                                    <td key={cellIdx} className="p-2">{String(cell).slice(0, 20)}...</td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <p className="text-gray-500">No data available</p>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Key Insights</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {analysisResults?.insights?.slice(0, 3).map((insight, idx) => (
+                          <div key={idx} className="p-3 bg-blue-50 rounded-lg">
+                            <p className="text-sm">{insight}</p>
+                          </div>
+                        )) || (
+                          <p className="text-gray-500">No insights available yet</p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </TabsContent>
             </Tabs>

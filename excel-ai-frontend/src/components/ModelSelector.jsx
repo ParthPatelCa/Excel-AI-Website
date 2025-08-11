@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
@@ -6,9 +6,31 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group.jsx'
 import { Label } from '@/components/ui/label.jsx'
 import { Separator } from '@/components/ui/separator.jsx'
 import { Zap, Clock, Star, Sparkles, AlertTriangle } from 'lucide-react'
+import apiService from '@/services/api.js'
 
 export const ModelSelector = ({ value = 'balanced', onChange, disabled = false }) => {
   const [selectedModel, setSelectedModel] = useState(value)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    async function fetchPreference() {
+      setLoading(true)
+      setError(null)
+      try {
+        const resp = await apiService.getModelPreference()
+        if (resp.success && resp.preferred_model) {
+          setSelectedModel(resp.preferred_model)
+        }
+      } catch (e) {
+        setError('Failed to load model preference')
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchPreference()
+  }, [])
 
   const modelOptions = [
     {
@@ -68,6 +90,22 @@ export const ModelSelector = ({ value = 'balanced', onChange, disabled = false }
     onChange?.(modelId)
   }
 
+  const handleSave = async () => {
+    setSaving(true)
+    setError(null)
+    try {
+      const resp = await apiService.setModelPreference(selectedModel)
+      if (!resp.success) throw new Error(resp.error || 'Failed to save')
+    } catch (e) {
+      setError('Failed to save model preference')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) {
+    return <div className="text-gray-500 p-4">Loading model preferences...</div>
+  }
   return (
     <Card>
       <CardHeader>
@@ -181,14 +219,16 @@ export const ModelSelector = ({ value = 'balanced', onChange, disabled = false }
         {!disabled && (
           <div className="pt-4 border-t">
             <Button
-              onClick={() => handleModelChange(selectedModel)}
+              onClick={handleSave}
               className="w-full"
+              disabled={saving}
             >
-              Apply Model Preference
+              {saving ? 'Saving...' : 'Apply Model Preference'}
             </Button>
             <p className="text-xs text-gray-500 mt-2 text-center">
               Your selection will be used for all future AI interactions
             </p>
+            {error && <div className="text-red-600 text-sm mt-2">{error}</div>}
           </div>
         )}
 
