@@ -12,21 +12,21 @@ from flask import Flask, send_from_directory, jsonify
 from flask_cors import CORS
 from src.models.user import db as old_db
 from src.models.auth import db, User, Analysis, ChatConversation, FormulaInteraction, ChatMessage, TelemetryMetric
-from src.models.connectors import DataConnector, ConnectorDataset, DataAnalysis
+# from src.models.connectors import DataConnector, ConnectorDataset, DataAnalysis
 from src.routes.user import user_bp
 from src.routes.auth import auth_bp
 from src.routes.excel_analysis import excel_bp
 from src.routes.formula import formula_bp
 from src.routes.google_sheets import google_sheets_bp
 from src.routes.telemetry import telemetry_bp
-from src.routes.chat import chat_bp
-from src.routes.features import features_bp
-from src.routes.connectors import connectors_bp
-from src.routes.analysis import analysis_bp
-from src.routes.visualize import visualize_bp
-from src.routes.data_prep import data_prep_bp
-from src.routes.enrich import enrich_bp
-from src.routes.tools import tools_bp
+# from src.routes.chat import chat_bp
+# from src.routes.features import features_bp
+# from src.routes.connectors import connectors_bp
+# from src.routes.analysis import analysis_bp
+# from src.routes.visualize import visualize_bp
+# from src.routes.data_prep import data_prep_bp
+# from src.routes.enrich import enrich_bp
+# from src.routes.tools import tools_bp
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'fallback-secret-key')
@@ -42,26 +42,26 @@ app.register_blueprint(excel_bp, url_prefix='/api/v1/excel', name='excel_v1')
 app.register_blueprint(formula_bp, url_prefix='/api/v1/formula', name='formula_v1')
 app.register_blueprint(google_sheets_bp, url_prefix='/api/v1/google-sheets', name='google_sheets_v1')
 app.register_blueprint(telemetry_bp, url_prefix='/api/v1/telemetry', name='telemetry_v1')
-app.register_blueprint(chat_bp, url_prefix='/api/v1/chat', name='chat_v1')
-app.register_blueprint(features_bp, url_prefix='/api/v1/features', name='features_v1')
-app.register_blueprint(connectors_bp, url_prefix='/api/v1/connectors', name='connectors_v1')
-app.register_blueprint(analysis_bp, url_prefix='/api/v1/analysis', name='analysis_v1')
-app.register_blueprint(visualize_bp, url_prefix='/api/v1/visualize', name='visualize_v1')
-app.register_blueprint(data_prep_bp, url_prefix='/api/v1/data-prep', name='data_prep_v1')
-app.register_blueprint(enrich_bp, url_prefix='/api/v1/enrich', name='enrich_v1')
-app.register_blueprint(tools_bp, url_prefix='/api/v1/tools', name='tools_v1')
+# app.register_blueprint(chat_bp, url_prefix='/api/v1/chat', name='chat_v1')
+# app.register_blueprint(features_bp, url_prefix='/api/v1/features', name='features_v1')
+# app.register_blueprint(connectors_bp, url_prefix='/api/v1/connectors', name='connectors_v1')
+# app.register_blueprint(analysis_bp, url_prefix='/api/v1/analysis', name='analysis_v1')
+# app.register_blueprint(visualize_bp, url_prefix='/api/v1/visualize', name='visualize_v1')
+# app.register_blueprint(data_prep_bp, url_prefix='/api/v1/data-prep', name='data_prep_v1')
+# app.register_blueprint(enrich_bp, url_prefix='/api/v1/enrich', name='enrich_v1')
+# app.register_blueprint(tools_bp, url_prefix='/api/v1/tools', name='tools_v1')
 
 # Legacy support - redirect old API calls to v1
 app.register_blueprint(user_bp, url_prefix='/api', name='user_legacy')
 app.register_blueprint(excel_bp, url_prefix='/api/excel', name='excel_legacy')
 app.register_blueprint(formula_bp, url_prefix='/api/formula', name='formula_legacy')
 app.register_blueprint(google_sheets_bp, url_prefix='/api/google-sheets', name='google_sheets_legacy')
-app.register_blueprint(connectors_bp, url_prefix='/api/connectors', name='connectors_legacy')
-app.register_blueprint(analysis_bp, url_prefix='/api/analysis', name='analysis_legacy')
-app.register_blueprint(visualize_bp, url_prefix='/api/visualize', name='visualize_legacy')
-app.register_blueprint(data_prep_bp, url_prefix='/api/data-prep', name='data_prep_legacy')
-app.register_blueprint(enrich_bp, url_prefix='/api/enrich', name='enrich_legacy')
-app.register_blueprint(tools_bp, url_prefix='/api/tools', name='tools_legacy')
+# app.register_blueprint(connectors_bp, url_prefix='/api/connectors', name='connectors_legacy')
+# app.register_blueprint(analysis_bp, url_prefix='/api/analysis', name='analysis_legacy')
+# app.register_blueprint(visualize_bp, url_prefix='/api/visualize', name='visualize_legacy')
+# app.register_blueprint(data_prep_bp, url_prefix='/api/data-prep', name='data_prep_legacy')
+# app.register_blueprint(enrich_bp, url_prefix='/api/enrich', name='enrich_legacy')
+# app.register_blueprint(tools_bp, url_prefix='/api/tools', name='tools_legacy')
 
 # uncomment if you need to use database
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
