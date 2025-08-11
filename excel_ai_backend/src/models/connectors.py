@@ -4,7 +4,7 @@ Manages external data source connections and data ingestion
 """
 
 from datetime import datetime
-from .auth import db
+from . import db
 
 class DataConnector(db.Model):
     """Base model for external data connections"""
