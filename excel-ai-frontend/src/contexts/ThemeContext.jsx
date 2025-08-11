@@ -2,36 +2,74 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 const ThemeContext = createContext()
 
+import { createContext, useContext, useEffect, useState } from 'react'
+
+const ThemeContext = createContext()
+
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
-    // Check for saved theme preference or default to light
-    const saved = localStorage.getItem('theme')
-    return saved || 'light'
+    // Check for saved theme preference or default to system
+    const saved = localStorage.getItem('datasense-ui-theme')
+    return saved || 'system'
   })
 
   useEffect(() => {
-    // Apply theme to document
     const root = document.documentElement
     
-    if (theme === 'dark') {
-      root.classList.add('dark')
+    // Remove existing theme classes
+    root.classList.remove('light', 'dark')
+    
+    if (theme === 'system') {
+      // Use system preference
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      root.classList.add(systemTheme)
     } else {
-      root.classList.remove('dark')
+      // Use explicit theme
+      root.classList.add(theme)
     }
     
     // Save preference
-    localStorage.setItem('theme', theme)
+    localStorage.setItem('datasense-ui-theme', theme)
+  }, [theme])
+
+  // Listen for system theme changes
+  useEffect(() => {
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+      
+      const handleChange = () => {
+        const root = document.documentElement
+        root.classList.remove('light', 'dark')
+        root.classList.add(mediaQuery.matches ? 'dark' : 'light')
+      }
+      
+      mediaQuery.addEventListener('change', handleChange)
+      return () => mediaQuery.removeEventListener('change', handleChange)
+    }
   }, [theme])
 
   const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light')
+    setTheme(prev => {
+      if (prev === 'light') return 'dark'
+      if (prev === 'dark') return 'system'
+      return 'light'
+    })
+  }
+
+  const getCurrentTheme = () => {
+    if (theme === 'system') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+    return theme
   }
 
   const value = {
     theme,
     setTheme,
     toggleTheme,
-    isDark: theme === 'dark'
+    getCurrentTheme,
+    isDark: getCurrentTheme() === 'dark',
+    isSystem: theme === 'system'
   }
 
   return (

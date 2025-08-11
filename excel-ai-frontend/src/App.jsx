@@ -45,6 +45,17 @@ import { validateFile, validateGoogleSheetsUrl } from '@/utils/validation.js'
 import apiService from '@/services/api.js'
 import enhancedApiService from '@/services/enhancedApi.js'
 import authService from '@/services/auth.js'
+// Enhanced UI Components
+import { 
+  EnhancedApp, 
+  EnhancedNavigation, 
+  EnhancedLoading, 
+  EnhancedError, 
+  EnhancedFileUpload,
+  SectionTracker,
+  useAnalytics
+} from '@/components/EnhancedUI.jsx'
+import { AnimatedButton } from '@/components/AnimatedButton.jsx'
 import './App.css'
 
 function App() {
@@ -65,10 +76,18 @@ function App() {
   const [chatMessages, setChatMessages] = useState([])
   const [currentActiveTab, setCurrentActiveTab] = useState('overview')
 
+  // Enhanced analytics hook
+  const { trackEvent, trackPageView, trackEngagement, trackError } = useAnalytics()
+
   // Check authentication on app load
   useEffect(() => {
     checkAuthStatus()
   }, [])
+
+  // Track page views when currentView changes
+  useEffect(() => {
+    trackPageView(currentView)
+  }, [currentView, trackPageView])
 
   // Initialize performance optimizations
   useEffect(() => {
@@ -99,6 +118,7 @@ function App() {
       if (result.success) {
         setIsAuthenticated(true)
         setUser(result.user)
+        trackEvent('user_authenticated', { userId: result.user.id })
       } else {
         setIsAuthenticated(false)
         setUser(null)
@@ -115,9 +135,11 @@ function App() {
     setIsAuthenticated(true)
     setUser(userData)
     setCurrentView('home')
+    trackEvent('auth_success', { method: 'login', userId: userData.id })
   }
 
   const handleLogout = () => {
+    trackEvent('user_logout', { userId: user?.id })
     setIsAuthenticated(false)
     setUser(null)
     setCurrentView('home')
@@ -128,14 +150,15 @@ function App() {
     setError(null)
   }
 
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0]
+  const handleFileUpload = async (file) => {
     if (!file) return
 
     // Validate file
     const validation = validateFile(file)
     if (!validation.isValid) {
-      setError(validation.errors.join(', '))
+      const errorMsg = validation.errors.join(', ')
+      setError(errorMsg)
+      trackError(new Error(errorMsg), { context: 'file_validation' })
       return
     }
 
@@ -144,6 +167,12 @@ function App() {
     setCurrentView('analysis')
     setError(null)
     setUploadProgress(0)
+
+    trackEvent('file_upload_started', { 
+      fileName: file.name, 
+      fileSize: file.size,
+      fileType: file.type 
+    })
 
     try {
       // Upload and get file info with progress
@@ -163,6 +192,12 @@ function App() {
             ai_insights: analysisResponse.ai_insights,
             file_info: uploadResponse.file_info
           })
+          
+          trackEvent('analysis_completed', { 
+            fileName: file.name,
+            insightsCount: analysisResponse.insights?.length || 0,
+            hasAIInsights: !!analysisResponse.ai_insights
+          })
         } else {
           throw new Error('Analysis failed')
         }
@@ -171,8 +206,10 @@ function App() {
       }
     } catch (error) {
       console.error('Error processing file:', error)
-      setError(`Failed to process file: ${error.message}`)
+      const errorMsg = `Failed to process file: ${error.message}`
+      setError(errorMsg)
       setAnalysisResults(null)
+      trackError(error, { context: 'file_processing', fileName: file.name })
     } finally {
       setIsLoading(false)
       setUploadProgress(0)
@@ -183,7 +220,9 @@ function App() {
     // Validate URL
     const validation = validateGoogleSheetsUrl(googleSheetsUrl)
     if (!validation.isValid) {
-      setError(validation.errors.join(', '))
+      const errorMsg = validation.errors.join(', ')
+      setError(errorMsg)
+      trackError(new Error(errorMsg), { context: 'google_sheets_validation' })
       return
     }
 
@@ -191,6 +230,8 @@ function App() {
     setCurrentView('analysis')
     setUploadedFile({ name: 'Google Sheets Data', source: 'google_sheets' })
     setError(null)
+
+    trackEvent('google_sheets_analysis_started', { url: googleSheetsUrl })
 
     try {
       const response = await apiService.analyzeGoogleSheetsUrl(googleSheetsUrl)
@@ -201,19 +242,26 @@ function App() {
           ai_insights: response.ai_insights,
           file_info: response.file_info
         })
+        
+        trackEvent('google_sheets_analysis_completed', { 
+          url: googleSheetsUrl,
+          insightsCount: response.insights?.length || 0
+        })
       } else {
         throw new Error('Google Sheets analysis failed')
       }
     } catch (error) {
       console.error('Error analyzing Google Sheets:', error)
-      setError(`Failed to analyze Google Sheets: ${error.message}`)
+      const errorMsg = `Failed to analyze Google Sheets: ${error.message}`
+      setError(errorMsg)
       setAnalysisResults(null)
+      trackError(error, { context: 'google_sheets_analysis', url: googleSheetsUrl })
     } finally {
       setIsLoading(false)
     }
   }
 
-  const validateGoogleSheetsUrl = async (url) => {
+  const validateGoogleSheetsUrlInput = async (url) => {
     const validation = validateGoogleSheetsUrl(url)
     setUrlValidation(validation.isValid ? 
       { valid: true, message: 'Valid Google Sheets URL detected' } :
@@ -222,134 +270,125 @@ function App() {
   }
 
   const HomePage = () => (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg">
-                <FileSpreadsheet className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  DataSense AI
-                </h1>
-                <p className="text-xs text-gray-500">Transform Your Data Into Intelligence</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              {/* User Menu */}
-              <div className="flex items-center space-x-3">
-                <span className="text-sm text-gray-600">
-                  Welcome, {user?.first_name}!
-                </span>
-                <ThemeToggle />
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setCurrentView('dashboard')}
-                >
-                  Dashboard
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={handleLogout}
-                >
-                  Sign Out
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+    <SectionTracker section="home">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        {/* Enhanced Navigation */}
+        <EnhancedNavigation 
+          currentView={currentView} 
+          onViewChange={setCurrentView}
+          className="sticky top-0 z-50"
+        />
 
-      {/* Hero Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-indigo-400/20 to-blue-400/20 rounded-full blur-3xl"></div>
-        </div>
-        
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="mb-6">
-            <Badge variant="outline" className="bg-white/50 text-blue-700 border-blue-200 px-4 py-2 text-sm font-medium">
-              ✨ AI-Powered Data Analysis
-            </Badge>
+        {/* Hero Section */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+          {/* Background decoration */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-indigo-400/20 to-blue-400/20 rounded-full blur-3xl"></div>
           </div>
-          <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Transform Your Excel Data with
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent block mt-2">
-              AI-Powered Insights
-            </span>
-          </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Upload your Excel files and get instant, intelligent analysis. Discover patterns, 
-            generate formulas, and make data-driven decisions with our advanced AI technology.
-          </p>
           
-          {/* Data Input Section */}
-          <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-12 border border-white/20">
-            <Tabs defaultValue="file" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6 bg-gray-100/50">
-                <TabsTrigger value="file" className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-md">
-                  <Upload className="h-4 w-4" />
-                  <span>Upload File</span>
-                </TabsTrigger>
-                <TabsTrigger value="sheets" className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-md">
-                  <Link className="h-4 w-4" />
-                  <span>Google Sheets</span>
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="file" className="space-y-4">
-                <div className="border-2 border-dashed border-gray-300 hover:border-blue-400 transition-all duration-300 rounded-2xl p-8 hover:bg-blue-50/30">
-                  <input
-                    type="file"
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <div className="mb-6">
+              <Badge variant="outline" className="bg-white/50 dark:bg-gray-800/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700 px-4 py-2 text-sm font-medium">
+                ✨ AI-Powered Data Analysis
+              </Badge>
+            </div>
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+              Transform Your Excel Data with
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent block mt-2">
+                AI-Powered Insights
+              </span>
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+              Upload your Excel files and get instant, intelligent analysis. Discover patterns, 
+              generate formulas, and make data-driven decisions with our advanced AI technology.
+            </p>
+            
+            {/* Enhanced Data Input Section */}
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-12 border border-white/20 dark:border-gray-700/20">
+              <Tabs defaultValue="file" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-6 bg-gray-100/50 dark:bg-gray-700/50">
+                  <TabsTrigger value="file" className="flex items-center space-x-2 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-md">
+                    <Upload className="h-4 w-4" />
+                    <span>Upload File</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="sheets" className="flex items-center space-x-2 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-md">
+                    <Link className="h-4 w-4" />
+                    <span>Google Sheets</span>
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="file" className="space-y-4">
+                  <EnhancedFileUpload
+                    onFileSelect={handleFileUpload}
                     accept=".xlsx,.xls,.csv"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                    id="file-upload"
+                    maxSize={16 * 1024 * 1024}
+                    className="w-full"
                   />
-                  <label htmlFor="file-upload" className="cursor-pointer">
+                </TabsContent>
+                
+                <TabsContent value="sheets" className="space-y-4">
+                  <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-green-400 dark:hover:border-green-500 transition-all duration-300 rounded-2xl p-8 hover:bg-green-50/30 dark:hover:bg-green-900/10">
                     <div className="flex flex-col items-center">
-                      <div className="bg-gradient-to-br from-blue-100 to-indigo-100 p-6 rounded-full mb-4">
-                        <Upload className="h-16 w-16 text-blue-600" />
+                      <div className="bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900 dark:to-emerald-900 p-6 rounded-full mb-4">
+                        <Link className="h-16 w-16 text-green-600 dark:text-green-400" />
                       </div>
-                      <h3 className="text-2xl font-semibold text-gray-900 mb-2">
-                        Drop your Excel file here or click to browse
+                      <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+                        Analyze Google Sheets directly
                       </h3>
-                      <p className="text-gray-500 mb-6">
-                        Supports .xlsx, .xls, and .csv files up to 16MB
+                      <p className="text-gray-500 dark:text-gray-400 mb-6 text-center">
+                        Paste your Google Sheets URL below. Make sure the sheet is publicly viewable.
                       </p>
-                      <Button size="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg">
-                        <Upload className="h-5 w-5 mr-2" />
-                        Choose File
-                      </Button>
+                      
+                      <div className="w-full max-w-md space-y-4">
+                        <div className="relative">
+                          <Input
+                            type="url"
+                            placeholder="https://docs.google.com/spreadsheets/d/..."
+                            value={googleSheetsUrl}
+                            onChange={(e) => {
+                              setGoogleSheetsUrl(e.target.value)
+                              if (e.target.value) {
+                                validateGoogleSheetsUrlInput(e.target.value)
+                              } else {
+                                setUrlValidation(null)
+                              }
+                            }}
+                            className="pr-12 text-sm"
+                          />
+                          {urlValidation && (
+                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                              {urlValidation.valid ? (
+                                <CheckCircle className="h-5 w-5 text-green-500" />
+                              ) : (
+                                <AlertCircle className="h-5 w-5 text-red-500" />
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        
+                        {urlValidation && (
+                          <p className={`text-sm ${urlValidation.valid ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                            {urlValidation.message}
+                          </p>
+                        )}
+                        
+                        <AnimatedButton
+                          animation="glow"
+                          size="lg"
+                          onClick={handleGoogleSheetsAnalysis}
+                          disabled={!googleSheetsUrl || (urlValidation && !urlValidation.valid)}
+                          className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg"
+                        >
+                          <Link className="h-5 w-5 mr-2" />
+                          Analyze Sheets
+                        </AnimatedButton>
+                      </div>
                     </div>
-                  </label>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="sheets" className="space-y-4">
-                <div className="border-2 border-dashed border-gray-300 hover:border-green-400 transition-all duration-300 rounded-2xl p-8 hover:bg-green-50/30">
-                  <div className="flex flex-col items-center">
-                    <div className="bg-gradient-to-br from-green-100 to-emerald-100 p-6 rounded-full mb-4">
-                      <Link className="h-16 w-16 text-green-600" />
-                    </div>
-                    <h3 className="text-2xl font-semibold text-gray-900 mb-2">
-                      Analyze Google Sheets directly
-                    </h3>
-                    <p className="text-gray-500 mb-6 text-center">
-                      Paste your Google Sheets URL below. Make sure the sheet is publicly viewable.
-                    </p>
-                    
-                    <div className="w-full max-w-md space-y-4">
-                      <div className="relative">
-                        <Input
-                          type="url"
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
                           placeholder="https://docs.google.com/spreadsheets/d/..."
                           value={googleSheetsUrl}
                           onChange={(e) => {
@@ -1047,26 +1086,120 @@ function App() {
   // Authentication loading state
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="text-center">
-          <LoadingSpinner />
-          <p className="mt-4 text-gray-600">Loading DataSense AI...</p>
+      <EnhancedApp>
+        <div className="min-h-screen flex items-center justify-center">
+          <EnhancedLoading message="Loading DataSense AI..." />
         </div>
-      </div>
+      </EnhancedApp>
     )
   }
 
   // Show auth form if not authenticated
   if (!isAuthenticated) {
-    return <AuthForm onAuthSuccess={handleAuthSuccess} />
+    return (
+      <EnhancedApp>
+        <AuthForm onAuthSuccess={handleAuthSuccess} />
+      </EnhancedApp>
+    )
   }
 
-  // Show dashboard if user wants to see dashboard, otherwise show main app
+  // Loading state for file processing
+  if (isLoading) {
+    return (
+      <EnhancedApp>
+        <div className="min-h-screen flex items-center justify-center">
+          <EnhancedLoading 
+            message={uploadProgress > 0 ? "Processing your file..." : "Analyzing your data..."}
+            progress={uploadProgress > 0 ? uploadProgress : null}
+          />
+        </div>
+      </EnhancedApp>
+    )
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <EnhancedApp>
+        <div className="min-h-screen flex items-center justify-center p-8">
+          <EnhancedError 
+            error={error}
+            onRetry={() => {
+              setError(null)
+              setCurrentView('home')
+            }}
+            onDismiss={() => setError(null)}
+            className="max-w-lg w-full"
+          />
+        </div>
+      </EnhancedApp>
+    )
+  }
+
+  // Show dashboard if user wants to see dashboard
   if (currentView === 'dashboard') {
-    return <UserDashboard user={user} onLogout={handleLogout} />
+    return (
+      <EnhancedApp>
+        <UserDashboard user={user} onLogout={handleLogout} />
+      </EnhancedApp>
+    )
   }
 
-  return currentView === 'home' ? <HomePage /> : <AnalysisPage />
+  // Main app content based on current view
+  const renderCurrentView = () => {
+    switch (currentView) {
+      case 'home':
+        return <HomePage />
+      case 'connect':
+        return (
+          <SectionTracker section="connect">
+            <ConnectorsPage />
+          </SectionTracker>
+        )
+      case 'analyze':
+        return (
+          <SectionTracker section="analyze">
+            <AnalysisPage 
+              analysisResults={analysisResults}
+              uploadedFile={uploadedFile}
+              onBackToHome={() => setCurrentView('home')}
+            />
+          </SectionTracker>
+        )
+      case 'visualize':
+        return (
+          <SectionTracker section="visualize">
+            <VisualizePage />
+          </SectionTracker>
+        )
+      case 'data-prep':
+        return (
+          <SectionTracker section="data-prep">
+            <DataPrepPage />
+          </SectionTracker>
+        )
+      case 'enrich':
+        return (
+          <SectionTracker section="enrich">
+            <EnrichPage />
+          </SectionTracker>
+        )
+      case 'tools':
+        return (
+          <SectionTracker section="tools">
+            <ToolsPage />
+          </SectionTracker>
+        )
+      default:
+        return <HomePage />
+    }
+  }
+
+  return (
+    <EnhancedApp>
+      {renderCurrentView()}
+    </EnhancedApp>
+  )
 }
 
 function WrappedApp() {
