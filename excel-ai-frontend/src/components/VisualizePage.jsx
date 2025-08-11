@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx'
-import { BarChart3, LineChart, PieChart, Scatter, Activity, BarChart2, Box, Lightbulb, Download } from 'lucide-react'
+import { BarChart3, LineChart, PieChart, ScatterChart, Activity, BarChart2, Box, Lightbulb, Download } from 'lucide-react'
 import apiService from '@/services/api.js'
 
 export function VisualizePage() {
@@ -119,7 +119,7 @@ export function VisualizePage() {
       bar: BarChart3,
       line: LineChart,
       pie: PieChart,
-      scatter: Scatter,
+      scatter: ScatterChart,
       heatmap: Activity,
       histogram: BarChart2,
       box: Box

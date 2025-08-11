@@ -95,27 +95,5 @@ export function SimpleThemeToggle({ className = "" }) {
     </Button>
   )
 }
-        >
-          <Sun className="h-4 w-4 mr-2" />
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => setTheme('dark')}
-          className={theme === 'dark' ? 'bg-gray-100 dark:bg-gray-800' : ''}
-        >
-          <Moon className="h-4 w-4 mr-2" />
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => setTheme('system')}
-          className={theme === 'system' ? 'bg-gray-100 dark:bg-gray-800' : ''}
-        >
-          <Monitor className="h-4 w-4 mr-2" />
-          System
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
 
 export default ThemeToggle

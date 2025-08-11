@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BarChart3, LineChart, PieChart, Scatter3D, Download, Wand2, Settings, Eye } from 'lucide-react'
+import { BarChart3, LineChart, PieChart, ScatterChart as ScatterIcon, Download, Wand2, Settings, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
@@ -19,7 +19,7 @@ const CHART_TYPES = [
   { id: 'bar', name: 'Bar Chart', icon: BarChart3, description: 'Compare categories' },
   { id: 'line', name: 'Line Chart', icon: LineChart, description: 'Show trends over time' },
   { id: 'pie', name: 'Pie Chart', icon: PieChart, description: 'Show proportions' },
-  { id: 'scatter', name: 'Scatter Plot', icon: Scatter3D, description: 'Show correlations' }
+  { id: 'scatter', name: 'Scatter Plot', icon: ScatterIcon, description: 'Show correlations' }
 ]
 
 export function ChartBuilder({ data = [], columns = [] }) {

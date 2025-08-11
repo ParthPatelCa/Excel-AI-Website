@@ -1,3 +1,7 @@
+// API Base URL - adjust this based on your environment
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api';
+
+class ApiService {
   // User model preference endpoints
   async getModelPreference() {
     return this.makeRequest('/users/me/model-preference', { method: 'GET' })
@@ -9,10 +13,7 @@
       body: JSON.stringify({ preferred_model })
     })
   }
-// API Base URL - adjust this based on your environment
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api';
 
-class ApiService {
   // Helper method for making HTTP requests
   async makeRequest(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;

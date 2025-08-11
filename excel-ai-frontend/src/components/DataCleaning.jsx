@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Upload, Download, CheckCircle, AlertTriangle, RefreshCw, Zap, CleaningServices, TrendingUp } from 'lucide-react'
+import { Upload, Download, CheckCircle, AlertTriangle, RefreshCw, Zap, Sparkles, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
@@ -128,7 +128,7 @@ export function DataCleaning() {
           <CardContent className="p-8">
             <div className="text-center">
               <div className="bg-gradient-to-br from-blue-100 to-indigo-100 p-6 rounded-full w-fit mx-auto mb-4">
-                <CleaningServices className="h-16 w-16 text-blue-600" />
+                <Sparkles className="h-16 w-16 text-blue-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Upload Data for Cleaning</h3>
               <p className="text-gray-500 mb-6">

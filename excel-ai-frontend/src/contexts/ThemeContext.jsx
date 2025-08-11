@@ -2,10 +2,6 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 const ThemeContext = createContext()
 
-import { createContext, useContext, useEffect, useState } from 'react'
-
-const ThemeContext = createContext()
-
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
     // Check for saved theme preference or default to system

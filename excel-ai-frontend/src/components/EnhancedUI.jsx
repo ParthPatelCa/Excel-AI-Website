@@ -1,9 +1,9 @@
 import React from 'react';
-import { AnimatedButton } from './AnimatedButton';
+import { AnimatedButton } from './ui/AnimatedButton';
 import { ThemeToggle } from './ui/ThemeToggle';
 import { FaviconManager } from './FaviconManager';
 import { AnalyticsProvider, CookieConsentBanner, SectionTracker, useAnalytics } from './Analytics';
-import { AccessibleProgress, LiveRegion, SkipToContent, FocusTrap } from './Accessibility';
+import { AccessibleProgress, LiveRegion, SkipToContent, FocusTrap } from './ui/Accessibility';
 
 // Enhanced Loading Component with Analytics
 export const EnhancedLoading = ({ 

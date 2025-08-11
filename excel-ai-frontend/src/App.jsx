@@ -55,7 +55,7 @@ import {
   SectionTracker,
   useAnalytics
 } from '@/components/EnhancedUI.jsx'
-import { AnimatedButton } from '@/components/AnimatedButton.jsx'
+import { AnimatedButton } from '@/components/ui/AnimatedButton.jsx'
 import './App.css'
 
 function App() {
@@ -389,87 +389,47 @@ function App() {
                 </TabsContent>
               </Tabs>
             </div>
-                          placeholder="https://docs.google.com/spreadsheets/d/..."
-                          value={googleSheetsUrl}
-                          onChange={(e) => {
-                            setGoogleSheetsUrl(e.target.value)
-                            validateGoogleSheetsUrl(e.target.value)
-                          }}
-                          className="pr-10 border-gray-200 focus:border-green-400 bg-white/80"
-                        />
-                        {urlValidation && (
-                          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                            {urlValidation.valid ? (
-                              <CheckCircle className="h-5 w-5 text-green-500" />
-                            ) : (
-                              <AlertCircle className="h-5 w-5 text-red-500" />
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      
-                      {urlValidation && (
-                        <p className={`text-sm ${urlValidation.valid ? 'text-green-600' : 'text-red-600'}`}>
-                          {urlValidation.message}
-                        </p>
-                      )}
-                      
-                      <Button 
-                        size="lg" 
-                        className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg"
-                        onClick={handleGoogleSheetsAnalysis}
-                        disabled={!urlValidation?.valid}
-                      >
-                        <Link className="h-5 w-5 mr-2" />
-                        Analyze Google Sheets
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </div>
 
-          {/* Demo Button */}
-          <Button 
-            variant="outline" 
-            size="lg" 
-            className="bg-white/50 hover:bg-white/80 border-gray-200 shadow-lg"
-            onClick={() => {
-              setCurrentView('analysis')
-              setUploadedFile({ name: 'sample-sales-data.xlsx' })
-              setAnalysisResults({
-                insights: {
-                  summary_stats: {
-                    'Revenue': { mean: 45000, median: 42000, std: 12000, min: 15000, max: 85000 },
-                    'Units Sold': { mean: 150, median: 140, std: 45, min: 50, max: 300 }
+            {/* Demo Button */}
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="bg-white/50 hover:bg-white/80 border-gray-200 shadow-lg"
+              onClick={() => {
+                setCurrentView('analysis')
+                setUploadedFile({ name: 'sample-sales-data.xlsx' })
+                setAnalysisResults({
+                  insights: {
+                    summary_stats: {
+                      'Revenue': { mean: 45000, median: 42000, std: 12000, min: 15000, max: 85000 },
+                      'Units Sold': { mean: 150, median: 140, std: 45, min: 50, max: 300 }
+                    },
+                    data_quality: {
+                      total_rows: 1250,
+                      total_columns: 8,
+                      missing_values: 23,
+                      duplicate_rows: 5
+                    }
                   },
-                  data_quality: {
-                    total_rows: 1250,
-                    total_columns: 8,
-                    missing_values: 23,
-                    duplicate_rows: 5
+                  ai_insights: {
+                    key_findings: [
+                      "Revenue shows strong seasonal patterns with Q4 being the highest performing quarter",
+                      "There's a positive correlation (0.85) between marketing spend and revenue",
+                      "Product category 'Electronics' accounts for 60% of total revenue"
+                    ],
+                    recommendations: [
+                      "Consider increasing marketing budget during Q3 to boost Q4 performance",
+                      "Focus inventory planning on Electronics category",
+                      "Investigate and clean 23 missing values in the dataset"
+                    ]
                   }
-                },
-                ai_insights: {
-                  key_findings: [
-                    "Revenue shows strong seasonal patterns with Q4 being the highest performing quarter",
-                    "There's a positive correlation (0.85) between marketing spend and revenue",
-                    "Product category 'Electronics' accounts for 60% of total revenue"
-                  ],
-                  recommendations: [
-                    "Consider increasing marketing budget during Q3 to boost Q4 performance",
-                    "Focus inventory planning on Electronics category",
-                    "Investigate and clean 23 missing values in the dataset"
-                  ]
-                }
-              })
-            }}
-          >
-            ✨ Try Demo with Sample Data
-          </Button>
-        </div>
-      </section>
+                })
+              }}
+            >
+              ✨ Try Demo with Sample Data
+            </Button>
+          </div>
+        </section>
 
       {/* Features Section */}
       <section className="py-16 bg-white/80 backdrop-blur-md relative">
@@ -609,7 +569,8 @@ function App() {
         </div>
       </section>
     </div>
-  )
+  </SectionTracker>
+)
 
   const AnalysisPage = () => (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-slate-50 to-blue-50">
