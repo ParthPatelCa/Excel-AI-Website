@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models.user import db
+from src.models.user import db
 from models.visualization import DataEnrichment
 import pandas as pd
 import re

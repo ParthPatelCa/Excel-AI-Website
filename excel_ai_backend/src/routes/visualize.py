@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from models.user import db
-from models.visualization import Visualization
+from src.models.user import db
+from src.models.visualization import Visualization
 import json
 import pandas as pd
 import plotly.graph_objects as go

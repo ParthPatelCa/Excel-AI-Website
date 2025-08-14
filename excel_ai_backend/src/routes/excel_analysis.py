@@ -8,9 +8,11 @@ from openai import OpenAI
 import json
 from dotenv import load_dotenv
 import random
-from routes.auth import token_required
-from models.auth import db
-from utils.telemetry import TelemetryTracker, estimate_tokens
+from src.routes.auth import token_required
+from src.models.auth import db
+from src.utils.telemetry import TelemetryTracker, estimate_tokens
+from src.utils.model_router import get_model_chain, get_task_params, get_time_budget_seconds
+from src.utils.cache import cache, cache_key
 
 # Load environment variables
 load_dotenv()
@@ -42,7 +44,7 @@ def resolve_model(explicit: str | None = None):
     ordered = [PREFERRED_MODEL] + [m for m in FALLBACK_MODELS if m != PREFERRED_MODEL]
     return ordered[0]
 
-def call_openai_with_retry(messages, max_retries=3, model: str | None = None):
+def call_openai_with_retry(messages, max_retries=3, model: str | None = None, max_tokens=800, temperature=0.3, time_budget_s=8):
     """Enhanced OpenAI API call with retry logic and better error handling.
 
     Supports preview model enablement via OPENAI_MODEL env var (default gpt-5-preview)
@@ -64,9 +66,9 @@ def call_openai_with_retry(messages, max_retries=3, model: str | None = None):
             response = client.chat.completions.create(
                 model=resolved_model,
                 messages=messages,
-                max_tokens=1000,
-                temperature=0.1,
-                timeout=30  # 30 second timeout
+                max_tokens=max_tokens,
+                temperature=temperature,
+                timeout=time_budget_s  # time budget per model tier
             )
             
             attempted_models.append(resolved_model)
@@ -651,23 +653,38 @@ def process_natural_language_query(df, query):
 
     If the query requires calculations, provide the approach but note that actual calculations would need to be performed on the full dataset.
     """
-    # Attempt via retry helper for fallback visibility
+    # Router + cache + retry helper for fallback visibility
     if client:
         try:
+            task = 'chat_query'
+            model_chain = get_model_chain(None, task)
+            params = get_task_params(task)
+            ckey = cache_key(task, {'query': query, 'columns': data_context['columns']}, model_chain)
+            cached = cache.get(ckey)
+            if cached:
+                return {
+                    'content': cached['content'],
+                    'model_used': cached['model_used'],
+                    'models_tried': cached.get('models_tried', []),
+                    'fallback_used': cached.get('fallback_used', False)
+                }
+
             retry_resp = call_openai_with_retry([
                 {"role": "system", "content": "You are a helpful data analyst assistant. Provide clear, practical responses about data analysis."},
                 {"role": "user", "content": prompt}
-            ], max_retries=3)
+            ], max_retries=3, max_tokens=params['max_tokens'], temperature=params['temperature'], time_budget_s=get_time_budget_seconds(model_chain[0]))
             if retry_resp.get('success'):
                 models_tried = retry_resp.get('models_tried', [])
                 model_used = retry_resp.get('model_used')
                 fallback_used = bool(models_tried and model_used and model_used != models_tried[0])
-                return {
+                result = {
                     'content': retry_resp.get('content'),
                     'model_used': model_used,
                     'models_tried': models_tried,
                     'fallback_used': fallback_used
                 }
+                cache.set(ckey, result, 3600)
+                return result
             else:
                 return {
                     'content': f"AI request failed: {retry_resp.get('error')}",

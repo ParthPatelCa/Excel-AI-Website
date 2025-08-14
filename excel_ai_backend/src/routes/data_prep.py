@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from models.user import db
-from models.visualization import DataPrep
+from src.models.user import db
+from src.models.visualization import DataPrep
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -446,6 +446,330 @@ def apply_transformation(df, transform):
             df[f"{column}_day"] = df[column].dt.day
     
     return df
+
+@data_prep_bp.route('/api/v1/data-prep/smart-validate', methods=['POST'])
+def smart_validate_data():
+    """AI-powered data validation with anomaly detection and quality rules"""
+    try:
+        data = request.get_json()
+        input_data = data.get('data', [])
+        validation_context = data.get('context', {})  # Business context for validation
+        
+        if not input_data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        # Convert to DataFrame
+        df = pd.DataFrame(input_data)
+        
+        # Perform comprehensive validation
+        validation_results = {
+            'overall_score': 0,
+            'quality_issues': [],
+            'anomalies': [],
+            'business_rules': [],
+            'ai_insights': [],
+            'suggestions': []
+        }
+        
+        # 1. Statistical Anomaly Detection
+        anomalies = detect_statistical_anomalies(df)
+        validation_results['anomalies'] = anomalies
+        
+        # 2. Business Rule Validation
+        business_rules = validate_business_rules(df, validation_context)
+        validation_results['business_rules'] = business_rules
+        
+        # 3. Data Quality Issues
+        quality_issues = detect_quality_issues(df)
+        validation_results['quality_issues'] = quality_issues
+        
+        # 4. AI-Powered Insights
+        if client:
+            ai_insights = generate_ai_validation_insights(df, validation_context)
+            validation_results['ai_insights'] = ai_insights
+            
+            # Generate smart suggestions
+            smart_suggestions = generate_smart_suggestions(df, validation_results)
+            validation_results['suggestions'] = smart_suggestions
+        
+        # 5. Calculate overall quality score
+        total_issues = len(quality_issues) + len(anomalies) + len([r for r in business_rules if not r['passed']])
+        max_possible_issues = len(df.columns) * 3  # Rough estimate
+        validation_results['overall_score'] = max(0, min(100, 100 - (total_issues / max_possible_issues * 100)))
+        
+        return jsonify({
+            'success': True,
+            'data': validation_results
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to validate data: {str(e)}'}), 500
+
+def detect_statistical_anomalies(df):
+    """Detect statistical anomalies in numeric columns"""
+    anomalies = []
+    
+    for col in df.select_dtypes(include=[np.number]).columns:
+        try:
+            # Z-score based outliers
+            z_scores = np.abs((df[col] - df[col].mean()) / df[col].std())
+            outlier_indices = df[z_scores > 3].index.tolist()
+            
+            if len(outlier_indices) > 0:
+                anomalies.append({
+                    'type': 'statistical_outlier',
+                    'column': col,
+                    'method': 'z_score',
+                    'threshold': 3,
+                    'anomaly_count': len(outlier_indices),
+                    'anomaly_percentage': round((len(outlier_indices) / len(df)) * 100, 2),
+                    'sample_values': df.loc[outlier_indices[:3], col].tolist(),
+                    'severity': 'high' if len(outlier_indices) > len(df) * 0.1 else 'medium'
+                })
+            
+            # IQR based outliers
+            Q1 = df[col].quantile(0.25)
+            Q3 = df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            outlier_mask = (df[col] < (Q1 - 1.5 * IQR)) | (df[col] > (Q3 + 1.5 * IQR))
+            iqr_outliers = df[outlier_mask].index.tolist()
+            
+            if len(iqr_outliers) > 0 and len(iqr_outliers) != len(outlier_indices):
+                anomalies.append({
+                    'type': 'iqr_outlier',
+                    'column': col,
+                    'method': 'iqr',
+                    'threshold': '1.5*IQR',
+                    'anomaly_count': len(iqr_outliers),
+                    'anomaly_percentage': round((len(iqr_outliers) / len(df)) * 100, 2),
+                    'sample_values': df.loc[iqr_outliers[:3], col].tolist(),
+                    'severity': 'medium'
+                })
+                
+        except Exception:
+            continue
+    
+    return anomalies
+
+def validate_business_rules(df, context):
+    """Validate business-specific rules"""
+    rules = []
+    business_type = context.get('business_type', 'general')
+    
+    # Common business rules
+    for col in df.columns:
+        col_lower = col.lower()
+        
+        # Email validation
+        if 'email' in col_lower:
+            email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            invalid_emails = df[~df[col].astype(str).str.match(email_pattern, na=False)]
+            rules.append({
+                'rule': 'email_format',
+                'column': col,
+                'passed': len(invalid_emails) == 0,
+                'violations': len(invalid_emails),
+                'description': f'Email addresses should follow standard format',
+                'severity': 'high' if len(invalid_emails) > 0 else 'none'
+            })
+        
+        # Date validation
+        if any(keyword in col_lower for keyword in ['date', 'time', 'created', 'updated']):
+            try:
+                date_col = pd.to_datetime(df[col], errors='coerce')
+                invalid_dates = df[date_col.isna() & df[col].notna()]
+                rules.append({
+                    'rule': 'date_format',
+                    'column': col,
+                    'passed': len(invalid_dates) == 0,
+                    'violations': len(invalid_dates),
+                    'description': f'Date column should contain valid dates',
+                    'severity': 'medium' if len(invalid_dates) > 0 else 'none'
+                })
+            except Exception:
+                pass
+        
+        # Negative values in amount/price columns
+        if any(keyword in col_lower for keyword in ['amount', 'price', 'cost', 'revenue', 'salary']):
+            if pd.api.types.is_numeric_dtype(df[col]):
+                negative_values = df[df[col] < 0]
+                rules.append({
+                    'rule': 'positive_amounts',
+                    'column': col,
+                    'passed': len(negative_values) == 0,
+                    'violations': len(negative_values),
+                    'description': f'Financial amounts should typically be positive',
+                    'severity': 'medium' if len(negative_values) > 0 else 'none'
+                })
+    
+    # Business-specific rules
+    if business_type == 'sales':
+        # Sales-specific validations
+        pass
+    elif business_type == 'hr':
+        # HR-specific validations
+        pass
+    
+    return rules
+
+def detect_quality_issues(df):
+    """Detect general data quality issues"""
+    issues = []
+    
+    # High missing value percentage
+    for col in df.columns:
+        missing_pct = (df[col].isnull().sum() / len(df)) * 100
+        if missing_pct > 50:
+            issues.append({
+                'type': 'high_missing_values',
+                'column': col,
+                'missing_percentage': round(missing_pct, 2),
+                'description': f'Column has {missing_pct:.1f}% missing values',
+                'severity': 'high'
+            })
+        elif missing_pct > 20:
+            issues.append({
+                'type': 'moderate_missing_values',
+                'column': col,
+                'missing_percentage': round(missing_pct, 2),
+                'description': f'Column has {missing_pct:.1f}% missing values',
+                'severity': 'medium'
+            })
+    
+    # Low cardinality in text columns
+    for col in df.select_dtypes(include=['object']).columns:
+        if len(df) > 10:  # Only check if we have enough data
+            unique_pct = (df[col].nunique() / len(df)) * 100
+            if unique_pct < 5:
+                issues.append({
+                    'type': 'low_cardinality',
+                    'column': col,
+                    'unique_percentage': round(unique_pct, 2),
+                    'unique_values': df[col].value_counts().head(5).to_dict(),
+                    'description': f'Column has very low diversity ({unique_pct:.1f}% unique)',
+                    'severity': 'medium'
+                })
+    
+    # Inconsistent formatting
+    for col in df.select_dtypes(include=['object']).columns:
+        sample_values = df[col].dropna().head(20).tolist()
+        if len(sample_values) > 5:
+            # Check for inconsistent case
+            case_variations = len(set([str(v).lower() for v in sample_values])) / len(set(sample_values))
+            if case_variations < 0.8:
+                issues.append({
+                    'type': 'inconsistent_case',
+                    'column': col,
+                    'description': 'Column may have inconsistent capitalization',
+                    'sample_values': sample_values[:5],
+                    'severity': 'low'
+                })
+    
+    return issues
+
+def generate_ai_validation_insights(df, context):
+    """Generate AI-powered validation insights"""
+    try:
+        # Create a summary of the data for AI analysis
+        data_summary = {
+            'shape': df.shape,
+            'columns': list(df.columns),
+            'dtypes': df.dtypes.astype(str).to_dict(),
+            'missing_summary': df.isnull().sum().to_dict(),
+            'sample_data': df.head(3).to_dict('records')
+        }
+        
+        prompt = f"""
+        Analyze this dataset for data quality and validation insights:
+        
+        Dataset Summary: {data_summary}
+        Business Context: {context}
+        
+        Provide insights about:
+        1. Data quality concerns specific to this domain
+        2. Potential relationships between columns that should be validated
+        3. Business logic violations that might not be obvious
+        4. Suggestions for improving data reliability
+        
+        Return as JSON with format:
+        {{
+            "insights": [
+                {{
+                    "type": "relationship_validation",
+                    "description": "Start date should always be before end date",
+                    "columns": ["start_date", "end_date"],
+                    "priority": "high"
+                }}
+            ]
+        }}
+        """
+        
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            max_tokens=1000
+        )
+        
+        import json
+        result = json.loads(response.choices[0].message.content)
+        return result.get('insights', [])
+        
+    except Exception as e:
+        return []
+
+def generate_smart_suggestions(df, validation_results):
+    """Generate smart suggestions based on validation results"""
+    suggestions = []
+    
+    # Suggestions based on anomalies
+    for anomaly in validation_results['anomalies']:
+        if anomaly['severity'] == 'high':
+            suggestions.append({
+                'type': 'handle_outliers',
+                'column': anomaly['column'],
+                'action': 'investigate_and_clean',
+                'description': f"Investigate {anomaly['anomaly_count']} outliers in {anomaly['column']}",
+                'priority': 'high',
+                'auto_applicable': False
+            })
+    
+    # Suggestions based on quality issues
+    for issue in validation_results['quality_issues']:
+        if issue['type'] == 'high_missing_values':
+            suggestions.append({
+                'type': 'handle_missing',
+                'column': issue['column'],
+                'action': 'fill_or_drop',
+                'description': f"Address {issue['missing_percentage']:.1f}% missing values in {issue['column']}",
+                'priority': 'high',
+                'auto_applicable': True,
+                'options': ['drop_rows', 'fill_mean', 'fill_mode', 'fill_custom']
+            })
+        elif issue['type'] == 'inconsistent_case':
+            suggestions.append({
+                'type': 'standardize_format',
+                'column': issue['column'],
+                'action': 'normalize_case',
+                'description': f"Standardize text formatting in {issue['column']}",
+                'priority': 'medium',
+                'auto_applicable': True,
+                'options': ['lowercase', 'uppercase', 'title_case']
+            })
+    
+    # Suggestions based on business rules
+    for rule in validation_results['business_rules']:
+        if not rule['passed'] and rule['severity'] == 'high':
+            suggestions.append({
+                'type': 'fix_business_rule',
+                'column': rule['column'],
+                'action': 'validate_and_fix',
+                'description': f"Fix {rule['violations']} {rule['rule']} violations in {rule['column']}",
+                'priority': 'high',
+                'auto_applicable': False
+            })
+    
+    return suggestions
 
 def generate_ai_suggestions(df, analysis):
     """Generate AI-powered cleaning suggestions"""

@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+# Pre-commit hook: secret scanning
+
+# Run Python scanner (supports python3 or python)
+if command -v python3 >/dev/null 2>&1; then
+  python3 tools/secret_scan.py
+else
+  python tools/secret_scan.py
+fi
+
+STATUS=$?
+if [ "$STATUS" -ne 0 ]; then
+  echo "\n[SECURITY] Secret scan failed. Aborting commit."
+  exit $STATUS
+fi
+
+exit 0
+

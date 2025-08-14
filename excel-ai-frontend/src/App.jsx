@@ -20,7 +20,7 @@ import { AnalysisPage } from '@/components/AnalysisPage.jsx'
 import { VisualizePage } from '@/components/VisualizePage.jsx'
 import { DataPrepPage } from '@/components/DataPrepPage.jsx'
 import { EnrichPage } from '@/components/EnrichPage.jsx'
-import { ToolsPage } from '@/components/ToolsPage.jsx'
+import { AIToolsPage } from '@/components/AIToolsPage.jsx'
 import { AuthForm } from '@/components/AuthForm.jsx'
 import { UserDashboard } from '@/components/UserDashboard.jsx'
 import { DataCleaning } from '@/components/DataCleaning.jsx'
@@ -66,6 +66,7 @@ function App() {
   
   // App state
   const [currentView, setCurrentView] = useState('home')
+  const [currentPath, setCurrentPath] = useState(window.location.pathname)
   const [uploadedFile, setUploadedFile] = useState(null)
   const [analysisResults, setAnalysisResults] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -82,6 +83,16 @@ function App() {
   // Check authentication on app load
   useEffect(() => {
     checkAuthStatus()
+  }, [])
+
+  // Handle URL changes
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname)
+    }
+    
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
   // Track page views when currentView changes
@@ -135,6 +146,9 @@ function App() {
     setIsAuthenticated(true)
     setUser(userData)
     setCurrentView('home')
+    // Navigate to home page
+    window.history.pushState(null, '', '/')
+    setCurrentPath('/')
     trackEvent('auth_success', { method: 'login', userId: userData.id })
   }
 
@@ -143,6 +157,9 @@ function App() {
     setIsAuthenticated(false)
     setUser(null)
     setCurrentView('home')
+    // Navigate to auth page
+    window.history.pushState(null, '', '/auth')
+    setCurrentPath('/auth')
     // Reset app state
     setUploadedFile(null)
     setAnalysisResults(null)
@@ -308,11 +325,11 @@ function App() {
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-12 border border-white/20 dark:border-gray-700/20">
               <Tabs defaultValue="file" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-6 bg-gray-100/50 dark:bg-gray-700/50">
-                  <TabsTrigger value="file" className="flex items-center space-x-2 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-md">
+                  <TabsTrigger value="file" className="flex items-center space-x-2 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-md" data-testid="file-tab">
                     <Upload className="h-4 w-4" />
                     <span>Upload File</span>
                   </TabsTrigger>
-                  <TabsTrigger value="sheets" className="flex items-center space-x-2 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-md">
+                  <TabsTrigger value="sheets" className="flex items-center space-x-2 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-md" data-testid="sheets-tab">
                     <Link className="h-4 w-4" />
                     <span>Google Sheets</span>
                   </TabsTrigger>
@@ -355,6 +372,7 @@ function App() {
                               }
                             }}
                             className="pr-12 text-sm"
+                            data-testid="sheets-url-input"
                           />
                           {urlValidation && (
                             <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -368,7 +386,7 @@ function App() {
                         </div>
                         
                         {urlValidation && (
-                          <p className={`text-sm ${urlValidation.valid ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                          <p className={`text-sm ${urlValidation.valid ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`} data-testid="url-error">
                             {urlValidation.message}
                           </p>
                         )}
@@ -379,6 +397,7 @@ function App() {
                           onClick={handleGoogleSheetsAnalysis}
                           disabled={!googleSheetsUrl || (urlValidation && !urlValidation.valid)}
                           className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg"
+                          data-testid="analyze-button"
                         >
                           <Link className="h-5 w-5 mr-2" />
                           Analyze Sheets
@@ -679,7 +698,7 @@ function App() {
               </TabsContent>
 
               <TabsContent value="tools" className="space-y-6">
-                <ToolsPage />
+                <AIToolsPage />
               </TabsContent>
 
               <TabsContent value="connectors" className="space-y-6">
@@ -690,7 +709,7 @@ function App() {
                 <AnalysisPage />
               </TabsContent>
 
-              <TabsContent value="overview" className="space-y-6">
+              <TabsContent value="overview" className="space-y-6" data-testid="analysis-results">
                 {/* Data Overview */}
                 <Card>
               <CardHeader>
@@ -700,18 +719,21 @@ function App() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
+                <div className="mb-4" data-testid="file-info">
+                  <p><strong>File:</strong> {uploadedFile?.name || 'Unknown'}</p>
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-blue-50 p-4 rounded-lg">
+                  <div className="bg-blue-50 p-4 rounded-lg" data-testid="row-count">
                     <div className="text-2xl font-bold text-blue-600">
                       {analysisResults.insights.data_quality.total_rows.toLocaleString()}
                     </div>
-                    <div className="text-sm text-gray-600">Total Rows</div>
+                    <div className="text-sm text-gray-600">{analysisResults.insights.data_quality.total_rows} rows</div>
                   </div>
-                  <div className="bg-green-50 p-4 rounded-lg">
+                  <div className="bg-green-50 p-4 rounded-lg" data-testid="column-count">
                     <div className="text-2xl font-bold text-green-600">
                       {analysisResults.insights.data_quality.total_columns}
                     </div>
-                    <div className="text-sm text-gray-600">Columns</div>
+                    <div className="text-sm text-gray-600">{analysisResults.insights.data_quality.total_columns} columns</div>
                   </div>
                   <div className="bg-yellow-50 p-4 rounded-lg">
                     <div className="text-2xl font-bold text-yellow-600">
@@ -983,7 +1005,7 @@ function App() {
                     </CardHeader>
                     <CardContent>
                       {analysisResults?.tableData ? (
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto" data-testid="data-table">
                           <table className="w-full text-sm">
                             <thead>
                               <tr className="border-b">
@@ -1055,8 +1077,8 @@ function App() {
     )
   }
 
-  // Show auth form if not authenticated
-  if (!isAuthenticated) {
+  // Show auth form if not authenticated or on /auth path
+  if (!isAuthenticated || currentPath === '/auth') {
     return (
       <EnhancedApp>
         <AuthForm onAuthSuccess={handleAuthSuccess} />
@@ -1148,7 +1170,7 @@ function App() {
       case 'tools':
         return (
           <SectionTracker section="tools">
-            <ToolsPage />
+            <AIToolsPage />
           </SectionTracker>
         )
       default:

@@ -21,7 +21,7 @@ export const test = base.extend({
   },
 
   // File upload fixture
-  testFile: async ({}, use) => {
+  testFile: async (_args, use) => {
     const testFilePath = path.join(__dirname, 'fixtures', 'sample_data.csv')
     
     // Create test CSV file if it doesn't exist

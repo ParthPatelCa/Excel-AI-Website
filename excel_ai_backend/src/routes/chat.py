@@ -1,8 +1,8 @@
 """Chat conversation management endpoints."""
 
 from flask import Blueprint, jsonify, request
-from routes.auth import token_required
-from models.auth import db, ChatConversation, ChatMessage
+from src.routes.auth import token_required
+from src.models.auth import db, ChatConversation, ChatMessage
 from utils.telemetry import TelemetryTracker, estimate_tokens
 import time
 

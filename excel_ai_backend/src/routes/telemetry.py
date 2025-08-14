@@ -1,8 +1,8 @@
 """Telemetry and metrics endpoints."""
 
 from flask import Blueprint, jsonify, request
-from routes.auth import token_required
-from models.auth import db, TelemetryMetric, User, FormulaInteraction, ChatMessage, ChatConversation
+from src.routes.auth import token_required
+from src.models.auth import db, TelemetryMetric, User, FormulaInteraction, ChatMessage, ChatConversation
 from utils.telemetry import get_telemetry_summary
 from datetime import datetime, timedelta
 from sqlalchemy import func
@@ -40,6 +40,61 @@ def get_user_metrics(current_user):
                 'total_tokens': stat.total_tokens or 0
             }
         
+        # Build daily timeseries for the selected period
+        metrics_in_period = TelemetryMetric.query.filter(
+            TelemetryMetric.user_id == current_user.id,
+            TelemetryMetric.created_at >= cutoff_date
+        ).all()
+
+        # Initialize date buckets
+        date_buckets = {}
+        for i in range(days + 1):
+            d = (datetime.utcnow() - timedelta(days=(days - i))).date()
+            key = d.isoformat()
+            date_buckets[key] = {
+                'date': key,
+                'total_calls': 0,
+                'success_calls': 0,
+                'fallback_calls': 0,
+                'latency_sum': 0,
+                'latency_count': 0,
+            }
+
+        for m in metrics_in_period:
+            key = m.created_at.date().isoformat()
+            bucket = date_buckets.get(key)
+            if not bucket:
+                # In rare cases (timezone), ensure key exists
+                date_buckets[key] = {
+                    'date': key,
+                    'total_calls': 0,
+                    'success_calls': 0,
+                    'fallback_calls': 0,
+                    'latency_sum': 0,
+                    'latency_count': 0,
+                }
+                bucket = date_buckets[key]
+            bucket['total_calls'] += 1
+            if m.success:
+                bucket['success_calls'] += 1
+            if m.fallback_used:
+                bucket['fallback_calls'] += 1
+            if m.latency_ms is not None:
+                bucket['latency_sum'] += m.latency_ms
+                bucket['latency_count'] += 1
+
+        timeseries = []
+        for key in sorted(date_buckets.keys()):
+            b = date_buckets[key]
+            avg_latency = int(round(b['latency_sum'] / b['latency_count'])) if b['latency_count'] > 0 else 0
+            timeseries.append({
+                'date': b['date'],
+                'total_calls': b['total_calls'],
+                'success_calls': b['success_calls'],
+                'fallback_calls': b['fallback_calls'],
+                'avg_latency_ms': avg_latency,
+            })
+
         # Get chat message stats
         chat_stats = db.session.query(
             func.count(ChatMessage.id).label('total_messages'),
@@ -60,6 +115,7 @@ def get_user_metrics(current_user):
             'data': {
                 'period_days': days,
                 'overall': summary,
+                'timeseries': timeseries,
                 'formula_interactions': formula_breakdown,
                 'chat_stats': {
                     'total_messages': chat_stats.total_messages or 0,
