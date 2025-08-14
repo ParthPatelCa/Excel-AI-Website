@@ -3,13 +3,13 @@ nixPkgs = ["nodejs-18_x", "python39", "pip"]
 
 [phases.install]
 cmds = [
-  "cd excel-ai-frontend && npm install --production=false --prefer-offline --no-audit --legacy-peer-deps",
+  "cd excel-ai-frontend && npm install --production=false --prefer-offline --no-audit --legacy-peer-deps --no-optional",
   "cd excel_ai_backend && pip install --no-cache-dir --disable-pip-version-check -r requirements.txt"
 ]
 
 [phases.build]
 cmds = [
-  "cd excel-ai-frontend && NODE_OPTIONS='--max-old-space-size=1536' npm run build",
+  "cd excel-ai-frontend && NODE_OPTIONS='--max-old-space-size=1024' npm run build",
   "mkdir -p excel_ai_backend/src/static",
   "cp -r excel-ai-frontend/dist/* excel_ai_backend/src/static/"
 ]
@@ -21,4 +21,4 @@ cmd = "cd excel_ai_backend && python -m flask run --host=0.0.0.0 --port=$PORT"
 NODE_ENV = "production"
 FLASK_ENV = "production"
 PYTHONPATH = "/app/excel_ai_backend"
-NODE_OPTIONS = "--max-old-space-size=1536"
+NODE_OPTIONS = "--max-old-space-size=1024"
