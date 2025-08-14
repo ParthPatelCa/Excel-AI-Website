@@ -1,0 +1,40 @@
+name: Build Frontend for Render Deployment
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'excel-ai-frontend/**'
+      - 'excel-ai-frontend/package.json'
+      - 'excel-ai-frontend/package-lock.json'
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: excel-ai-frontend/package-lock.json
+        
+    - name: Install frontend dependencies
+      working-directory: excel-ai-frontend
+      run: npm ci
+      
+    - name: Build frontend
+      working-directory: excel-ai-frontend
+      run: npm run build
+      
+    - name: Commit built files
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add excel-ai-frontend/dist/
+        git commit -m "chore: Update built frontend files for Render deployment" || echo "No changes to commit"
+        git push
