@@ -1,10 +1,12 @@
 # Multi-stage build for production
-FROM node:18-alpine as frontend-builder
+FROM node:20-alpine as frontend-builder
 
 # Build frontend
 WORKDIR /app/frontend
 COPY excel-ai-frontend/package*.json ./
-RUN npm ci --only=production
+
+# Install dependencies with memory optimization
+RUN npm ci --omit=dev --prefer-offline --no-audit --progress=false
 
 COPY excel-ai-frontend/ ./
 RUN npm run build

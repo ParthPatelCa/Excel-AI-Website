@@ -1,0 +1,21 @@
+[phases.setup]
+nixPkgs = ["nodejs-20_x", "python39", "pip"]
+
+[phases.install]
+cmds = [
+  "cd excel-ai-frontend && npm ci --omit=dev --prefer-offline --no-audit",
+  "cd excel_ai_backend && pip install -r requirements.txt"
+]
+
+[phases.build]
+cmds = [
+  "cd excel-ai-frontend && npm run build"
+]
+
+[start]
+cmd = "cd excel_ai_backend && python -m flask run --host=0.0.0.0 --port=$PORT"
+
+[variables]
+NODE_ENV = "production"
+FLASK_ENV = "production"
+PYTHONPATH = "/app/excel_ai_backend"
