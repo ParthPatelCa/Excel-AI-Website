@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from src.models.user import db
-from models.visualization import ToolGeneration
+from src.models.visualization import ToolGeneration
 import pandas as pd
 import re
 import os
@@ -592,8 +592,8 @@ def create_regex_pattern(description, test_strings):
             'examples': []
         }
 
-@tools_bp.route('/regex-generator', methods=['POST'])
-def generate_regex():
+@tools_bp.route('/regex-generator-alt', methods=['POST'])
+def generate_regex_alt():
     """
     AI-powered Regex Pattern Generator
     Convert natural language descriptions to regex patterns
@@ -1723,8 +1723,8 @@ ORDER BY total DESC;'''
         'complexity': complexity
     }
 
-@tools_bp.route('/text-to-excel', methods=['POST'])
-def convert_text_to_excel():
+@tools_bp.route('/text-to-excel-alt', methods=['POST'])
+def convert_text_to_excel_alt():
     """
     Text to Excel Converter
     Convert unstructured text or PDF content to structured Excel format

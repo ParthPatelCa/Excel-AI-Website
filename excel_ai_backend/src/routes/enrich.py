@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from src.models.user import db
-from models.visualization import DataEnrichment
+from src.models.visualization import DataEnrichment
 import pandas as pd
 import re
 import os

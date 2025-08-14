@@ -7,9 +7,9 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from src.models.auth import User, db, FormulaInteraction
 from src.routes.auth import token_required
-from utils.telemetry import estimate_tokens
-from utils.model_router import get_model_chain, get_time_budget_seconds, get_task_params
-from utils.cache import cache, cache_key
+from src.utils.telemetry import estimate_tokens
+from src.utils.model_router import get_model_chain, get_time_budget_seconds, get_task_params
+from src.utils.cache import cache, cache_key
 
 load_dotenv()
 

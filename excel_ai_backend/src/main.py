@@ -28,12 +28,18 @@ from src.routes.data_prep import data_prep_bp
 from src.routes.enrich import enrich_bp
 from src.routes.tools import tools_bp
 
-app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
-app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'fallback-secret-key')
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+def create_app():
+    """Factory function to create and configure the Flask application"""
+    app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
+    app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'fallback-secret-key')
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
-# Enable CORS for all routes
-CORS(app)
+    # Enable CORS for all routes
+    CORS(app)
+    
+    return app
+
+app = create_app()
 
 # API versioning
 app.register_blueprint(auth_bp, url_prefix='/api/v1/auth', name='auth_v1')
@@ -52,16 +58,18 @@ app.register_blueprint(enrich_bp, url_prefix='/api/v1/enrich', name='enrich_v1')
 app.register_blueprint(tools_bp, url_prefix='/api/v1/tools', name='tools_v1')
 
 # Legacy support - redirect old API calls to v1
-app.register_blueprint(user_bp, url_prefix='/api', name='user_legacy')
-app.register_blueprint(excel_bp, url_prefix='/api/excel', name='excel_legacy')
-app.register_blueprint(formula_bp, url_prefix='/api/formula', name='formula_legacy')
-app.register_blueprint(google_sheets_bp, url_prefix='/api/google-sheets', name='google_sheets_legacy')
-app.register_blueprint(connectors_bp, url_prefix='/api/connectors', name='connectors_legacy')
-app.register_blueprint(analysis_bp, url_prefix='/api/analysis', name='analysis_legacy')
-app.register_blueprint(visualize_bp, url_prefix='/api/visualize', name='visualize_legacy')
-app.register_blueprint(data_prep_bp, url_prefix='/api/data-prep', name='data_prep_legacy')
-app.register_blueprint(enrich_bp, url_prefix='/api/enrich', name='enrich_legacy')
-app.register_blueprint(tools_bp, url_prefix='/api/tools', name='tools_legacy')
+# Note: Legacy routes are commented out to avoid endpoint conflicts
+# Uncomment and create separate blueprint instances if legacy support is needed
+# app.register_blueprint(user_bp, url_prefix='/api', name='user_legacy')
+# app.register_blueprint(excel_bp, url_prefix='/api/excel', name='excel_legacy')
+# app.register_blueprint(formula_bp, url_prefix='/api/formula', name='formula_legacy')
+# app.register_blueprint(google_sheets_bp, url_prefix='/api/google-sheets', name='google_sheets_legacy')
+# app.register_blueprint(connectors_bp, url_prefix='/api/connectors', name='connectors_legacy')
+# app.register_blueprint(analysis_bp, url_prefix='/api/analysis', name='analysis_legacy')
+# app.register_blueprint(visualize_bp, url_prefix='/api/visualize', name='visualize_legacy')
+# app.register_blueprint(data_prep_bp, url_prefix='/api/data-prep', name='data_prep_legacy')
+# app.register_blueprint(enrich_bp, url_prefix='/api/enrich', name='enrich_legacy')
+# app.register_blueprint(tools_bp, url_prefix='/api/tools', name='tools_legacy')
 
 # uncomment if you need to use database
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
