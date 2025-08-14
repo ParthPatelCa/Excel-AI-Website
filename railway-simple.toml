@@ -1,0 +1,11 @@
+# Ultra-simple Railway config - backend only
+[build]
+builder = "nixpacks"
+
+[start]
+cmd = "cd excel_ai_backend && python -m flask run --host=0.0.0.0 --port=$PORT"
+
+# Serve pre-built frontend from GitHub Pages or Netlify
+[variables]
+FLASK_ENV = "production"
+PYTHONPATH = "/app/excel_ai_backend"
