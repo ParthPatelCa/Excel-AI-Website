@@ -1,8 +1,13 @@
 {
   "version": 2,
-  "buildCommand": "cd excel-ai-frontend && npm run build",
-  "outputDirectory": "excel-ai-frontend/dist",
   "builds": [
+    {
+      "src": "excel-ai-frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
     {
       "src": "excel_ai_backend/vercel_app.py",
       "use": "@vercel/python"
@@ -18,12 +23,14 @@
       "dest": "/excel-ai-frontend/dist/$1"
     }
   ],
-  "env": {
-    "PYTHONPATH": "excel_ai_backend"
-  },
   "functions": {
     "excel_ai_backend/vercel_app.py": {
       "runtime": "python3.9"
+    }
+  },
+  "build": {
+    "env": {
+      "NODE_VERSION": "20"
     }
   }
 }
