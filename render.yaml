@@ -3,7 +3,7 @@ services:
   - type: web
     name: excel-ai-app
     runtime: python3
-    buildCommand: "chmod +x ./render-build-alt.sh && ./render-build-alt.sh"
+    buildCommand: "chmod +x ./render-build-ultra.sh && ./render-build-ultra.sh"
     startCommand: "cd excel_ai_backend && python -m flask run --host=0.0.0.0 --port=$PORT"
     envVars:
       - key: FLASK_ENV
