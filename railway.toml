@@ -1,13 +1,15 @@
 [build]
 builder = "nixpacks"
+dockerfilePath = "Dockerfile.railway"
 
 [deploy]
-healthcheckPath = "/api/health"
+healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
 
 [variables]
-NODE_VERSION = "20"
+NODE_VERSION = "18"
 FLASK_ENV = "production"
 PYTHONPATH = "/app/excel_ai_backend"
+NODE_OPTIONS = "--max-old-space-size=1536"

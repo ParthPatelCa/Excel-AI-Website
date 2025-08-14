@@ -1,0 +1,56 @@
+# Railway-optimized Dockerfile
+FROM node:18-alpine as frontend-builder
+
+# Set memory limits for Railway
+ENV NODE_OPTIONS="--max-old-space-size=1536"
+ENV npm_config_cache=/tmp/.npm
+
+WORKDIR /app/frontend
+
+# Copy package files
+COPY excel-ai-frontend/package*.json ./
+
+# Install dependencies with aggressive memory optimization
+RUN npm install --production --prefer-offline --no-audit --progress=false --legacy-peer-deps
+
+# Copy source files
+COPY excel-ai-frontend/ ./
+
+# Build with memory optimization
+RUN npm run build:railway
+
+# Python backend
+FROM python:3.9-slim as backend
+
+WORKDIR /app
+
+# Install minimal system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Install Python dependencies
+COPY excel_ai_backend/requirements.txt ./
+RUN pip install --no-cache-dir --disable-pip-version-check -r requirements.txt
+
+# Copy backend source
+COPY excel_ai_backend/ ./
+
+# Copy built frontend
+COPY --from=frontend-builder /app/frontend/dist ./src/static/
+
+# Environment variables
+ENV FLASK_APP=src/main.py
+ENV FLASK_ENV=production
+ENV PYTHONPATH=/app
+ENV PORT=5000
+
+EXPOSE 5000
+
+# Simple health check
+HEALTHCHECK --interval=60s --timeout=10s --start-period=30s --retries=2 \
+  CMD curl -f http://localhost:${PORT:-5000}/health || exit 1
+
+# Start command
+CMD python -m flask run --host=0.0.0.0 --port=${PORT:-5000}

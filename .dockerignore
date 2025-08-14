@@ -1,0 +1,92 @@
+# Git and version control
+.git
+.gitignore
+.gitconfig
+.githooks
+
+# Documentation
+*.md
+README.md
+PRD.md
+UPDATED_PRD.md
+FEATURE_SPRINT_FORMULA.md
+PERFORMANCE_UI_ENHANCEMENT_SUMMARY.md
+UI_UX_ENHANCEMENT_SUMMARY.md
+ADVANCED_TESTING_SUITE_SUMMARY.md
+COMPREHENSIVE_PLATFORM_FEATURES.md
+
+# Development files
+.env
+.env.example
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Node.js
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# Build outputs
+excel-ai-frontend/dist
+excel-ai-frontend/build
+excel-ai-frontend/.next
+excel-ai-frontend/out
+
+# Test files
+test_data
+tests
+test-results
+playwright-report
+coverage
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Deployment configs (keep only what's needed)
+vercel.json
+netlify.toml
+render.yaml
+railway-simple.toml
+
+# Tools and scripts
+tools
+start_backend.bat
