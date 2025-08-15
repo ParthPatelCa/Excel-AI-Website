@@ -132,6 +132,7 @@ export const EnhancedFileUpload = ({
             onChange={handleChange}
             className="hidden"
             disabled={disabled}
+            data-testid="file-input"
           />
           
           <div className="text-center space-y-4">
@@ -192,7 +193,7 @@ export const EnhancedFileUpload = ({
 
           {/* Upload Progress */}
           {isUploading && (
-            <div className="space-y-2">
+            <div className="space-y-2" data-testid="upload-progress">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Uploading...</span>
                 <span className="text-gray-600">{uploadProgress}%</span>
@@ -206,7 +207,7 @@ export const EnhancedFileUpload = ({
             <div className="space-y-3">
               {/* Success State */}
               {validation.isValid && (
-                <div className="flex items-center space-x-2 text-green-600">
+                <div className="flex items-center space-x-2 text-green-600" data-testid="upload-success">
                   <CheckCircle className="h-4 w-4" />
                   <span className="text-sm font-medium">File validated successfully</span>
                 </div>
@@ -214,7 +215,7 @@ export const EnhancedFileUpload = ({
 
               {/* Errors */}
               {validation.errors.length > 0 && (
-                <div className="space-y-2">
+                <div className="space-y-2" data-testid="file-error">
                   {validation.errors.map((error, index) => (
                     <div key={index} className="flex items-start space-x-2 text-red-600">
                       <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />

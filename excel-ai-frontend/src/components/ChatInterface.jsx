@@ -24,6 +24,7 @@ export const ChatInterface = ({ data, onError, messages: externalMessages, onMes
   const [currentQuestion, setCurrentQuestion] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [copiedMessageId, setCopiedMessageId] = useState(null)
+  const [isCached, setIsCached] = useState(false)
   const scrollAreaRef = useRef(null)
   const textareaRef = useRef(null)
 
@@ -70,6 +71,7 @@ export const ChatInterface = ({ data, onError, messages: externalMessages, onMes
           originalQuestion: originalQuestion
         }
         setMessages(prev => [...prev, botMessage])
+        // cached hint cannot be known without backend flag; keep future-ready
       } else {
         throw new Error('Failed to regenerate AI response')
       }
@@ -128,6 +130,7 @@ export const ChatInterface = ({ data, onError, messages: externalMessages, onMes
           originalQuestion: currentQuestion
         }
         setMessages(prev => [...prev, botMessage])
+        setIsCached(Boolean(response.cached))
       } else {
         throw new Error('Failed to get AI response')
       }

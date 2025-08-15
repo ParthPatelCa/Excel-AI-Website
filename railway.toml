@@ -1,0 +1,13 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+[variables]
+NODE_VERSION = "20"
+FLASK_ENV = "production"
+PYTHONPATH = "/app/excel_ai_backend"

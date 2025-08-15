@@ -3,7 +3,9 @@ import { AnimatedButton } from './ui/AnimatedButton';
 import { ThemeToggle } from './ui/ThemeToggle';
 import { FaviconManager } from './FaviconManager';
 import { AnalyticsProvider, CookieConsentBanner, SectionTracker, useAnalytics } from './Analytics';
-import { AccessibleProgress, LiveRegion, SkipToContent, FocusTrap } from './ui/Accessibility';
+import { AccessibleProgress, LiveRegion, SkipToContent } from './ui/Accessibility';
+import { Toaster } from './ui/sonner.jsx'
+import { UsageBadge } from './ui/UsageBadge.jsx'
 
 // Enhanced Loading Component with Analytics
 export const EnhancedLoading = ({ 
@@ -84,7 +86,7 @@ export const EnhancedError = ({
   onDismiss = null,
   className = ""
 }) => {
-  const { trackError } = useAnalytics();
+  const { trackError, trackEvent } = useAnalytics();
   
   React.useEffect(() => {
     trackError(error, { component: 'EnhancedError' });
@@ -379,6 +381,7 @@ export const EnhancedNavigation = ({ currentView, onViewChange, className = "" }
           
           {/* Theme Toggle */}
           <div className="flex items-center space-x-3">
+            <UsageBadge />
             <ThemeToggle />
           </div>
         </div>
@@ -396,6 +399,7 @@ export const EnhancedApp = ({ children }) => {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
         {children}
       </div>
+      <Toaster />
       <CookieConsentBanner />
     </AnalyticsProvider>
   );

@@ -154,11 +154,11 @@ export const AuthForm = ({ onAuthSuccess }) => {
         <CardContent>
           <Tabs defaultValue="login" className="space-y-4">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login" className="flex items-center space-x-2">
+              <TabsTrigger value="login" className="flex items-center space-x-2" data-testid="login-tab">
                 <LogIn className="h-4 w-4" />
                 <span>Login</span>
               </TabsTrigger>
-              <TabsTrigger value="register" className="flex items-center space-x-2">
+              <TabsTrigger value="register" className="flex items-center space-x-2" data-testid="register-tab">
                 <UserPlus className="h-4 w-4" />
                 <span>Sign Up</span>
               </TabsTrigger>
@@ -166,7 +166,7 @@ export const AuthForm = ({ onAuthSuccess }) => {
 
             {/* Error/Success Messages */}
             {error && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" data-testid="error-message">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
@@ -181,7 +181,7 @@ export const AuthForm = ({ onAuthSuccess }) => {
 
             {/* Login Tab */}
             <TabsContent value="login" className="space-y-4">
-              <form onSubmit={handleLoginSubmit} className="space-y-4">
+              <form onSubmit={handleLoginSubmit} className="space-y-4" data-testid="login-form">
                 <div className="space-y-2">
                   <Label htmlFor="login-email">Email</Label>
                   <Input
@@ -192,6 +192,7 @@ export const AuthForm = ({ onAuthSuccess }) => {
                     onChange={(e) => setLoginForm(prev => ({ ...prev, email: e.target.value }))}
                     required
                     disabled={isLoading}
+                    data-testid="email-input"
                   />
                 </div>
                 
@@ -206,6 +207,7 @@ export const AuthForm = ({ onAuthSuccess }) => {
                       onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
                       required
                       disabled={isLoading}
+                      data-testid="password-input"
                     />
                     <Button
                       type="button"
@@ -224,7 +226,7 @@ export const AuthForm = ({ onAuthSuccess }) => {
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button type="submit" className="w-full" disabled={isLoading} data-testid="login-button">
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -253,6 +255,7 @@ export const AuthForm = ({ onAuthSuccess }) => {
                       onChange={(e) => setRegisterForm(prev => ({ ...prev, firstName: e.target.value }))}
                       required
                       disabled={isLoading}
+                      data-testid="first-name-input"
                     />
                   </div>
                   <div className="space-y-2">
@@ -264,6 +267,7 @@ export const AuthForm = ({ onAuthSuccess }) => {
                       onChange={(e) => setRegisterForm(prev => ({ ...prev, lastName: e.target.value }))}
                       required
                       disabled={isLoading}
+                      data-testid="last-name-input"
                     />
                   </div>
                 </div>
@@ -292,6 +296,7 @@ export const AuthForm = ({ onAuthSuccess }) => {
                       onChange={(e) => handlePasswordChange(e.target.value)}
                       required
                       disabled={isLoading}
+                      data-testid="password-input"
                     />
                     <Button
                       type="button"
@@ -325,6 +330,7 @@ export const AuthForm = ({ onAuthSuccess }) => {
                       required
                       disabled={isLoading}
                       className={registerForm.confirmPassword && registerForm.password !== registerForm.confirmPassword ? 'border-red-500' : ''}
+                      data-testid="confirm-password-input"
                     />
                     <Button
                       type="button"
@@ -346,7 +352,7 @@ export const AuthForm = ({ onAuthSuccess }) => {
                   )}
                 </div>
 
-                <Button type="submit" className="w-full" disabled={isLoading || !passwordValidation.isValid}>
+                <Button type="submit" className="w-full" disabled={isLoading || !passwordValidation.isValid} data-testid="register-button">
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -23,7 +23,7 @@ const CHART_TYPES = [
 ]
 
 export function ChartBuilder({ data = [], columns = [] }) {
-  const { success, error: showError } = useToast()
+  const { success: showSuccess, error: showError } = useToast()
   const [selectedChartType, setSelectedChartType] = useState('auto')
   const [chartConfig, setChartConfig] = useState(null)
   const [chartData, setChartData] = useState(null)

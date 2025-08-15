@@ -3,7 +3,7 @@
 import time
 from datetime import datetime
 from functools import wraps
-from models.auth import db, TelemetryMetric
+from src.models.auth import db, TelemetryMetric
 import logging
 
 logger = logging.getLogger(__name__)

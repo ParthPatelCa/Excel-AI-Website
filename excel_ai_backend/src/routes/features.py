@@ -895,6 +895,216 @@ def generate_template_recommendations(template: Dict, df: pd.DataFrame) -> List[
     
     return recommendations
 
+@features_bp.route('/chart-recommendations', methods=['POST'])
+def get_chart_recommendations():
+    """Get AI-powered chart recommendations for dataset"""
+    try:
+        data = request.get_json()
+        dataset = data.get('dataset', [])
+        columns = data.get('columns', [])
+        
+        if not dataset:
+            return jsonify({'error': 'Dataset is required'}), 400
+        
+        recommendations = generate_ai_chart_recommendations(dataset, columns)
+        insights = generate_data_insights(dataset)
+        alternatives = generate_alternative_charts(dataset, columns)
+        
+        return jsonify({
+            'success': True,
+            'recommendations': recommendations,
+            'insights': insights,
+            'alternatives': alternatives
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to get recommendations: {str(e)}'}), 500
+
+def generate_ai_chart_recommendations(dataset: List[Dict], columns: List[str]) -> List[Dict]:
+    """Generate AI-powered chart recommendations with detailed analysis"""
+    df = pd.DataFrame(dataset)
+    recommendations = []
+    
+    # Analyze data characteristics
+    numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+    categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
+    date_cols = []
+    
+    # Detect date columns
+    for col in df.columns:
+        try:
+            pd.to_datetime(df[col].dropna().head(), errors='raise')
+            date_cols.append(col)
+        except:
+            pass
+    
+    data_patterns = {
+        'row_count': len(df),
+        'numeric_cols': len(numeric_cols),
+        'categorical_cols': len(categorical_cols),
+        'date_cols': len(date_cols),
+        'has_time_series': len(date_cols) > 0,
+        'has_correlation_potential': len(numeric_cols) >= 2,
+        'has_categories': len(categorical_cols) > 0
+    }
+    
+    # Time series recommendations
+    if data_patterns['has_time_series'] and len(numeric_cols) >= 1:
+        recommendations.append({
+            'chart_type': 'line',
+            'title': 'Time Series Analysis',
+            'reasoning': 'Your data contains date/time information perfect for trend analysis',
+            'confidence': 95,
+            'columns': {'x': date_cols[0], 'y': numeric_cols[0]},
+            'use_cases': ['Trend analysis', 'Temporal patterns', 'Forecasting'],
+            'subtitle': f'Track {numeric_cols[0]} over time'
+        })
+        
+        if len(numeric_cols) >= 2:
+            recommendations.append({
+                'chart_type': 'area',
+                'title': 'Cumulative Time Series',
+                'reasoning': 'Area charts emphasize volume and cumulative changes over time',
+                'confidence': 85,
+                'columns': {'x': date_cols[0], 'y': numeric_cols[0], 'series': numeric_cols[1] if len(numeric_cols) > 1 else ''},
+                'use_cases': ['Volume tracking', 'Cumulative metrics', 'Multiple series comparison'],
+                'subtitle': f'Cumulative view of {numeric_cols[0]} and {numeric_cols[1] if len(numeric_cols) > 1 else ""}'
+            })
+    
+    # Correlation analysis recommendations
+    if data_patterns['has_correlation_potential']:
+        # Calculate correlation strength
+        corr_matrix = df[numeric_cols].corr()
+        max_corr = 0
+        best_pair = (numeric_cols[0], numeric_cols[1] if len(numeric_cols) > 1 else numeric_cols[0])
+        
+        for i in range(len(numeric_cols)):
+            for j in range(i+1, len(numeric_cols)):
+                corr_val = abs(corr_matrix.iloc[i, j])
+                if corr_val > max_corr:
+                    max_corr = corr_val
+                    best_pair = (numeric_cols[i], numeric_cols[j])
+        
+        confidence = min(95, 60 + (max_corr * 35))  # Scale correlation to confidence
+        
+        recommendations.append({
+            'chart_type': 'scatter',
+            'title': 'Correlation Exploration',
+            'reasoning': f'Scatter plot reveals relationships between {best_pair[0]} and {best_pair[1]} (correlation: {max_corr:.2f})',
+            'confidence': int(confidence),
+            'columns': {'x': best_pair[0], 'y': best_pair[1], 'size': numeric_cols[2] if len(numeric_cols) > 2 else ''},
+            'use_cases': ['Relationship analysis', 'Outlier detection', 'Pattern discovery'],
+            'subtitle': f'Explore relationship between {best_pair[0]} and {best_pair[1]}'
+        })
+    
+    # Category comparison recommendations
+    if data_patterns['has_categories'] and len(numeric_cols) >= 1:
+        # Check cardinality of categorical columns
+        best_cat_col = categorical_cols[0]
+        min_cardinality = df[categorical_cols[0]].nunique()
+        
+        for col in categorical_cols:
+            cardinality = df[col].nunique()
+            if 2 <= cardinality <= 12 and cardinality < min_cardinality:  # Ideal range for visualization
+                best_cat_col = col
+                min_cardinality = cardinality
+        
+        if min_cardinality <= 12:  # Suitable for bar chart
+            recommendations.append({
+                'chart_type': 'bar',
+                'title': 'Category Comparison',
+                'reasoning': f'Bar chart effectively compares {numeric_cols[0]} across {min_cardinality} categories in {best_cat_col}',
+                'confidence': 90,
+                'columns': {'x': best_cat_col, 'y': numeric_cols[0]},
+                'use_cases': ['Performance comparison', 'Rankings', 'Category analysis'],
+                'subtitle': f'{numeric_cols[0]} by {best_cat_col}'
+            })
+        
+        if min_cardinality <= 8:  # Suitable for pie chart
+            recommendations.append({
+                'chart_type': 'pie',
+                'title': 'Proportion Analysis',
+                'reasoning': f'Pie chart shows how {numeric_cols[0]} is distributed across {best_cat_col} categories',
+                'confidence': 80,
+                'columns': {'label': best_cat_col, 'value': numeric_cols[0]},
+                'use_cases': ['Market share', 'Budget breakdown', 'Part-to-whole relationships'],
+                'subtitle': f'Distribution of {numeric_cols[0]} by {best_cat_col}'
+            })
+    
+    # Multi-dimensional analysis
+    if len(numeric_cols) >= 3:
+        recommendations.append({
+            'chart_type': 'scatter',
+            'title': 'Multi-Dimensional Analysis',
+            'reasoning': 'Use size and color encoding to explore relationships between 3+ variables simultaneously',
+            'confidence': 75,
+            'columns': {
+                'x': numeric_cols[0], 
+                'y': numeric_cols[1], 
+                'size': numeric_cols[2],
+                'color': categorical_cols[0] if categorical_cols else numeric_cols[2]
+            },
+            'use_cases': ['Complex pattern analysis', 'Segmentation', 'Multi-variate exploration'],
+            'subtitle': f'Explore {numeric_cols[0]}, {numeric_cols[1]}, and {numeric_cols[2]}'
+        })
+    
+    # Sort by confidence and return top recommendations
+    recommendations.sort(key=lambda x: x['confidence'], reverse=True)
+    return recommendations[:6]  # Return top 6 recommendations
+
+def generate_data_insights(dataset: List[Dict]) -> str:
+    """Generate AI insights about the dataset"""
+    df = pd.DataFrame(dataset)
+    
+    insights = []
+    
+    # Data size insights
+    if len(df) > 10000:
+        insights.append(f"Large dataset with {len(df):,} rows - consider aggregation for better performance")
+    elif len(df) < 50:
+        insights.append(f"Small dataset with {len(df)} rows - statistical patterns may be limited")
+    
+    # Data quality insights
+    missing_pct = (df.isnull().sum().sum() / (len(df) * len(df.columns))) * 100
+    if missing_pct > 10:
+        insights.append(f"Dataset has {missing_pct:.1f}% missing values - consider data cleaning")
+    
+    # Column insights
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    if len(numeric_cols) >= 3:
+        insights.append("Multiple numeric variables detected - excellent for correlation and multi-dimensional analysis")
+    
+    # Cardinality insights
+    high_cardinality_cols = [col for col in df.columns if df[col].nunique() > len(df) * 0.8]
+    if high_cardinality_cols:
+        insights.append(f"High cardinality columns detected ({', '.join(high_cardinality_cols[:2])}) - may need grouping for visualization")
+    
+    return " | ".join(insights) if insights else "Clean, well-structured dataset perfect for visualization"
+
+def generate_alternative_charts(dataset: List[Dict], columns: List[str]) -> List[Dict]:
+    """Generate alternative chart suggestions"""
+    alternatives = [
+        {
+            'name': 'Interactive Dashboard',
+            'description': 'Combine multiple chart types in a single dashboard',
+            'complexity': 'Advanced',
+            'time_estimate': '15-20 minutes'
+        },
+        {
+            'name': 'Animated Charts',
+            'description': 'Show data changes over time with animations',
+            'complexity': 'Intermediate',
+            'time_estimate': '10-15 minutes'
+        },
+        {
+            'name': 'Statistical Overlays',
+            'description': 'Add trend lines, confidence intervals, and statistical markers',
+            'complexity': 'Advanced',
+            'time_estimate': '8-12 minutes'
+        }
+    ]
+    return alternatives
+
 def create_custom_template(template_data: Dict) -> Dict:
     """Create a new custom template"""
     # Validate template data

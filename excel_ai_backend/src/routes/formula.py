@@ -5,9 +5,11 @@ import time
 import random
 from openai import OpenAI
 from dotenv import load_dotenv
-from models.auth import User, db, FormulaInteraction
-from routes.auth import token_required
+from src.models.auth import User, db, FormulaInteraction
+from src.routes.auth import token_required
 from utils.telemetry import estimate_tokens
+from utils.model_router import get_model_chain, get_time_budget_seconds, get_task_params
+from utils.cache import cache, cache_key
 
 load_dotenv()
 
@@ -35,7 +37,7 @@ def resolve_model(explicit: str | None = None):
     ordered = [PREFERRED_MODEL] + [m for m in FALLBACK_MODELS if m != PREFERRED_MODEL]
     return ordered[0]
 
-def call_openai_with_retry(messages, max_retries=3, model: str | None = None, max_tokens=800):
+def call_openai_with_retry(messages, max_retries=3, model: str | None = None, max_tokens=800, temperature=0.2, time_budget_s=8):
     if not client:
         return {
             'success': False,
@@ -52,8 +54,8 @@ def call_openai_with_retry(messages, max_retries=3, model: str | None = None, ma
                 model=resolved_model,
                 messages=messages,
                 max_tokens=max_tokens,
-                temperature=0.2,
-                timeout=30
+                temperature=temperature,
+                timeout=time_budget_s
             )
             return {
                 'success': True,
@@ -219,12 +221,33 @@ tips (array of strings) - practical usage/edge case tips
 IMPORTANT: Only reference available columns exactly as provided. If user description mentions columns not in list, warn in tips and DO NOT hallucinate.
 """
 
+    # Router + caching
+    task = 'formula_generate'
+    model_chain = get_model_chain(current_user, task)
+    params = get_task_params(task)
+    ttl_seconds = 60 * 60 * 24
+    ckey = cache_key(task, {
+        'description': description,
+        'columns': columns,
+        'platform': platform,
+        'examples': examples
+    }, model_chain)
+
+    cached = cache.get(ckey)
+    if cached:
+        return jsonify({
+            'success': True,
+            'data': cached['data'],
+            'model_used': cached['model_used'],
+            'fallback_used': cached.get('fallback_used', False)
+        })
+
     # Track timing for telemetry
     start_time = time.time()
     result = call_openai_with_retry([
         {"role": "system", "content": system_msg},
         {"role": "user", "content": user_prompt}
-    ], max_tokens=900)
+    ], max_tokens=params['max_tokens'], temperature=params['temperature'], time_budget_s=get_time_budget_seconds(model_chain[0]) )
     latency_ms = int((time.time() - start_time) * 1000)
 
     fallback_used = False
@@ -281,6 +304,12 @@ IMPORTANT: Only reference available columns exactly as provided. If user descrip
         'model_used': result.get('model_used'),
         'fallback_used': fallback_used
     }
+    # cache result
+    cache.set(ckey, {
+        'data': response_payload['data'],
+        'model_used': response_payload['model_used'],
+        'fallback_used': response_payload['fallback_used']
+    }, ttl_seconds)
     # persist with telemetry
     interaction = FormulaInteraction(
         user_id=current_user.id,
@@ -325,12 +354,24 @@ simplified_alternative (string) - if shorter equivalent exists, else null
     if not current_user.can_query():
         return jsonify({'error': 'Query limit reached for current plan', 'limit_reached': True}), 429
 
+    task = 'formula_explain'
+    model_chain = get_model_chain(current_user, task)
+    params = get_task_params(task)
+    ckey = cache_key(task, {
+        'formula': formula,
+        'columns': context_cols,
+        'platform': platform
+    }, model_chain)
+    cached = cache.get(ckey)
+    if cached:
+        return jsonify({'success': True, 'data': cached['data'], 'model_used': cached['model_used'], 'fallback_used': cached.get('fallback_used', False)})
+
     # Track timing for telemetry
     start_time = time.time()
     result = call_openai_with_retry([
         {"role": "system", "content": system_msg},
         {"role": "user", "content": user_prompt}
-    ], max_tokens=700)
+    ], max_tokens=params['max_tokens'], temperature=params['temperature'], time_budget_s=get_time_budget_seconds(model_chain[0]))
     latency_ms = int((time.time() - start_time) * 1000)
 
     if not result['success']:
@@ -386,6 +427,7 @@ simplified_alternative (string) - if shorter equivalent exists, else null
     db.session.add(interaction)
     current_user.increment_usage('query')
     db.session.commit()
+    cache.set(ckey, {'data': data, 'model_used': result.get('model_used'), 'fallback_used': fallback_used}, 86400)
     return jsonify({'success': True, 'data': data, 'model_used': result.get('model_used'), 'fallback_used': fallback_used})
 
 @formula_bp.route('/debug', methods=['POST'])
@@ -416,12 +458,24 @@ notes (array) - any additional helpful notes
     if not current_user.can_query():
         return jsonify({'error': 'Query limit reached for current plan', 'limit_reached': True}), 429
 
+    task = 'formula_debug'
+    model_chain = get_model_chain(current_user, task)
+    params = get_task_params(task)
+    ckey = cache_key(task, {
+        'formula': formula,
+        'error_message': error_message,
+        'columns': sample_context
+    }, model_chain)
+    cached = cache.get(ckey)
+    if cached:
+        return jsonify({'success': True, 'data': cached['data'], 'model_used': cached['model_used'], 'fallback_used': cached.get('fallback_used', False)})
+
     # Track timing for telemetry
     start_time = time.time()
     result = call_openai_with_retry([
         {"role": "system", "content": system_msg},
         {"role": "user", "content": user_prompt}
-    ], max_tokens=750)
+    ], max_tokens=params['max_tokens'], temperature=params['temperature'], time_budget_s=get_time_budget_seconds(model_chain[0]))
     latency_ms = int((time.time() - start_time) * 1000)
 
     if not result['success']:
@@ -477,7 +531,176 @@ notes (array) - any additional helpful notes
     db.session.add(interaction)
     current_user.increment_usage('query')
     db.session.commit()
+    cache.set(ckey, {'data': data, 'model_used': result.get('model_used'), 'fallback_used': fallback_used}, 86400)
     return jsonify({'success': True, 'data': data, 'model_used': result.get('model_used'), 'fallback_used': fallback_used})
+
+
+@formula_bp.route('/batch-generate', methods=['POST'])
+@token_required
+def batch_generate_formulas(current_user):
+    """Generate multiple formulas from a list of descriptions."""
+    payload = request.json or {}
+    descriptions = payload.get('descriptions', [])
+    columns = payload.get('columns', [])
+    platform = payload.get('platform', 'excel')
+    
+    if not descriptions or not isinstance(descriptions, list):
+        return jsonify({'success': False, 'error': 'descriptions field is required and must be an array'}), 400
+    
+    if len(descriptions) > 50:  # Reasonable limit
+        return jsonify({'success': False, 'error': 'Maximum 50 formulas can be generated in a batch'}), 400
+    
+    # Check usage limits - count as multiple queries
+    if not current_user.can_query():
+        return jsonify({'success': False, 'error': 'Query limit reached for your plan', 'limit_reached': True}), 429
+    
+    # Estimate if user has enough quota for the batch
+    required_queries = len(descriptions)
+    limits = current_user.get_limits()
+    remaining = limits['queries'] - current_user.monthly_queries if limits['queries'] != float('inf') else float('inf')
+    
+    if remaining != float('inf') and required_queries > remaining:
+        return jsonify({
+            'success': False, 
+            'error': f'Batch requires {required_queries} queries but you have {remaining} remaining',
+            'limit_reached': True
+        }), 429
+    
+    start_time = time.time()
+    results = []
+    successful_count = 0
+    
+    for i, description in enumerate(descriptions):
+        if not description or not description.strip():
+            results.append({
+                'index': i,
+                'description': description,
+                'success': False,
+                'error': 'Empty description',
+                'status': 'failed'
+            })
+            continue
+            
+        try:
+            # Use caching for repeated descriptions
+            cache_k = cache_key('formula_generate', description, columns, platform, current_user.id)
+            cached = cache.get(cache_k)
+            
+            if cached:
+                formula_result = cached
+                formula_result['cached'] = True
+            else:
+                # Generate formula using existing logic
+                system_msg = (
+                    "You are an expert spreadsheet formula assistant. Output concise, correct formulas. "
+                    "Prefer modern dynamic array functions when available. Provide variants only if meaningfully different. "
+                    + _platform_guidance(platform)
+                )
+                
+                user_prompt = f"""
+                Generate a spreadsheet formula based on the following request.
+                Target platform: {platform}
+                User description: {description}
+                Available columns (may be referenced): {columns}
+                Return JSON with keys: primary_formula, variants, explanation, tips.
+                IMPORTANT: Only reference available columns exactly as provided.
+                """
+                
+                messages = [
+                    {"role": "system", "content": system_msg},
+                    {"role": "user", "content": user_prompt}
+                ]
+                
+                ai_resp = call_openai_with_retry(
+                    messages=messages,
+                    max_tokens=get_task_params('formula_generate')['max_tokens'],
+                    temperature=get_task_params('formula_generate')['temperature'],
+                    time_budget_s=6  # Shorter timeout for batch
+                )
+                
+                if not ai_resp.get('success'):
+                    results.append({
+                        'index': i,
+                        'description': description,
+                        'success': False,
+                        'error': ai_resp.get('error', 'Unknown error'),
+                        'status': 'failed'
+                    })
+                    continue
+                
+                parsed = parse_json_safely(ai_resp['content'], 'raw')
+                parsed_columns = _detect_referenced_columns(parsed.get('primary_formula','') or '')
+                validation_info = _validate_columns(parsed_columns, columns)
+                
+                formula_result = {
+                    'primary_formula': parsed.get('primary_formula'),
+                    'variants': parsed.get('variants', []),
+                    'explanation': parsed.get('explanation'),
+                    'tips': parsed.get('tips', []),
+                    'validation': validation_info,
+                    'cached': False
+                }
+                
+                # Cache the result
+                cache.set(cache_k, formula_result, ttl_seconds=86400)
+            
+            results.append({
+                'index': i,
+                'description': description,
+                'success': True,
+                'data': formula_result,
+                'status': 'success'
+            })
+            successful_count += 1
+            
+        except Exception as e:
+            results.append({
+                'index': i,
+                'description': description,
+                'success': False,
+                'error': str(e),
+                'status': 'failed'
+            })
+    
+    # Increment usage by actual successful queries
+    for _ in range(successful_count):
+        current_user.increment_usage('query')
+    
+    total_time_ms = int((time.time() - start_time) * 1000)
+    
+    # Log batch interaction
+    batch_interaction = FormulaInteraction(
+        user_id=current_user.id,
+        interaction_type='batch_generate',
+        input_payload=payload,
+        output_payload={
+            'total_requests': len(descriptions),
+            'successful_count': successful_count,
+            'failed_count': len(descriptions) - successful_count,
+            'results': results
+        },
+        model_used='batch',
+        fallback_used=False,
+        latency_ms=total_time_ms,
+        tokens_used=0,  # TODO: Sum up individual token usage
+        success=successful_count > 0
+    )
+    db.session.add(batch_interaction)
+    db.session.commit()
+    
+    return jsonify({
+        'success': True,
+        'data': {
+            'results': results,
+            'summary': {
+                'total_requests': len(descriptions),
+                'successful_count': successful_count,
+                'failed_count': len(descriptions) - successful_count,
+                'success_rate': round((successful_count / len(descriptions)) * 100, 1) if descriptions else 0,
+                'total_time_ms': total_time_ms
+            }
+        }
+    })
 
 
 @formula_bp.route('/history', methods=['GET'])

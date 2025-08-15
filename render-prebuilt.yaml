@@ -1,0 +1,19 @@
+services:
+  # Backend with Pre-Built Frontend
+  - type: web
+    name: excel-ai-app
+    runtime: python3
+    buildCommand: |
+      echo "🚀 Using pre-built frontend deployment..."
+      cd excel_ai_backend
+      pip install -r requirements.txt
+      echo "✅ Backend dependencies installed"
+    startCommand: "cd excel_ai_backend && python -m flask run --host=0.0.0.0 --port=$PORT"
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHONPATH
+        value: /opt/render/project/src/excel_ai_backend
+      - key: OPENAI_API_KEY
+        sync: false
+    healthCheckPath: /api/health

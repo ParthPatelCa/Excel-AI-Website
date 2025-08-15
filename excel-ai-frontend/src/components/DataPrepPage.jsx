@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input.jsx'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
 import { Progress } from '@/components/ui/progress.jsx'
-import { CheckCircle, AlertCircle, Zap, Blend, RefreshCw, Download, Upload, Wand2 } from 'lucide-react'
+import { CheckCircle, AlertCircle, Zap, Blend, RefreshCw, Download, Upload, Wand2, ShieldCheck } from 'lucide-react'
+import { SmartDataValidation } from '@/components/SmartDataValidation.jsx'
 import apiService from '@/services/api.js'
 
 export function DataPrepPage() {
@@ -193,10 +194,14 @@ export function DataPrepPage() {
       </div>
 
       <Tabs value={activeOperation} onValueChange={setActiveOperation} className="max-w-6xl mx-auto">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="analyze" className="flex items-center gap-2">
             <Zap className="h-4 w-4" />
             Analyze
+          </TabsTrigger>
+          <TabsTrigger value="validate" className="flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4" />
+            Smart Validate
           </TabsTrigger>
           <TabsTrigger value="clean" className="flex items-center gap-2">
             <RefreshCw className="h-4 w-4" />
@@ -211,6 +216,16 @@ export function DataPrepPage() {
             Transform
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="validate" className="space-y-6">
+          <SmartDataValidation 
+            data={uploadedData} 
+            onValidationComplete={(results) => {
+              console.log('Validation complete:', results)
+              // Could integrate with cleaning suggestions here
+            }}
+          />
+        </TabsContent>
 
         <TabsContent value="analyze" className="space-y-6">
           <Card>

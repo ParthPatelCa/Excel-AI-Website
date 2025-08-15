@@ -17,13 +17,13 @@ class ApiService {
   // Helper method for making HTTP requests
   async makeRequest(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
-  // Attach auth token if exists
-  const token = localStorage.getItem('authToken');
-    
+    // Attach auth token if exists (support both keys)
+    const token = localStorage.getItem('auth_token') || localStorage.getItem('authToken');
+
     const defaultOptions = {
       headers: {
         'Content-Type': 'application/json',
-    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         ...options.headers,
       },
     };
@@ -41,7 +41,10 @@ class ApiService {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        const error = new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        error.status = response.status;
+        error.data = errorData;
+        throw error;
       }
 
       return await response.json();
@@ -145,6 +148,13 @@ class ApiService {
     });
   }
 
+  async batchGenerateFormulas(descriptions, { columns = [], platform = 'excel' } = {}) {
+    return this.makeRequest('/formula/batch-generate', {
+      method: 'POST',
+      body: JSON.stringify({ descriptions, columns, platform })
+    });
+  }
+
   async explainFormula(formula, { columns = [], platform = 'excel' } = {}) {
     return this.makeRequest('/formula/explain', {
       method: 'POST',
@@ -173,11 +183,11 @@ class ApiService {
 
   // Telemetry endpoints
   async getTelemetryMetrics(days = 30) {
-    return this.makeRequest(`/telemetry/metrics?days=${days}`, { method: 'GET' })
+    return this.makeRequest(`/v1/telemetry/metrics?days=${days}`, { method: 'GET' })
   }
 
   async getHealthStatus() {
-    return this.makeRequest('/telemetry/health', { method: 'GET' })
+    return this.makeRequest('/v1/telemetry/health', { method: 'GET' })
   }
 
   // Chat conversation endpoints
@@ -223,10 +233,6 @@ class ApiService {
 
   // Telemetry endpoints
   async getUserMetrics(days = 30) {
-    return this.makeRequest(`/v1/telemetry/metrics?days=${days}`, { method: 'GET' })
-  }
-
-  async getTelemetryMetrics(days = 30) {
     return this.makeRequest(`/v1/telemetry/metrics?days=${days}`, { method: 'GET' })
   }
 
@@ -377,6 +383,13 @@ class ApiService {
     })
   }
 
+  async smartValidateData(data, context = {}) {
+    return this.makeRequest('/v1/data-prep/smart-validate', {
+      method: 'POST',
+      body: JSON.stringify({ data, context })
+    })
+  }
+
   async cleanData(cleaningData) {
     return this.makeRequest('/v1/data-prep/clean', {
       method: 'POST',
@@ -487,6 +500,117 @@ class ApiService {
     const queryString = new URLSearchParams(params).toString()
     const endpoint = queryString ? `/v1/tools/history?${queryString}` : '/v1/tools/history'
     return this.makeRequest(endpoint, { method: 'GET' })
+  }
+
+  // ============ CHART BUILDER API ============
+  
+  async getChartRecommendations(dataset, columns) {
+    return this.makeRequest('/v1/features/chart-recommendations', {
+      method: 'POST',
+      body: JSON.stringify({ dataset, columns })
+    })
+  }
+
+  // ============ SQL QUERY BUILDER API ============
+  
+  async generateSQLQuery(question, schema = {}, databaseType = 'mysql') {
+    return this.makeRequest('/api/v1/tools/sql-query-builder', {
+      method: 'POST',
+      body: JSON.stringify({ 
+        question, 
+        schema, 
+        database_type: databaseType 
+      })
+    })
+  }
+
+  // ============ DATA FORMATTER API ============
+  
+  async formatData(data, rules = {}, targetFormat = 'clean') {
+    return this.makeRequest('/api/v1/tools/data-formatter', {
+      method: 'POST',
+      body: JSON.stringify({ 
+        data, 
+        rules, 
+        target_format: targetFormat 
+      })
+    })
+  }
+
+  // ============ VBA SCRIPT GENERATOR API (Enhanced) ============
+  
+  async generateVBAScript(description, workbookContext = {}) {
+    return this.makeRequest('/api/v1/tools/vba-script', {
+      method: 'POST',
+      body: JSON.stringify({ 
+        description, 
+        workbook_context: workbookContext 
+      })
+    })
+  }
+
+  // ============ TEXT TO CODE GENERATOR API ============
+  
+  async generateCodeFromText(description, language = 'vba', context = {}) {
+    return this.makeRequest('/api/v1/tools/text-to-code', {
+      method: 'POST',
+      body: JSON.stringify({ 
+        description, 
+        language, 
+        context 
+      })
+    })
+  }
+
+  // ============ AI PIVOT BUILDER API ============
+  
+  async buildPivotTable(description, columns = [], sampleData = []) {
+    return this.makeRequest('/api/v1/tools/pivot-builder', {
+      method: 'POST',
+      body: JSON.stringify({ 
+        description, 
+        columns, 
+        sample_data: sampleData 
+      })
+    })
+  }
+
+  // ============ TEXT TO EXCEL CONVERTER API ============
+  
+  async convertTextToExcel(textContent, sourceType = 'text', structureHints = {}) {
+    return this.makeRequest('/api/v1/tools/text-to-excel', {
+      method: 'POST',
+      body: JSON.stringify({ 
+        text: textContent, 
+        source_type: sourceType, 
+        structure_hints: structureHints 
+      })
+    })
+  }
+
+  // ============ SENTIMENT ANALYSIS API ============
+  
+  async analyzeSentiment(textData, analysisType = 'simple') {
+    return this.makeRequest('/api/v1/tools/sentiment-analysis', {
+      method: 'POST',
+      body: JSON.stringify({ 
+        text: textData, 
+        analysis_type: analysisType 
+      })
+    })
+  }
+
+  // ============ TEXT CLASSIFICATION API ============
+  
+  async classifyText(textData, categories = [], classificationType = 'single') {
+    return this.makeRequest('/api/v1/tools/text-classification', {
+      method: 'POST',
+      body: JSON.stringify({ 
+        text: textData, 
+        categories, 
+        classification_type: classificationType 
+      })
+    })
   }
 }
 

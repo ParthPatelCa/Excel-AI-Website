@@ -4,12 +4,26 @@ import { Badge } from '@/components/ui/badge.jsx'
 import { Progress } from '@/components/ui/progress.jsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
 import { BarChart3, Clock, Zap, TrendingUp, AlertTriangle, CheckCircle } from 'lucide-react'
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  CartesianGrid,
+  Area,
+  ComposedChart,
+  Bar
+} from 'recharts'
 import apiService from '@/services/api.js'
 
-export const UsageDashboard = ({ user }) => {
+export const UsageDashboard = () => {
   const [metrics, setMetrics] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedPeriod, setSelectedPeriod] = useState(30)
+  const [showForecast, setShowForecast] = useState(true)
 
   useEffect(() => {
     loadMetrics()
@@ -46,6 +60,68 @@ export const UsageDashboard = ({ user }) => {
     return 'text-red-600'
   }
 
+  // Build time-series dataset with derived metrics and forecast
+  const buildChartData = () => {
+    if (!metrics?.timeseries) return []
+    const ts = metrics.timeseries.map(d => ({
+      date: d.date,
+      total_calls: d.total_calls,
+      success_calls: d.success_calls,
+      fallback_calls: d.fallback_calls,
+      avg_latency_ms: d.avg_latency_ms,
+      success_rate: d.total_calls > 0 ? Math.round((d.success_calls / d.total_calls) * 100) : 0,
+      fallback_rate: d.total_calls > 0 ? Math.round((d.fallback_calls / d.total_calls) * 100) : 0,
+    }))
+
+    // Moving average for smoothing (7-day)
+    const windowSize = 7
+    const ma = (arr, w) => arr.map((_, i) => {
+      const start = Math.max(0, i - w + 1)
+      const slice = arr.slice(start, i + 1)
+      const sum = slice.reduce((s, v) => s + v, 0)
+      return Math.round(sum / slice.length)
+    })
+    const maCalls = ma(ts.map(d => d.total_calls), Math.min(windowSize, ts.length))
+    ts.forEach((d, i) => { d.ma_total_calls = maCalls[i] })
+
+    if (!showForecast || ts.length < 3) {
+      return ts
+    }
+
+    // Linear regression forecast for next 7 days on total_calls
+    const n = ts.length
+    const x = Array.from({ length: n }, (_, i) => i)
+    const y = ts.map(d => d.total_calls)
+    const sumX = x.reduce((a, b) => a + b, 0)
+    const sumY = y.reduce((a, b) => a + b, 0)
+    const sumXY = x.reduce((a, xi, i) => a + xi * y[i], 0)
+    const sumXX = x.reduce((a, xi) => a + xi * xi, 0)
+    const denom = (n * sumXX - sumX * sumX) || 1
+    const slope = (n * sumXY - sumX * sumY) / denom
+    const intercept = (sumY - slope * sumX) / n
+    const horizon = 7
+
+    const lastDate = new Date(ts[ts.length - 1].date + 'T00:00:00Z')
+    const forecast = []
+    for (let i = 1; i <= horizon; i++) {
+      const idx = n - 1 + i
+      const value = Math.max(0, Math.round(intercept + slope * idx))
+      const d = new Date(lastDate)
+      d.setUTCDate(d.getUTCDate() + i)
+      forecast.push({
+        date: d.toISOString().slice(0, 10),
+        total_calls: null,
+        forecast_total_calls: value,
+        avg_latency_ms: null,
+        isForecast: true
+      })
+    }
+
+    return [...ts, ...forecast]
+  }
+
+  const chartData = buildChartData()
+
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -73,6 +149,52 @@ export const UsageDashboard = ({ user }) => {
 
   return (
     <div className="space-y-6">
+      {/* Usage Trends */}
+      <Card>
+        <CardHeader className="flex items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-lg font-semibold flex items-center gap-2">
+            <TrendingUp className="h-4 w-4" /> Usage Trends
+          </CardTitle>
+          <div className="flex items-center gap-3 text-sm">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={showForecast} onChange={(e) => setShowForecast(e.target.checked)} />
+              Show 7d Forecast
+            </label>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" tickFormatter={(d) => new Date(d + 'T00:00:00Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} />
+                <YAxis yAxisId="left" />
+                <Tooltip />
+                <Legend />
+                <Area yAxisId="left" type="monotone" dataKey="ma_total_calls" name="Calls (7d MA)" stroke="#60a5fa" fill="#93c5fd" fillOpacity={0.3} />
+                <Bar yAxisId="left" dataKey="fallback_calls" name="Fallback Calls" barSize={12} fill="#f59e0b" />
+                <Line yAxisId="left" type="monotone" dataKey="total_calls" name="Total Calls" stroke="#2563eb" strokeWidth={2} dot={false} />
+                {showForecast && (
+                  <Line yAxisId="left" type="monotone" dataKey="forecast_total_calls" name="Forecast (7d)" stroke="#7c3aed" strokeDasharray="5 5" dot={false} />
+                )}
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="h-48">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" tickFormatter={(d) => new Date(d + 'T00:00:00Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} />
+                <YAxis />
+                <Tooltip formatter={(value) => typeof value === 'number' ? `${formatLatency(value)}` : value} />
+                <Legend />
+                <Line type="monotone" dataKey="avg_latency_ms" name="Avg Latency" stroke="#16a34a" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
       {/* Period Selector */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Usage Analytics</h2>

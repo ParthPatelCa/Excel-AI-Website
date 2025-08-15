@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash
 from functools import wraps
 import re
 from datetime import datetime
-from models.auth import User, db
+from src.models.auth import User, db
 import jwt
 import os
 

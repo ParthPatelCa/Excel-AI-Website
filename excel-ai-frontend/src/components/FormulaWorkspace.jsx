@@ -8,8 +8,9 @@ import { Badge } from '@/components/ui/badge.jsx'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx'
 import { ColumnValidationAlert } from '@/components/ColumnValidationAlert.jsx'
 import { FormulaDisplay } from '@/components/FormulaDisplay.jsx'
+import { BatchFormulaGenerator } from '@/components/BatchFormulaGenerator.jsx'
 import apiService from '@/services/api.js'
-import { Loader2, Beaker, Bug, Lightbulb, AlertCircle } from 'lucide-react'
+import { Loader2, Beaker, Bug, Lightbulb, AlertCircle, Zap } from 'lucide-react'
 
 export function FormulaWorkspace({ columns = [] }) {
   const [activeTab, setActiveTab] = useState('generate')
@@ -121,11 +122,19 @@ export function FormulaWorkspace({ columns = [] }) {
           </div>
         )}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-4">
+          <TabsList className="grid w-full grid-cols-4 mb-4">
             <TabsTrigger value="generate">Generate</TabsTrigger>
+            <TabsTrigger value="batch" className="flex items-center gap-1">
+              <Zap className="h-3 w-3" />
+              Batch
+            </TabsTrigger>
             <TabsTrigger value="explain">Explain</TabsTrigger>
             <TabsTrigger value="debug">Debug</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="batch" className="space-y-4">
+            <BatchFormulaGenerator columns={columns} />
+          </TabsContent>
 
           <TabsContent value="generate" className="space-y-4">
             <div className="space-y-4">

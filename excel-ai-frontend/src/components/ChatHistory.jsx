@@ -191,7 +191,4 @@ export const ChatHistory = ({ onLoadConversation, onError }) => {
       </CardContent>
     </Card>
   )
-
-  // Expose the saveConversation method to parent components
-  ChatHistory.saveConversation = saveConversation
 }

@@ -1,0 +1,18 @@
+services:
+  # Full-Stack App (Single Service)
+  - type: web
+    name: excel-ai-app
+    runtime: python3
+    buildCommand: "chmod +x ./render-build-ultra.sh && ./render-build-ultra.sh"
+    startCommand: "cd excel_ai_backend && python -m flask run --host=0.0.0.0 --port=$PORT"
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "20"
+      - key: PYTHONPATH
+        value: /opt/render/project/src/excel_ai_backend
+      - key: NPM_CONFIG_LOGLEVEL
+        value: "verbose"
+      - key: OPENAI_API_KEY
+        sync: false  # Set this manually in Render dashboard

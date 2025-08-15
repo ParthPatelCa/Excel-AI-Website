@@ -125,6 +125,24 @@ class User(db.Model):
             'preferred_model': self.preferred_model
         }
 
+    def get_limits(self):
+        """Return usage limits for the current subscription tier."""
+        if self.subscription_tier == 'enterprise':
+            return {
+                'queries': 'unlimited',
+                'uploads': 'unlimited'
+            }
+        if self.subscription_tier == 'pro':
+            return {
+                'queries': 500,
+                'uploads': 100
+            }
+        # Default to free tier limits
+        return {
+            'queries': 20,
+            'uploads': 5
+        }
+
 
 class Analysis(db.Model):
     __tablename__ = 'analyses'

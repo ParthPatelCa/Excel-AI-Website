@@ -87,20 +87,20 @@ export const UserDashboard = ({ user, onLogout }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 p-4" data-testid="user-dashboard">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600">Welcome back, {user.first_name}!</p>
+            <p className="text-gray-600" data-testid="welcome-message">Welcome back, {user.first_name}!</p>
           </div>
           <div className="flex items-center space-x-4">
             <Button variant="outline" size="sm">
               <Settings className="h-4 w-4 mr-2" />
               Settings
             </Button>
-            <Button variant="outline" size="sm" onClick={handleLogout}>
+            <Button variant="outline" size="sm" onClick={handleLogout} data-testid="logout-button">
               <LogOut className="h-4 w-4 mr-2" />
               Sign Out
             </Button>
