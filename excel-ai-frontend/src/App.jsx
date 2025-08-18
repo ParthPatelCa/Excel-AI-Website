@@ -56,7 +56,6 @@ import {
   SectionTracker,
   useAnalytics
 } from '@/components/EnhancedUI.jsx'
-import { AnimatedButton } from '@/components/ui/AnimatedButton.jsx'
 import './App.css'
 
 function App() {
