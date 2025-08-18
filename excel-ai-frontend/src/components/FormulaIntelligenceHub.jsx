@@ -116,9 +116,6 @@ export function FormulaIntelligenceHub() {
         case 'formatter':
           result = await formatData(input)
           break
-        case 'vba':
-          result = await generateVBA(input)
-          break
         case 'python':
           result = await generatePython(input)
           break
