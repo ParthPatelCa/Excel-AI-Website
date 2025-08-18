@@ -470,25 +470,25 @@ function App() {
                 <Card className="hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-md border-white/20">
                   <CardContent className="p-4 text-center">
                     <FileSpreadsheet className="h-6 w-6 mx-auto mb-2 text-blue-600" />
-                    <div className="font-medium text-sm">Excel</div>
+                    <div className="font-medium text-sm text-gray-900 dark:text-gray-100">Excel</div>
                   </CardContent>
                 </Card>
                 <Card className="hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-md border-white/20">
                   <CardContent className="p-4 text-center">
                     <BarChart3 className="h-6 w-6 mx-auto mb-2 text-green-600" />
-                    <div className="font-medium text-sm">Google Analytics</div>
+                    <div className="font-medium text-sm text-gray-900 dark:text-gray-100">Google Analytics</div>
                   </CardContent>
                 </Card>
                 <Card className="hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-md border-white/20">
                   <CardContent className="p-4 text-center">
                     <Search className="h-6 w-6 mx-auto mb-2 text-orange-600" />
-                    <div className="font-medium text-sm">Search Console</div>
+                    <div className="font-medium text-sm text-gray-900 dark:text-gray-100">Search Console</div>
                   </CardContent>
                 </Card>
                 <Card className="hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-md border-white/20">
                   <CardContent className="p-4 text-center">
                     <TrendingUp className="h-6 w-6 mx-auto mb-2 text-purple-600" />
-                    <div className="font-medium text-sm">Google Trends</div>
+                    <div className="font-medium text-sm text-gray-900 dark:text-gray-100">Google Trends</div>
                   </CardContent>
                 </Card>
               </div>
@@ -506,23 +506,23 @@ function App() {
               <div className="space-y-3">
                 <div className="flex items-center space-x-3 p-3 bg-white/50 rounded-lg">
                   <Search className="h-5 w-5 text-blue-600" />
-                  <span className="font-medium">Root cause analysis</span>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">Root cause analysis</span>
                 </div>
                 <div className="flex items-center space-x-3 p-3 bg-white/50 rounded-lg">
                   <BarChart3 className="h-5 w-5 text-green-600" />
-                  <span className="font-medium">Statistical analysis</span>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">Statistical analysis</span>
                 </div>
                 <div className="flex items-center space-x-3 p-3 bg-white/50 rounded-lg">
                   <Target className="h-5 w-5 text-orange-600" />
-                  <span className="font-medium">Gap analysis</span>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">Gap analysis</span>
                 </div>
                 <div className="flex items-center space-x-3 p-3 bg-white/50 rounded-lg">
                   <TrendingUp className="h-5 w-5 text-purple-600" />
-                  <span className="font-medium">Correlation analysis</span>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">Correlation analysis</span>
                 </div>
                 <div className="flex items-center space-x-3 p-3 bg-white/50 rounded-lg">
                   <Brain className="h-5 w-5 text-pink-600" />
-                  <span className="font-medium">Machine learning & more</span>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">Machine learning & more</span>
                 </div>
               </div>
             </div>
@@ -792,21 +792,21 @@ function App() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left py-2">Column</th>
-                        <th className="text-right py-2">Mean</th>
-                        <th className="text-right py-2">Median</th>
-                        <th className="text-right py-2">Min</th>
-                        <th className="text-right py-2">Max</th>
+                        <th className="text-left py-2 text-gray-900 dark:text-gray-100">Column</th>
+                        <th className="text-right py-2 text-gray-900 dark:text-gray-100">Mean</th>
+                        <th className="text-right py-2 text-gray-900 dark:text-gray-100">Median</th>
+                        <th className="text-right py-2 text-gray-900 dark:text-gray-100">Min</th>
+                        <th className="text-right py-2 text-gray-900 dark:text-gray-100">Max</th>
                       </tr>
                     </thead>
                     <tbody>
                       {Object.entries(analysisResults.insights.summary_stats).map(([column, stats]) => (
                         <tr key={column} className="border-b">
-                          <td className="py-2 font-medium">{column}</td>
-                          <td className="text-right py-2">{stats.mean?.toLocaleString()}</td>
-                          <td className="text-right py-2">{stats.median?.toLocaleString()}</td>
-                          <td className="text-right py-2">{stats.min?.toLocaleString()}</td>
-                          <td className="text-right py-2">{stats.max?.toLocaleString()}</td>
+                          <td className="py-2 font-medium text-gray-900 dark:text-gray-100">{column}</td>
+                          <td className="text-right py-2 text-gray-700 dark:text-gray-300">{stats.mean?.toLocaleString()}</td>
+                          <td className="text-right py-2 text-gray-700 dark:text-gray-300">{stats.median?.toLocaleString()}</td>
+                          <td className="text-right py-2 text-gray-700 dark:text-gray-300">{stats.min?.toLocaleString()}</td>
+                          <td className="text-right py-2 text-gray-700 dark:text-gray-300">{stats.max?.toLocaleString()}</td>
                         </tr>
                       ))}
                     </tbody>

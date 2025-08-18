@@ -442,7 +442,7 @@ export function FormulaIntelligenceHub() {
 
             {output.functions_used && output.functions_used.length > 0 && (
               <div>
-                <h4 className="font-medium mb-2">Functions Used:</h4>
+                <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">Functions Used:</h4>
                 <div className="flex flex-wrap gap-2">
                   {output.functions_used.map((func, idx) => (
                     <Badge key={idx} variant="outline">{func}</Badge>
@@ -458,7 +458,7 @@ export function FormulaIntelligenceHub() {
           <div className="space-y-4">
             <div className="bg-gray-100 p-4 rounded-lg font-mono text-sm">
               <div className="flex items-center justify-between mb-2">
-                <span className="font-medium">Regex Pattern:</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">Regex Pattern:</span>
                 <Button size="sm" variant="ghost" onClick={() => copyToClipboard(output.pattern)}>
                   <Copy className="h-3 w-3" />
                 </Button>
@@ -494,7 +494,7 @@ export function FormulaIntelligenceHub() {
           <div className="space-y-4">
             <div className="bg-gray-100 p-4 rounded-lg">
               <div className="flex items-center justify-between mb-2">
-                <span className="font-medium">SQL Query ({output.query_type}):</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">SQL Query ({output.query_type}):</span>
                 <Button size="sm" variant="ghost" onClick={() => copyToClipboard(output.query)}>
                   <Copy className="h-3 w-3" />
                 </Button>
@@ -566,7 +566,7 @@ export function FormulaIntelligenceHub() {
           <div className="space-y-4">
             <div className="bg-gray-100 p-4 rounded-lg">
               <div className="flex items-center justify-between mb-2">
-                <span className="font-medium">VBA Code:</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">VBA Code:</span>
                 <Button size="sm" variant="ghost" onClick={() => copyToClipboard(output.code)}>
                   <Copy className="h-3 w-3" />
                 </Button>
@@ -777,7 +777,7 @@ export function FormulaIntelligenceHub() {
 
             <div className="bg-gray-100 p-4 rounded-lg">
               <div className="flex items-center justify-between mb-2">
-                <span className="font-medium">{output.language.toUpperCase()} Code:</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">{output.language.toUpperCase()} Code:</span>
                 <div className="flex gap-2">
                   <Badge variant="outline">{output.complexity}</Badge>
                   <Button size="sm" variant="ghost" onClick={() => copyToClipboard(output.code)}>
