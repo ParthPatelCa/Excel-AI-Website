@@ -1078,7 +1078,7 @@ function App() {
   }
 
   // Show auth form if not authenticated or on /auth path
-  if (!isAuthenticated || currentPath === '/auth') {
+  if (false && (!isAuthenticated || currentPath === '/auth')) {
     return (
       <EnhancedApp>
         <AuthForm onAuthSuccess={handleAuthSuccess} />
