@@ -239,7 +239,6 @@ export const CookieConsentBanner = () => {
   
   useEffect(() => {
     // Show banner if no consent decision has been made
-    const consent = analytics.getUserConsent();
     const hasDecision = localStorage.getItem('analytics_consent') !== null;
     setShowBanner(!hasDecision);
   }, []);
@@ -247,12 +246,14 @@ export const CookieConsentBanner = () => {
   const handleAccept = async () => {
     setIsLoading(true);
     analytics.setUserConsent(true);
+    localStorage.setItem('analytics_consent', JSON.stringify(true));
     setShowBanner(false);
     setIsLoading(false);
   };
   
   const handleDecline = () => {
     analytics.setUserConsent(false);
+    localStorage.setItem('analytics_consent', JSON.stringify(false));
     setShowBanner(false);
   };
   

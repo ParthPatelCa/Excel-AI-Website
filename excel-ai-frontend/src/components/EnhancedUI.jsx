@@ -372,12 +372,12 @@ export const EnhancedNavigation = ({ currentView, onViewChange, className = "" }
                 key={section.id}
                 onClick={() => handleNavigation(section.id)}
                 className={`
-                  relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                  relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105
                   ${currentView === section.id
-                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'
+                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 shadow-md'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-sm'
                   }
-                  ${section.featured ? 'ring-2 ring-blue-500 ring-opacity-20' : ''}
+                  ${section.featured ? 'ring-2 ring-blue-500 ring-opacity-20 hover:ring-opacity-30' : ''}
                 `}
                 aria-current={currentView === section.id ? 'page' : undefined}
                 title={section.description}

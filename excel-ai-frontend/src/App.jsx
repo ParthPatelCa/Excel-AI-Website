@@ -1,6 +1,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { Upload, BarChart3, MessageSquare, Download, FileSpreadsheet, Zap, TrendingUp, Brain, Link, CheckCircle, AlertCircle, History, Settings, Target, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
+import { AnimatedButton } from '@/components/ui/AnimatedButton.jsx'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
@@ -303,28 +304,30 @@ function App() {
                 ✨ AI-Powered Data Analysis
               </Badge>
             </div>
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
               Transform Your Excel Data with
-              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent block mt-2">
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent block mt-1 sm:mt-2">
                 AI-Powered Insights
               </span>
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
               Upload your Excel files and get instant, intelligent analysis. Discover patterns, 
               generate formulas, and make data-driven decisions with our advanced AI technology.
             </p>
             
             {/* Enhanced Data Input Section */}
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 mb-12 border border-white/20 dark:border-gray-700/20">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 mb-8 sm:mb-12 border border-white/20 dark:border-gray-700/20 mx-4 sm:mx-0">
               <Tabs defaultValue="file" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-6 bg-gray-100/50 dark:bg-gray-700/50">
-                  <TabsTrigger value="file" className="flex items-center space-x-2 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-md" data-testid="file-tab">
+                <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6 bg-gray-100/50 dark:bg-gray-700/50">
+                  <TabsTrigger value="file" className="flex items-center justify-center space-x-1 sm:space-x-2 text-sm sm:text-base data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-md" data-testid="file-tab">
                     <Upload className="h-4 w-4" />
-                    <span>Upload File</span>
+                    <span className="hidden sm:inline">Upload File</span>
+                    <span className="sm:hidden">Upload</span>
                   </TabsTrigger>
-                  <TabsTrigger value="sheets" className="flex items-center space-x-2 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-md" data-testid="sheets-tab">
+                  <TabsTrigger value="sheets" className="flex items-center justify-center space-x-1 sm:space-x-2 text-sm sm:text-base data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-md" data-testid="sheets-tab">
                     <Link className="h-4 w-4" />
-                    <span>Google Sheets</span>
+                    <span className="hidden sm:inline">Google Sheets</span>
+                    <span className="sm:hidden">Sheets</span>
                   </TabsTrigger>
                 </TabsList>
                 
@@ -338,19 +341,19 @@ function App() {
                 </TabsContent>
                 
                 <TabsContent value="sheets" className="space-y-4">
-                  <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-green-400 dark:hover:border-green-500 transition-all duration-300 rounded-2xl p-8 hover:bg-green-50/30 dark:hover:bg-green-900/10">
+                  <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-green-400 dark:hover:border-green-500 transition-all duration-300 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 hover:bg-green-50/30 dark:hover:bg-green-900/10">
                     <div className="flex flex-col items-center">
-                      <div className="bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900 dark:to-emerald-900 p-6 rounded-full mb-4">
-                        <Link className="h-16 w-16 text-green-600 dark:text-green-400" />
+                      <div className="bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900 dark:to-emerald-900 p-4 sm:p-6 rounded-full mb-4">
+                        <Link className="h-12 sm:h-16 w-12 sm:w-16 text-green-600 dark:text-green-400" />
                       </div>
-                      <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+                      <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-2 text-center px-2">
                         Analyze Google Sheets directly
                       </h3>
-                      <p className="text-gray-500 dark:text-gray-400 mb-6 text-center">
+                      <p className="text-gray-500 dark:text-gray-400 mb-4 sm:mb-6 text-center text-sm sm:text-base px-4">
                         Paste your Google Sheets URL below. Make sure the sheet is publicly viewable.
                       </p>
                       
-                      <div className="w-full max-w-md space-y-4">
+                      <div className="w-full max-w-md space-y-4 px-4 sm:px-0">
                         <div className="relative">
                           <Input
                             type="url"
@@ -389,11 +392,12 @@ function App() {
                           size="lg"
                           onClick={handleGoogleSheetsAnalysis}
                           disabled={!googleSheetsUrl || (urlValidation && !urlValidation.valid)}
-                          className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg"
+                          className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg text-sm sm:text-base py-3 sm:py-4"
                           data-testid="analyze-button"
                         >
-                          <Link className="h-5 w-5 mr-2" />
-                          Analyze Sheets
+                          <Link className="h-4 sm:h-5 w-4 sm:w-5 mr-2" />
+                          <span className="hidden sm:inline">Analyze Sheets</span>
+                          <span className="sm:hidden">Analyze</span>
                         </AnimatedButton>
                       </div>
                     </div>
@@ -402,22 +406,27 @@ function App() {
               </Tabs>
             </div>
 
-            {/* Demo Button */}
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="bg-white/50 hover:bg-white/80 border-gray-200 shadow-lg"
-              onClick={() => {
-                setCurrentView('analysis')
-                setUploadedFile({ name: 'sample-sales-data.xlsx' })
-                setAnalysisResults({
-                  insights: {
-                    summary_stats: {
-                      'Revenue': { mean: 45000, median: 42000, std: 12000, min: 15000, max: 85000 },
-                      'Units Sold': { mean: 150, median: 140, std: 45, min: 50, max: 300 }
-                    },
-                    data_quality: {
-                      total_rows: 1250,
+            {/* Enhanced Demo Button */}
+            <div className="flex flex-col items-center space-y-3 sm:space-y-4 px-4 sm:px-0">
+              <p className="text-gray-600 dark:text-gray-400 text-center text-sm sm:text-base">
+                Don't have data to upload? Try our interactive demo!
+              </p>
+              <AnimatedButton
+                animation="pulse"
+                size="lg" 
+                variant="outline"
+                className="bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 border-purple-200 hover:border-purple-300 text-purple-700 hover:text-purple-800 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4"
+                onClick={() => {
+                  setCurrentView('analysis')
+                  setUploadedFile({ name: 'sample-sales-data.xlsx' })
+                  setAnalysisResults({
+                    insights: {
+                      summary_stats: {
+                        'Revenue': { mean: 45000, median: 42000, std: 12000, min: 15000, max: 85000 },
+                        'Units Sold': { mean: 150, median: 140, std: 45, min: 50, max: 300 }
+                      },
+                      data_quality: {
+                        total_rows: 1250,
                       total_columns: 8,
                       missing_values: 23,
                       duplicate_rows: 5
@@ -438,8 +447,12 @@ function App() {
                 })
               }}
             >
-              ✨ Try Demo with Sample Data
-            </Button>
+              <div className="flex flex-col items-center space-y-1">
+                <span className="text-base sm:text-lg font-semibold">✨ Try Demo with Sample Data</span>
+                <span className="text-xs sm:text-sm opacity-80">Experience our full analytics suite instantly</span>
+              </div>
+            </AnimatedButton>
+            </div>
           </div>
         </section>
 
