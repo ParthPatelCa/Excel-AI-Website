@@ -11,7 +11,8 @@ import base64
 
 visualize_bp = Blueprint('visualize', __name__)
 
-@visualize_bp.route('/api/v1/visualize/create', methods=['POST'])
+@visualize_bp.route('/create', methods=['POST'])
+def create_visualization():
 def create_visualization():
     """Create a new visualization"""
     try:
@@ -57,7 +58,7 @@ def create_visualization():
     except Exception as e:
         return jsonify({'error': f'Failed to create visualization: {str(e)}'}), 500
 
-@visualize_bp.route('/api/v1/visualize/types', methods=['GET'])
+@visualize_bp.route('/types', methods=['GET'])
 def get_chart_types():
     """Get available chart types with descriptions"""
     chart_types = {
@@ -110,7 +111,7 @@ def get_chart_types():
         'data': chart_types
     })
 
-@visualize_bp.route('/api/v1/visualize/suggest', methods=['POST'])
+@visualize_bp.route('/suggest', methods=['POST'])
 def suggest_chart_type():
     """AI-powered chart type suggestion based on data"""
     try:
@@ -183,7 +184,7 @@ def suggest_chart_type():
     except Exception as e:
         return jsonify({'error': f'Failed to analyze data: {str(e)}'}), 500
 
-@visualize_bp.route('/api/v1/visualize/list', methods=['GET'])
+@visualize_bp.route('/list', methods=['GET'])
 def list_visualizations():
     """Get user's visualizations"""
     try:

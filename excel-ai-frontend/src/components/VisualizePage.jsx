@@ -27,12 +27,50 @@ export function VisualizePage() {
 
   const loadChartTypes = async () => {
     try {
+      console.log('Loading chart types...')
       const response = await apiService.getChartTypes()
+      console.log('Chart types response:', response)
       if (response.success) {
         setChartTypes(response.data)
+        console.log('Chart types loaded:', response.data)
+      } else {
+        console.error('Failed to load chart types - response not successful:', response)
       }
     } catch (error) {
       console.error('Failed to load chart types:', error)
+      // Fallback with hardcoded chart types for demo
+      const fallbackTypes = {
+        bar: {
+          name: 'Bar Chart',
+          best_for: 'Categorical data, comparisons'
+        },
+        line: {
+          name: 'Line Chart',
+          best_for: 'Time series, trends'
+        },
+        pie: {
+          name: 'Pie Chart',
+          best_for: 'Proportions, percentages'
+        },
+        scatter: {
+          name: 'Scatter Plot',
+          best_for: 'Correlations, distributions'
+        },
+        heatmap: {
+          name: 'Heatmap',
+          best_for: 'Correlation matrices, dense data'
+        },
+        histogram: {
+          name: 'Histogram',
+          best_for: 'Data distribution, frequency'
+        },
+        box: {
+          name: 'Box Plot',
+          best_for: 'Statistical distribution, outliers'
+        }
+      }
+      setChartTypes(fallbackTypes)
+      console.log('Using fallback chart types:', fallbackTypes)
     }
   }
 
@@ -221,28 +259,48 @@ export function VisualizePage() {
               <CardDescription>Select the visualization that best represents your data</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {Object.entries(chartTypes).map(([type, info]) => {
-                  const IconComponent = getChartIcon(type)
-                  return (
-                    <Card
-                      key={type}
-                      className={`cursor-pointer transition-all duration-200 ${
-                        selectedChart === type ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-gray-50'
-                      }`}
-                      onClick={() => setSelectedChart(type)}
-                    >
-                      <CardContent className="p-4 text-center">
-                        <IconComponent className={`h-8 w-8 mx-auto mb-2 ${
-                          selectedChart === type ? 'text-blue-600' : 'text-gray-600'
-                        }`} />
-                        <div className="font-medium text-sm">{info.name}</div>
-                        <div className="text-xs text-gray-500 mt-1">{info.best_for}</div>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-              </div>
+              {Object.keys(chartTypes).length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="text-gray-500">Loading chart types...</div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {Object.entries(chartTypes).map(([type, info]) => {
+                    const IconComponent = getChartIcon(type)
+                    return (
+                      <Card
+                        key={type}
+                        className={`cursor-pointer transition-all duration-200 ${
+                          selectedChart === type ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                        }`}
+                        onClick={() => {
+                          console.log('Selected chart type:', type)
+                          setSelectedChart(type)
+                        }}
+                      >
+                        <CardContent className="p-4 text-center">
+                          <IconComponent className={`h-8 w-8 mx-auto mb-2 ${
+                            selectedChart === type ? 'text-blue-600' : 'text-gray-600'
+                          }`} />
+                          <div className="font-medium text-sm">{info.name}</div>
+                          <div className="text-xs text-gray-500 mt-1">{info.best_for}</div>
+                        </CardContent>
+                      </Card>
+                    )
+                  })}
+                </div>
+              )}
+              
+              {selectedChart && (
+                <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                  <div className="text-sm font-medium text-blue-900">
+                    Selected: {chartTypes[selectedChart]?.name}
+                  </div>
+                  <div className="text-sm text-blue-700">
+                    {chartTypes[selectedChart]?.best_for}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
