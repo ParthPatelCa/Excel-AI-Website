@@ -50,6 +50,7 @@ export function ConnectorsPage() {
   const loadConnectors = async () => {
     try {
       setLoading(true)
+      setError(null)
       const response = await apiService.listConnectors()
       if (response.success) {
         setConnectors(response.data.items)
@@ -57,7 +58,10 @@ export function ConnectorsPage() {
         setError(response.error)
       }
     } catch (err) {
+      console.error('Failed to load connectors:', err)
       setError(err.message)
+      // Set empty array as fallback
+      setConnectors([])
     } finally {
       setLoading(false)
     }
@@ -68,9 +72,45 @@ export function ConnectorsPage() {
       const response = await apiService.getConnectorTypes()
       if (response.success) {
         setConnectorTypes(response.data)
+      } else {
+        throw new Error(response.error || 'Failed to load connector types')
       }
     } catch (err) {
       console.error('Failed to load connector types:', err)
+      // Fallback with hardcoded connector types for demo
+      const fallbackTypes = {
+        'excel': {
+          'name': 'Microsoft Excel',
+          'description': 'Upload and analyze Excel files',
+          'auth_required': false,
+          'supported_formats': ['.xlsx', '.xls', '.csv']
+        },
+        'google_sheets': {
+          'name': 'Google Sheets',
+          'description': 'Connect to Google Sheets documents',
+          'auth_required': true,
+          'oauth_provider': 'google'
+        },
+        'google_analytics': {
+          'name': 'Google Analytics',
+          'description': 'Analyze website traffic and user behavior',
+          'auth_required': true,
+          'oauth_provider': 'google'
+        },
+        'google_search_console': {
+          'name': 'Google Search Console',
+          'description': 'Monitor search performance and SEO data',
+          'auth_required': true,
+          'oauth_provider': 'google'
+        },
+        'google_trends': {
+          'name': 'Google Trends',
+          'description': 'Analyze search trends and popularity',
+          'auth_required': false,
+          'rate_limited': true
+        }
+      }
+      setConnectorTypes(fallbackTypes)
     }
   }
 
@@ -216,6 +256,39 @@ export function ConnectorsPage() {
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* Network Error Alert */}
+      {error && error.includes('NetworkError') && (
+        <Alert className="border-yellow-200 bg-yellow-50">
+          <AlertDescription className="text-yellow-800">
+            <div className="flex items-center justify-between">
+              <div>
+                <strong>Backend Not Available:</strong> Using demo data. To enable full functionality, start the backend server.
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setError(null)
+                  loadConnectors()
+                  loadConnectorTypes()
+                }}
+                className="ml-4"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Retry
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Other Errors */}
+      {error && !error.includes('NetworkError') && (
+        <Alert className="border-red-200 bg-red-50">
+          <AlertDescription className="text-red-800">{error}</AlertDescription>
+        </Alert>
+      )}
 
       {/* Available Connector Types */}
       {connectors.length === 0 && (
