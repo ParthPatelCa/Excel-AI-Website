@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base styles */
+/* Base styles - Updated for Netlify deploy cache busting */
 * {
   box-sizing: border-box;
 }
@@ -27,3 +27,5 @@ html, body {
     color-scheme: dark;
   }
 }
+
+/* Force cache refresh - August 18, 2025 */
