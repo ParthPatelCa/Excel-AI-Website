@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AnimatedButton } from './ui/AnimatedButton';
 import { ThemeToggle } from './ui/ThemeToggle';
 import { FaviconManager } from './FaviconManager';
@@ -289,15 +289,16 @@ export const EnhancedFileUpload = ({
 // Enhanced Navigation Component
 export const EnhancedNavigation = ({ currentView, onViewChange, className = "" }) => {
   const { trackEvent } = useAnalytics();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const sections = [
-    { id: 'home', label: 'Home', icon: 'home' },
-    { id: 'connect', label: 'Connect', icon: 'link' },
-    { id: 'analyze', label: 'Analyze', icon: 'chart-bar', featured: true },
-    { id: 'visualize', label: 'Visualize', icon: 'chart-pie' },
-    { id: 'data-prep', label: 'Data Prep', icon: 'cog' },
-    { id: 'enrich', label: 'Enrich', icon: 'sparkles' },
-    { id: 'tools', label: 'Tools', icon: 'wrench' }
+    { id: 'home', label: 'Home', icon: 'home', description: 'Upload and start analysis' },
+    { id: 'connect', label: 'Connect', icon: 'link', description: 'Data source connections' },
+    { id: 'analyze', label: 'Analyze', icon: 'chart-bar', featured: true, description: 'AI-powered insights' },
+    { id: 'visualize', label: 'Visualize', icon: 'chart-pie', description: 'Create charts and graphs' },
+    { id: 'data-prep', label: 'Data Prep', icon: 'cog', description: 'Clean and prepare data' },
+    { id: 'enrich', label: 'Enrich', icon: 'sparkles', description: 'AI text enhancement' },
+    { id: 'tools', label: 'Tools', icon: 'wrench', description: 'Utility generators' }
   ];
   
   const getIcon = (iconName) => {
@@ -322,35 +323,51 @@ export const EnhancedNavigation = ({ currentView, onViewChange, className = "" }
     onViewChange(sectionId);
   };
   
+  const currentSection = sections.find(s => s.id === currentView);
+  
   return (
     <nav className={`bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 ${className}`}>
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo and Brand */}
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="3"/>
-                <circle cx="6" cy="6" r="1"/>
-                <circle cx="18" cy="6" r="1"/>
-                <circle cx="6" cy="18" r="1"/>
-                <circle cx="18" cy="18" r="1"/>
-                <line x1="12" y1="12" x2="6" y2="6"/>
-                <line x1="12" y1="12" x2="18" y2="6"/>
-                <line x1="12" y1="12" x2="6" y2="18"/>
-                <line x1="12" y1="12" x2="18" y2="18"/>
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                DataSense AI
-              </h1>
-            </div>
+            <button
+              onClick={() => handleNavigation('home')}
+              className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+            >
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="3"/>
+                  <circle cx="6" cy="6" r="1"/>
+                  <circle cx="18" cy="6" r="1"/>
+                  <circle cx="6" cy="18" r="1"/>
+                  <circle cx="18" cy="18" r="1"/>
+                  <line x1="12" y1="12" x2="6" y2="6"/>
+                  <line x1="12" y1="12" x2="18" y2="6"/>
+                  <line x1="12" y1="12" x2="6" y2="18"/>
+                  <line x1="12" y1="12" x2="18" y2="18"/>
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                  DataSense AI
+                </h1>
+                {currentSection && currentView !== 'home' && (
+                  <div className="flex items-center space-x-1 text-xs text-gray-500 dark:text-gray-400">
+                    <span>Home</span>
+                    <span>›</span>
+                    <span className="text-blue-600 dark:text-blue-400 font-medium">
+                      {currentSection.label}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </button>
           </div>
           
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-1">
-            {sections.map((section) => (
+            {sections.slice(1).map((section) => (
               <button
                 key={section.id}
                 onClick={() => handleNavigation(section.id)}
@@ -363,6 +380,7 @@ export const EnhancedNavigation = ({ currentView, onViewChange, className = "" }
                   ${section.featured ? 'ring-2 ring-blue-500 ring-opacity-20' : ''}
                 `}
                 aria-current={currentView === section.id ? 'page' : undefined}
+                title={section.description}
               >
                 <div className="flex items-center space-x-2">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -379,12 +397,71 @@ export const EnhancedNavigation = ({ currentView, onViewChange, className = "" }
             ))}
           </div>
           
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+          
           {/* Theme Toggle */}
           <div className="flex items-center space-x-3">
             <UsageBadge />
             <ThemeToggle />
           </div>
         </div>
+        
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 dark:border-gray-700">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              {sections.slice(1).map((section) => (
+                <button
+                  key={section.id}
+                  onClick={() => {
+                    handleNavigation(section.id);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`
+                    w-full text-left px-3 py-2 rounded-lg text-base font-medium transition-all duration-200
+                    ${currentView === section.id
+                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'
+                    }
+                  `}
+                >
+                  <div className="flex items-center space-x-3">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      {getIcon(section.icon)}
+                    </svg>
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <span>{section.label}</span>
+                        {section.featured && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                            ⭐
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                        {section.description}
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
