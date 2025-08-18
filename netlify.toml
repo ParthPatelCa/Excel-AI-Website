@@ -1,7 +1,7 @@
 [build]
   base = "excel-ai-frontend/"
   publish = "excel-ai-frontend/dist/"
-  command = "npm run build"
+  command = "pnpm install && pnpm run build"
 
 [build.environment]
   NODE_VERSION = "18"
