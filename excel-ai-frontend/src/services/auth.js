@@ -1,6 +1,6 @@
 // Authentication service for API calls
 import apiService from './api.js'
-import { api } from '../lib/api.ts'
+import { api } from '../lib/api'
 
 class AuthService {
   constructor() {
