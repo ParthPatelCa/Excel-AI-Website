@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx'
 import { BarChart3, LineChart, PieChart, ScatterChart, Activity, BarChart2, Box, Lightbulb, Download } from 'lucide-react'
+import ChartLazy from '@/components/ChartLazy.jsx'
 import apiService from '@/services/api.js'
 
 export function VisualizePage() {
@@ -381,10 +382,17 @@ export function VisualizePage() {
             <CardContent>
               <div className="bg-white p-4 rounded-lg border">
                 <div id="chart-container" className="w-full h-96">
-                  {/* Plotly chart would be rendered here */}
-                  <div className="flex items-center justify-center h-full text-gray-500">
-                    Chart preview will be displayed here
-                  </div>
+                  {generatedChart ? (
+                    <ChartLazy 
+                      data={generatedChart.data} 
+                      layout={generatedChart.layout} 
+                      style={{ width: "100%", height: 420 }} 
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-gray-500">
+                      Chart preview will be displayed here
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>

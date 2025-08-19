@@ -11,7 +11,25 @@ import { Input } from '@/components/ui/input.jsx'
 import { Label } from '@/components/ui/label.jsx'
 import { LoadingSpinner, ChartSkeleton } from '@/components/ui/alerts.jsx'
 import { useToast } from '@/hooks/useToast.js'
-import { BarChart, LineChart as RechartsLineChart, PieChart as RechartsPieChart, ScatterChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Bar, Line, Pie, Cell, Scatter, ResponsiveContainer } from 'recharts'
+import { 
+  RechartsWrapper, 
+  RechartsLoadingFallback,
+  BarChart, 
+  LineChart as RechartsLineChart, 
+  PieChart as RechartsPieChart, 
+  ScatterChart, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  Bar, 
+  Line, 
+  Pie, 
+  Cell, 
+  Scatter, 
+  ResponsiveContainer 
+} from '@/components/lazy'
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#84CC16', '#F97316']
 
@@ -145,84 +163,92 @@ export function ChartBuilder({ data = [], columns = [] }) {
       margin: { top: 20, right: 30, left: 20, bottom: 5 }
     }
 
-    switch (chartConfig.type) {
-      case 'bar':
-      case 'column':
-        return (
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart {...chartProps}>
-              <CartesianGrid strokeDasharray="3 3" stroke={customOptions.showGrid ? '#e0e0e0' : 'transparent'} />
-              <XAxis dataKey="x" />
-              <YAxis />
-              <Tooltip />
-              {customOptions.showLegend && <Legend />}
-              <Bar dataKey="y" fill={COLORS[0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        )
+    const ChartComponent = () => {
+      switch (chartConfig.type) {
+        case 'bar':
+        case 'column':
+          return (
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart {...chartProps}>
+                <CartesianGrid strokeDasharray="3 3" stroke={customOptions.showGrid ? '#e0e0e0' : 'transparent'} />
+                <XAxis dataKey="x" />
+                <YAxis />
+                <Tooltip />
+                {customOptions.showLegend && <Legend />}
+                <Bar dataKey="y" fill={COLORS[0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          )
 
-      case 'line':
-        return (
-          <ResponsiveContainer width="100%" height={400}>
-            <RechartsLineChart {...chartProps}>
-              <CartesianGrid strokeDasharray="3 3" stroke={customOptions.showGrid ? '#e0e0e0' : 'transparent'} />
-              <XAxis dataKey="x" />
-              <YAxis />
-              <Tooltip />
-              {customOptions.showLegend && <Legend />}
-              <Line 
-                type={chartConfig.smooth ? 'monotone' : 'linear'} 
-                dataKey="y" 
-                stroke={COLORS[0]} 
-                strokeWidth={2}
-                dot={chartConfig.markers}
-              />
-            </RechartsLineChart>
-          </ResponsiveContainer>
-        )
+        case 'line':
+          return (
+            <ResponsiveContainer width="100%" height={400}>
+              <RechartsLineChart {...chartProps}>
+                <CartesianGrid strokeDasharray="3 3" stroke={customOptions.showGrid ? '#e0e0e0' : 'transparent'} />
+                <XAxis dataKey="x" />
+                <YAxis />
+                <Tooltip />
+                {customOptions.showLegend && <Legend />}
+                <Line 
+                  type={chartConfig.smooth ? 'monotone' : 'linear'} 
+                  dataKey="y" 
+                  stroke={COLORS[0]} 
+                  strokeWidth={2}
+                  dot={chartConfig.markers}
+                />
+              </RechartsLineChart>
+            </ResponsiveContainer>
+          )
 
-      case 'pie':
-        return (
-          <ResponsiveContainer width="100%" height={400}>
-            <RechartsPieChart>
-              <Pie
-                data={chartData.data}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ label, value, percent }) => `${label}: ${(percent * 100).toFixed(1)}%`}
-                outerRadius={120}
-                fill="#8884d8"
-                dataKey="value"
-                nameKey="label"
-              >
-                {chartData.data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              {customOptions.showLegend && <Legend />}
-            </RechartsPieChart>
-          </ResponsiveContainer>
-        )
+        case 'pie':
+          return (
+            <ResponsiveContainer width="100%" height={400}>
+              <RechartsPieChart>
+                <Pie
+                  data={chartData.data}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ label, value, percent }) => `${label}: ${(percent * 100).toFixed(1)}%`}
+                  outerRadius={120}
+                  fill="#8884d8"
+                  dataKey="value"
+                  nameKey="label"
+                >
+                  {chartData.data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                {customOptions.showLegend && <Legend />}
+              </RechartsPieChart>
+            </ResponsiveContainer>
+          )
 
-      case 'scatter':
-        return (
-          <ResponsiveContainer width="100%" height={400}>
-            <ScatterChart {...chartProps}>
-              <CartesianGrid strokeDasharray="3 3" stroke={customOptions.showGrid ? '#e0e0e0' : 'transparent'} />
-              <XAxis dataKey="x" name={chartConfig.x_axis} />
-              <YAxis dataKey="y" name={chartConfig.y_axis} />
-              <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-              {customOptions.showLegend && <Legend />}
-              <Scatter name="Data Points" data={chartData.data} fill={COLORS[0]} />
-            </ScatterChart>
-          </ResponsiveContainer>
-        )
+        case 'scatter':
+          return (
+            <ResponsiveContainer width="100%" height={400}>
+              <ScatterChart {...chartProps}>
+                <CartesianGrid strokeDasharray="3 3" stroke={customOptions.showGrid ? '#e0e0e0' : 'transparent'} />
+                <XAxis dataKey="x" name={chartConfig.x_axis} />
+                <YAxis dataKey="y" name={chartConfig.y_axis} />
+                <Tooltip cursor={{ strokeDasharray: '3 3' }} />
+                {customOptions.showLegend && <Legend />}
+                <Scatter name="Data Points" data={chartData.data} fill={COLORS[0]} />
+              </ScatterChart>
+            </ResponsiveContainer>
+          )
 
-      default:
-        return <div className="text-center text-gray-500">Unsupported chart type</div>
+        default:
+          return <div className="text-center text-gray-500">Unsupported chart type</div>
+      }
     }
+
+    return (
+      <RechartsWrapper fallback={<RechartsLoadingFallback />}>
+        <ChartComponent />
+      </RechartsWrapper>
+    )
   }
 
   const exportChart = (format) => {

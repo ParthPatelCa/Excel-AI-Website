@@ -1,19 +1,53 @@
-import React, { useMemo } from 'react';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  RadialLinearScale,
-  Filler
-} from 'chart.js';
-import { Bar, Line, Pie, Doughnut, Radar, Scatter } from 'react-chartjs-2';
+import React, { useMemo, Suspense } from 'react';
+import { ChartJSWrapper, ChartJSLoadingFallback } from '@/components/lazy';
+
+// Lazy load react-chartjs-2 components
+const Bar = React.lazy(() => import('react-chartjs-2').then(module => ({ default: module.Bar })));
+const Line = React.lazy(() => import('react-chartjs-2').then(module => ({ default: module.Line })));
+const Pie = React.lazy(() => import('react-chartjs-2').then(module => ({ default: module.Pie })));
+const Doughnut = React.lazy(() => import('react-chartjs-2').then(module => ({ default: module.Doughnut })));
+const Radar = React.lazy(() => import('react-chartjs-2').then(module => ({ default: module.Radar })));
+const Scatter = React.lazy(() => import('react-chartjs-2').then(module => ({ default: module.Scatter })));
+
+// Lazy load and register Chart.js components
+const ChartJSSetup = React.lazy(() => 
+  Promise.all([
+    import('chart.js'),
+    import('chart.js/auto')
+  ]).then(([chartjsModule, autoModule]) => {
+    const {
+      Chart: ChartJS,
+      CategoryScale,
+      LinearScale,
+      BarElement,
+      LineElement,
+      PointElement,
+      Title,
+      Tooltip,
+      Legend,
+      ArcElement,
+      RadialLinearScale,
+      Filler
+    } = chartjsModule;
+
+    // Register Chart.js components
+    ChartJS.register(
+      CategoryScale,
+      LinearScale,
+      BarElement,
+      LineElement,
+      PointElement,
+      Title,
+      Tooltip,
+      Legend,
+      ArcElement,
+      RadialLinearScale,
+      Filler
+    );
+
+    return { default: () => null }; // Return empty component since we just needed to register
+  })
+);
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.jsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx';
 import { Button } from '@/components/ui/button.jsx';
@@ -240,22 +274,31 @@ const DataChart = ({
       height: isFullscreen ? 500 : 300
     };
 
-    switch (chartType) {
-      case 'bar':
-        return <Bar {...chartProps} />;
-      case 'line':
-        return <Line {...chartProps} />;
-      case 'pie':
-        return <Pie {...chartProps} />;
-      case 'doughnut':
-        return <Doughnut {...chartProps} />;
-      case 'radar':
-        return <Radar {...chartProps} />;
-      case 'scatter':
-        return <Scatter {...chartProps} />;
-      default:
-        return <Bar {...chartProps} />;
-    }
+    const ChartComponent = () => {
+      switch (chartType) {
+        case 'bar':
+          return <Bar {...chartProps} />;
+        case 'line':
+          return <Line {...chartProps} />;
+        case 'pie':
+          return <Pie {...chartProps} />;
+        case 'doughnut':
+          return <Doughnut {...chartProps} />;
+        case 'radar':
+          return <Radar {...chartProps} />;
+        case 'scatter':
+          return <Scatter {...chartProps} />;
+        default:
+          return <Bar {...chartProps} />;
+      }
+    };
+
+    return (
+      <ChartJSWrapper fallback={<ChartJSLoadingFallback />}>
+        <ChartJSSetup />
+        <ChartComponent />
+      </ChartJSWrapper>
+    );
   };
 
   // Calculate statistics
