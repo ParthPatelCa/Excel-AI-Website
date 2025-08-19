@@ -31,6 +31,7 @@ import { TemplateLibrary } from '@/components/TemplateLibrary.jsx'
 import { MacroGenerator } from '@/components/MacroGenerator.jsx'
 import { UIShowcase } from '@/components/UIShowcase.jsx'
 import { PerformanceMonitor } from '@/components/PerformanceMonitor.jsx'
+import Seo from '@/components/Seo.jsx'
 import { 
   LazyDataVisualization, 
   LazyChartBuilder, 
@@ -288,6 +289,11 @@ function App() {
 
   const HomePage = () => (
     <SectionTracker section="home">
+      <Seo
+        title="DataSense AI — Smart Excel Analysis & AI-Powered Insights"
+        description="Transform your Excel data into actionable insights with AI. Upload spreadsheets, get instant analysis, and generate formulas automatically."
+        canonical="https://datasense-ai.netlify.app/"
+      />
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         {/* Hero Section */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
