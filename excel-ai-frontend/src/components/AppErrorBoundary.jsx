@@ -1,8 +1,15 @@
-import { Component, ReactNode } from "react";
+import { Component } from "react";
 
-export class AppErrorBoundary extends Component<{ children: ReactNode }, { err: unknown }> {
-  state = { err: null as unknown };
-  static getDerivedStateFromError(err: unknown) { return { err }; }
+export class AppErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { err: null };
+  }
+
+  static getDerivedStateFromError(err) { 
+    return { err }; 
+  }
+
   render() {
     if (this.state.err) {
       return (
