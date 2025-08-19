@@ -304,9 +304,9 @@ function App() {
               </Badge>
             </div>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-              Unlock Instant Insights from Your Excel Data with
+              Unlock Instant Insights from Your Excel Data
               <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent block mt-1 sm:mt-2">
-                AI
+                with AI
               </span>
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
@@ -446,8 +446,8 @@ function App() {
               }}
             >
               <div className="flex flex-col items-center space-y-1">
-                <span className="text-base sm:text-lg font-semibold">✨ Try Demo with Sample Data</span>
-                <span className="text-xs sm:text-sm opacity-80">Experience our full analytics suite instantly</span>
+                <span className="text-base sm:text-lg font-semibold">✨ Try Demo</span>
+                <span className="text-xs sm:text-sm opacity-80">Experience with sample data</span>
               </div>
             </AnimatedButton>
             </div>
