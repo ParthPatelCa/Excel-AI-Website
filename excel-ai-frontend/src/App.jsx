@@ -304,14 +304,13 @@ function App() {
               </Badge>
             </div>
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-              Transform Your Excel Data with
+              Unlock Instant Insights from Your Excel Data with
               <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent block mt-1 sm:mt-2">
-                AI-Powered Insights
+                AI
               </span>
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
-              Upload your Excel files and get instant, intelligent analysis. Discover patterns, 
-              generate formulas, and make data-driven decisions with our advanced AI technology.
+              Simply upload your data to reveal hidden patterns, generate formulas, and drive smarter decisions.
             </p>
             
             {/* Enhanced Data Input Section */}
