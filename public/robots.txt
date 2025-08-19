@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://datasense-ai.netlify.app/sitemap.xml
