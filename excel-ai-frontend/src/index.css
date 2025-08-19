@@ -5,6 +5,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -26,4 +30,27 @@ html, body {
   }
 }
 
-/* Force cache refresh - August 18, 2025 */
+/* Section utilities */
+.ds-section {
+  padding: 4rem 0;
+}
+
+.ds-section-light {
+  background-color: #ffffff;
+}
+
+.ds-section-alt {
+  background-color: #f8fafc;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ds-section-light {
+    background-color: #1f2937;
+  }
+  
+  .ds-section-alt {
+    background-color: #111827;
+  }
+}
+
+/* Force cache refresh - August 19, 2025 */
