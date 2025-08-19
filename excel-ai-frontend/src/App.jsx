@@ -446,8 +446,8 @@ function App() {
               }}
             >
               <div className="flex flex-col items-center space-y-1">
-                <span className="text-base sm:text-lg font-semibold">✨ Try Demo</span>
-                <span className="text-xs sm:text-sm opacity-80">Experience with sample data</span>
+                <span className="text-sm sm:text-base font-semibold">✨ Demo</span>
+                <span className="text-xs opacity-80">Try now</span>
               </div>
             </AnimatedButton>
             </div>
