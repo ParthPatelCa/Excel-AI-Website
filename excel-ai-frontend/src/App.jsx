@@ -32,6 +32,7 @@ import { MacroGenerator } from '@/components/MacroGenerator.jsx'
 import { UIShowcase } from '@/components/UIShowcase.jsx'
 import { PerformanceMonitor } from '@/components/PerformanceMonitor.jsx'
 import Seo from '@/components/Seo.jsx'
+import ToolsDirectory from '@/pages/ToolsDirectory.jsx'
 import { 
   LazyDataVisualization, 
   LazyChartBuilder, 
@@ -1173,7 +1174,7 @@ function App() {
       case 'tools':
         return (
           <SectionTracker section="tools">
-            <AIToolsPage />
+            <ToolsDirectory />
           </SectionTracker>
         )
       default:
