@@ -1,3 +1,5 @@
+import { api } from '../lib/api.ts';
+
 // API Base URL - adjust this based on your environment
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api';
 
@@ -16,38 +18,49 @@ class ApiService {
 
   // Helper method for making HTTP requests
   async makeRequest(endpoint, options = {}) {
-    const url = `${API_BASE_URL}${endpoint}`;
     // Attach auth token if exists (support both keys)
     const token = localStorage.getItem('auth_token') || localStorage.getItem('authToken');
 
-    const defaultOptions = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-        ...options.headers,
-      },
+    const headers = {
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      ...options.headers,
     };
 
-    // Don't set Content-Type for FormData (file uploads)
-    if (options.body instanceof FormData) {
-      delete defaultOptions.headers['Content-Type'];
-    }
-
     try {
-      const response = await fetch(url, {
-        ...defaultOptions,
-        ...options,
-      });
+      if (options.method === 'POST' && options.body && typeof options.body === 'string') {
+        return await api.post(endpoint, JSON.parse(options.body));
+      } else if (options.method === 'GET' || !options.method) {
+        return await api.get(endpoint);
+      } else {
+        // For other methods or FormData, fall back to original implementation
+        const url = `${API_BASE_URL}${endpoint}`;
+        const defaultOptions = {
+          headers: {
+            'Content-Type': 'application/json',
+            ...headers,
+          },
+        };
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        const error = new Error(errorData.error || `HTTP error! status: ${response.status}`);
-        error.status = response.status;
-        error.data = errorData;
-        throw error;
+        // Don't set Content-Type for FormData (file uploads)
+        if (options.body instanceof FormData) {
+          delete defaultOptions.headers['Content-Type'];
+        }
+
+        const response = await fetch(url, {
+          ...defaultOptions,
+          ...options,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          const error = new Error(errorData.error || `HTTP error! status: ${response.status}`);
+          error.status = response.status;
+          error.data = errorData;
+          throw error;
+        }
+
+        return await response.json();
       }
-
-      return await response.json();
     } catch (error) {
       console.error('API Request failed:', error);
       throw error;

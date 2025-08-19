@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { api } from '../lib/api.ts'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
@@ -172,15 +173,7 @@ export function FormulaIntelligenceHub() {
   }
 
   const generateRegex = async (description) => {
-    const response = await fetch('/api/v1/tools/regex-generator', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-      },
-      body: JSON.stringify({ description })
-    })
-    const result = await response.json()
+    const result = await api.post('/api/v1/tools/regex-generator', { description });
     
     if (!result.success) throw new Error(result.error)
     
@@ -270,15 +263,7 @@ export function FormulaIntelligenceHub() {
   }
 
   const optimizeFormula = async (formula) => {
-    const response = await fetch('/api/v1/tools/formula-optimizer', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-      },
-      body: JSON.stringify({ formula })
-    })
-    const result = await response.json()
+    const result = await api.post('/api/v1/tools/formula-optimizer', { formula });
     
     if (!result.success) throw new Error(result.error)
     

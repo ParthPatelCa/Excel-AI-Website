@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { api } from '../lib/api.ts'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Badge } from '@/components/ui/badge.jsx'
@@ -230,16 +231,7 @@ export function AdvancedChartBuilder({ data = [], columns = [], onChartCreate })
         }
       }
 
-      const response = await fetch('/api/v1/features/chart-builder', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-        },
-        body: JSON.stringify(requestData)
-      })
-
-      const result = await response.json()
+      const result = await api.post('/api/v1/features/chart-builder', requestData);
 
       if (result.success) {
         setChartConfig(result.chart_configs)

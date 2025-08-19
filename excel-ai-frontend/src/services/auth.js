@@ -1,5 +1,6 @@
 // Authentication service for API calls
 import apiService from './api.js'
+import { api } from '../lib/api.ts'
 
 class AuthService {
   constructor() {
@@ -23,15 +24,7 @@ class AuthService {
   // Register new user
   async register(userData) {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'}/v1/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userData)
-      })
-
-      const data = await response.json()
+      const data = await api.post('/v1/auth/register', userData);
 
       if (data.success) {
         this.token = data.token
@@ -51,15 +44,7 @@ class AuthService {
   // Login user
   async login(email, password) {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'}/v1/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      })
-
-      const data = await response.json()
+      const data = await api.post('/v1/auth/login', { email, password });
 
       if (data.success) {
         this.token = data.token
@@ -80,10 +65,7 @@ class AuthService {
   async logout() {
     try {
       // Call logout endpoint to invalidate token on server if needed
-      await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'}/v1/auth/logout`, {
-        method: 'POST',
-        headers: this.setAuthHeader()
-      })
+      await api.post('/v1/auth/logout', {});
     } catch (error) {
       console.error('Logout error:', error)
     } finally {
@@ -102,12 +84,7 @@ class AuthService {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'}/v1/auth/me`, {
-        method: 'GET',
-        headers: this.setAuthHeader()
-      })
-
-      const data = await response.json()
+      const data = await api.get('/v1/auth/me');
 
       if (data.success) {
         this.user = data.user
@@ -131,13 +108,7 @@ class AuthService {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'}/v1/auth/update-profile`, {
-        method: 'PUT',
-        headers: this.setAuthHeader(),
-        body: JSON.stringify(profileData)
-      })
-
-      const data = await response.json()
+      const data = await api.post('/v1/auth/update-profile', profileData);
 
       if (data.success) {
         this.user = data.user
@@ -159,17 +130,11 @@ class AuthService {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'}/v1/auth/change-password`, {
-        method: 'PUT',
-        headers: this.setAuthHeader(),
-        body: JSON.stringify({
-          current_password: currentPassword,
-          new_password: newPassword
-        })
-      })
-
-      const data = await response.json()
-      return data
+      const data = await api.post('/v1/auth/change-password', {
+        current_password: currentPassword,
+        new_password: newPassword
+      });
+      return data;
     } catch (error) {
       console.error('Change password error:', error)
       return { success: false, error: 'Failed to change password' }
@@ -183,13 +148,8 @@ class AuthService {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api'}/v1/auth/usage`, {
-        method: 'GET',
-        headers: this.setAuthHeader()
-      })
-
-      const data = await response.json()
-      return data
+      const data = await api.get('/v1/auth/usage');
+      return data;
     } catch (error) {
       console.error('Get usage stats error:', error)
       return { success: false, error: 'Failed to get usage statistics' }
