@@ -317,12 +317,12 @@ function App() {
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 mb-8 sm:mb-12 border border-white/20 dark:border-gray-700/20 mx-4 sm:mx-0">
               <Tabs defaultValue="file" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6 bg-gray-100/50 dark:bg-gray-700/50">
-                  <TabsTrigger value="file" className="flex items-center justify-center space-x-1 sm:space-x-2 text-sm sm:text-base data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-md" data-testid="file-tab">
+                  <TabsTrigger value="file" className="flex items-center justify-center space-x-1 sm:space-x-2 text-sm sm:text-base text-gray-700 dark:text-gray-300 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-md" data-testid="file-tab">
                     <Upload className="h-4 w-4" />
                     <span className="hidden sm:inline">Upload File</span>
                     <span className="sm:hidden">Upload</span>
                   </TabsTrigger>
-                  <TabsTrigger value="sheets" className="flex items-center justify-center space-x-1 sm:space-x-2 text-sm sm:text-base data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:shadow-md" data-testid="sheets-tab">
+                  <TabsTrigger value="sheets" className="flex items-center justify-center space-x-1 sm:space-x-2 text-sm sm:text-base text-gray-700 dark:text-gray-300 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:shadow-md" data-testid="sheets-tab">
                     <Link className="h-4 w-4" />
                     <span className="hidden sm:inline">Google Sheets</span>
                     <span className="sm:hidden">Sheets</span>
@@ -413,7 +413,7 @@ function App() {
                 animation="pulse"
                 size="lg" 
                 variant="outline"
-                className="bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 border-purple-200 hover:border-purple-300 text-purple-700 hover:text-purple-800 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-6 min-w-[200px] sm:min-w-[280px]"
+                className="bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 dark:hover:from-purple-800/40 dark:hover:to-pink-800/40 border-purple-200 hover:border-purple-300 dark:border-purple-700 dark:hover:border-purple-600 text-purple-700 hover:text-purple-800 dark:text-purple-300 dark:hover:text-purple-200 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-6 min-w-[200px] sm:min-w-[280px]"
                 onClick={() => {
                   setCurrentView('analysis')
                   setUploadedFile({ name: 'sample-sales-data.xlsx' })
@@ -661,25 +661,25 @@ function App() {
           <div className="space-y-8">
             {/* Enhanced Analysis Interface with Tabs */}
             <Tabs value={currentActiveTab} onValueChange={setCurrentActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-12 bg-gray-100">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="visualize">Visualize</TabsTrigger>
-                <TabsTrigger value="dataprep">Data Prep</TabsTrigger>
-                <TabsTrigger value="enrich">Enrich</TabsTrigger>
-                <TabsTrigger value="tools">Tools</TabsTrigger>
-                <TabsTrigger value="connectors">Connect</TabsTrigger>
-                <TabsTrigger value="analyze">Analyze</TabsTrigger>
-                <TabsTrigger value="ai-chat">AI Chat</TabsTrigger>
-                <TabsTrigger value="data-cleaning">Clean Data</TabsTrigger>
-                <TabsTrigger value="chart-builder">Charts</TabsTrigger>
-                <TabsTrigger value="predictive">Analytics</TabsTrigger>
-                <TabsTrigger value="templates">Templates</TabsTrigger>
-                <TabsTrigger value="macros">Macros</TabsTrigger>
-                <TabsTrigger value="formulas">Formulas</TabsTrigger>
-                <TabsTrigger value="export">Export</TabsTrigger>
-                <TabsTrigger value="ui-test">UI Test</TabsTrigger>
-                <TabsTrigger value="performance">Performance</TabsTrigger>
-                <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-12 bg-gray-100 dark:bg-gray-800">
+                <TabsTrigger value="overview" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Overview</TabsTrigger>
+                <TabsTrigger value="visualize" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Visualize</TabsTrigger>
+                <TabsTrigger value="dataprep" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Data Prep</TabsTrigger>
+                <TabsTrigger value="enrich" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Enrich</TabsTrigger>
+                <TabsTrigger value="tools" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Tools</TabsTrigger>
+                <TabsTrigger value="connectors" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Connect</TabsTrigger>
+                <TabsTrigger value="analyze" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Analyze</TabsTrigger>
+                <TabsTrigger value="ai-chat" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">AI Chat</TabsTrigger>
+                <TabsTrigger value="data-cleaning" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Clean Data</TabsTrigger>
+                <TabsTrigger value="chart-builder" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Charts</TabsTrigger>
+                <TabsTrigger value="predictive" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Analytics</TabsTrigger>
+                <TabsTrigger value="templates" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Templates</TabsTrigger>
+                <TabsTrigger value="macros" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Macros</TabsTrigger>
+                <TabsTrigger value="formulas" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Formulas</TabsTrigger>
+                <TabsTrigger value="export" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Export</TabsTrigger>
+                <TabsTrigger value="ui-test" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">UI Test</TabsTrigger>
+                <TabsTrigger value="performance" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Performance</TabsTrigger>
+                <TabsTrigger value="dashboard" className="text-gray-700 dark:text-gray-300 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Dashboard</TabsTrigger>
               </TabsList>
 
               <TabsContent value="visualize" className="space-y-6">
