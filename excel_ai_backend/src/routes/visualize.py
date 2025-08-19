@@ -13,7 +13,6 @@ visualize_bp = Blueprint('visualize', __name__)
 
 @visualize_bp.route('/create', methods=['POST'])
 def create_visualization():
-def create_visualization():
     """Create a new visualization"""
     try:
         data = request.get_json()

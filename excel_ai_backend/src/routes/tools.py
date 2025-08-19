@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from models.user import db
-from models.visualization import ToolGeneration
+from src.models.user import db
+from src.models.visualization import ToolGeneration
 import pandas as pd
 import re
 import os

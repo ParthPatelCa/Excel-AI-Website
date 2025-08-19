@@ -3,7 +3,7 @@
 from flask import Blueprint, jsonify, request
 from src.routes.auth import token_required
 from src.models.auth import db, TelemetryMetric, User, FormulaInteraction, ChatMessage, ChatConversation
-from utils.telemetry import get_telemetry_summary
+from src.utils.telemetry import get_telemetry_summary
 from datetime import datetime, timedelta
 from sqlalchemy import func
 

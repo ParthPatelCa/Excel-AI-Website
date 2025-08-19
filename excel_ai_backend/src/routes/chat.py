@@ -3,7 +3,7 @@
 from flask import Blueprint, jsonify, request
 from src.routes.auth import token_required
 from src.models.auth import db, ChatConversation, ChatMessage
-from utils.telemetry import TelemetryTracker, estimate_tokens
+from src.utils.telemetry import TelemetryTracker, estimate_tokens
 import time
 
 chat_bp = Blueprint('chat', __name__)
