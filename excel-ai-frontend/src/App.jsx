@@ -413,7 +413,7 @@ function App() {
                 animation="pulse"
                 size="lg" 
                 variant="outline"
-                className="bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 border-purple-200 hover:border-purple-300 text-purple-700 hover:text-purple-800 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4"
+                className="bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 border-purple-200 hover:border-purple-300 text-purple-700 hover:text-purple-800 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-6 min-w-[200px] sm:min-w-[280px]"
                 onClick={() => {
                   setCurrentView('analysis')
                   setUploadedFile({ name: 'sample-sales-data.xlsx' })
@@ -445,9 +445,9 @@ function App() {
                 })
               }}
             >
-              <div className="flex flex-col items-center space-y-1">
-                <span className="text-sm sm:text-base font-semibold">✨ Demo</span>
-                <span className="text-xs opacity-80">Try now</span>
+              <div className="flex flex-col items-center space-y-1 text-center">
+                <span className="text-base sm:text-lg font-semibold">✨ Try Demo with Sample Data</span>
+                <span className="text-xs sm:text-sm opacity-80">Experience our full analytics suite instantly</span>
               </div>
             </AnimatedButton>
             </div>
