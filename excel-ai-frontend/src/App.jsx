@@ -183,7 +183,7 @@ function App() {
 
     setUploadedFile(file)
     setIsLoading(true)
-    setCurrentView('analysis')
+  setCurrentView('analyze')
     setError(null)
     setUploadProgress(0)
 
@@ -245,8 +245,8 @@ function App() {
       return
     }
 
-    setIsLoading(true)
-    setCurrentView('analysis')
+  setIsLoading(true)
+  setCurrentView('analyze')
     setUploadedFile({ name: 'Google Sheets Data', source: 'google_sheets' })
     setError(null)
 
@@ -422,7 +422,7 @@ function App() {
                 variant="outline"
                 className="bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 dark:hover:from-purple-800/40 dark:hover:to-pink-800/40 border-purple-200 hover:border-purple-300 dark:border-purple-700 dark:hover:border-purple-600 text-purple-700 hover:text-purple-800 dark:text-purple-300 dark:hover:text-purple-200 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-6 min-w-[200px] sm:min-w-[280px]"
                 onClick={() => {
-                  setCurrentView('analysis')
+                  setCurrentView('analyze')
                   setUploadedFile({ name: 'sample-sales-data.xlsx' })
                   setAnalysisResults({
                     insights: {

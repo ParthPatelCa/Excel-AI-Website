@@ -293,8 +293,9 @@ export const EnhancedNavigation = ({ currentView, onViewChange, className = "" }
   
   const sections = [
     { id: 'home', label: 'Home', icon: 'home', description: 'Upload and start analysis' },
-    { id: 'connect', label: 'Connect', icon: 'link', description: 'Data source connections' },
+    // Put Analyze first after Home per UX request
     { id: 'analyze', label: 'Analyze', icon: 'chart-bar', featured: true, description: 'AI-powered insights' },
+    { id: 'connect', label: 'Connect', icon: 'link', description: 'Data source connections' },
     { id: 'visualize', label: 'Visualize', icon: 'chart-pie', description: 'Create charts and graphs' },
     { id: 'data-prep', label: 'Data Prep', icon: 'cog', description: 'Clean and prepare data' },
     { id: 'enrich', label: 'Enrich', icon: 'sparkles', description: 'AI text enhancement' },
@@ -374,10 +375,9 @@ export const EnhancedNavigation = ({ currentView, onViewChange, className = "" }
                 className={`
                   relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105
                   ${currentView === section.id
-                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 shadow-md'
+                    ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 pb-1'
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-sm'
                   }
-                  ${section.featured ? 'ring-2 ring-blue-500 ring-opacity-20 hover:ring-opacity-30' : ''}
                 `}
                 aria-current={currentView === section.id ? 'page' : undefined}
                 title={section.description}
@@ -421,7 +421,7 @@ export const EnhancedNavigation = ({ currentView, onViewChange, className = "" }
         </div>
         
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
+              {mobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 dark:border-gray-700">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {sections.slice(1).map((section) => (
@@ -434,7 +434,7 @@ export const EnhancedNavigation = ({ currentView, onViewChange, className = "" }
                   className={`
                     w-full text-left px-3 py-2 rounded-lg text-base font-medium transition-all duration-200
                     ${currentView === section.id
-                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                      ? 'text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400 pl-3'
                       : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'
                     }
                   `}
