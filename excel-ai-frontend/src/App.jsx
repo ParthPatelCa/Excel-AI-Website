@@ -197,14 +197,31 @@ function AppContent() {
 
   // Helper function to get user display name
   const getUserDisplayName = () => {
+    // Priority 1: First name + Last name from user_metadata
+    if (user?.user_metadata?.first_name && user?.user_metadata?.last_name) {
+      return `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
+    }
+    
+    // Priority 2: Full name if available
     if (user?.user_metadata?.full_name) {
       return user.user_metadata.full_name
     }
+    
+    // Priority 3: Name field
     if (user?.user_metadata?.name) {
       return user.user_metadata.name
     }
-    // Fallback to email name
-    return user?.email?.split('@')[0] || 'User'
+    
+    // Priority 4: Extract name from email (improved logic)
+    if (user?.email) {
+      const emailName = user.email.split('@')[0]
+      // Convert emails like "john.doe" or "john_doe" to "John Doe"
+      return emailName
+        .replace(/[._]/g, ' ')
+        .replace(/\b\w/g, char => char.toUpperCase())
+    }
+    
+    return 'User'
   }
 
   return (

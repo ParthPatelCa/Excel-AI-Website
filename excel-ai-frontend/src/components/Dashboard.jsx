@@ -87,14 +87,45 @@ const Dashboard = ({ user, onNavigate, onShowWelcome, onStartDemo }) => {
   ]
 
   const getUserDisplayName = () => {
-    if (user.user_metadata?.full_name) {
+    // Priority 1: First name + Last name from user_metadata
+    if (user?.user_metadata?.first_name && user?.user_metadata?.last_name) {
+      return `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
+    }
+    
+    // Priority 2: Full name if available
+    if (user?.user_metadata?.full_name) {
       return user.user_metadata.full_name
     }
-    if (user.user_metadata?.name) {
+    
+    // Priority 3: Name field
+    if (user?.user_metadata?.name) {
       return user.user_metadata.name
     }
-    // Fallback to email name
-    return user.email?.split('@')[0] || 'there'
+    
+    // Priority 4: Extract name from email (improved logic)
+    if (user?.email) {
+      const emailName = user.email.split('@')[0]
+      // Convert emails like "john.doe" or "john_doe" to "John Doe"
+      return emailName
+        .replace(/[._]/g, ' ')
+        .replace(/\b\w/g, char => char.toUpperCase())
+    }
+    
+    return 'there'
+  }
+
+  const getUserFirstName = () => {
+    // Get just the first name for welcome messages
+    if (user?.user_metadata?.first_name) {
+      return user.user_metadata.first_name
+    }
+    
+    const fullName = getUserDisplayName()
+    if (fullName !== 'there') {
+      return fullName.split(' ')[0]
+    }
+    
+    return 'there'
   }
 
   return (
@@ -105,7 +136,7 @@ const Dashboard = ({ user, onNavigate, onShowWelcome, onStartDemo }) => {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Welcome back, {getUserDisplayName()}! 👋
+                Welcome back, {getUserFirstName()}! 👋
               </h1>
               <p className="text-lg text-gray-600">
                 Ready to transform your data into insights?

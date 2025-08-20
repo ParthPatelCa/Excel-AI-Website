@@ -115,14 +115,45 @@ const WelcomePage = ({ user, onGetStarted, onStartDemo }) => {
   ]
 
   const getUserDisplayName = () => {
+    // Priority 1: First name + Last name from user_metadata
+    if (user?.user_metadata?.first_name && user?.user_metadata?.last_name) {
+      return `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
+    }
+    
+    // Priority 2: Full name if available
     if (user?.user_metadata?.full_name) {
       return user.user_metadata.full_name
     }
+    
+    // Priority 3: Name field
     if (user?.user_metadata?.name) {
       return user.user_metadata.name
     }
-    // Fallback to email name
-    return user?.email?.split('@')[0] || 'there'
+    
+    // Priority 4: Extract name from email (improved logic)
+    if (user?.email) {
+      const emailName = user.email.split('@')[0]
+      // Convert emails like "john.doe" or "john_doe" to "John Doe"
+      return emailName
+        .replace(/[._]/g, ' ')
+        .replace(/\b\w/g, char => char.toUpperCase())
+    }
+    
+    return 'there'
+  }
+
+  const getUserFirstName = () => {
+    // Get just the first name for welcome messages
+    if (user?.user_metadata?.first_name) {
+      return user.user_metadata.first_name
+    }
+    
+    const fullName = getUserDisplayName()
+    if (fullName !== 'there') {
+      return fullName.split(' ')[0]
+    }
+    
+    return 'there'
   }
 
   return (
@@ -136,7 +167,7 @@ const WelcomePage = ({ user, onGetStarted, onStartDemo }) => {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Welcome to DataSense AI, {getUserDisplayName()}! 🎉
+            Welcome to DataSense AI, {getUserFirstName()}! 🎉
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Your account is confirmed and ready. Let's turn your data into actionable insights.
