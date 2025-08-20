@@ -1,4 +1,131 @@
-import { useState, useEffect, Suspense } from 'react'
+import { useState } from 'react'
+import { ThemeProvider } from '@/contexts/ThemeContext.jsx'
+import { AuthProvider, useAuth } from '@/contexts/AuthContext.jsx'
+import SupabaseAuth from '@/components/SupabaseAuth.jsx'
+import { ConnectorsPage } from '@/components/ConnectorsPage.jsx'
+import { Button } from '@/components/ui/button.jsx'
+
+function AppContent() {
+  const { user, loading } = useAuth()
+  const [currentView, setCurrentView] = useState('home')
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading DataSense AI...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Welcome to DataSense AI
+            </h1>
+            <p className="text-xl text-gray-600">
+              Transform your data into actionable insights with AI
+            </p>
+          </div>
+          <div className="max-w-md mx-auto">
+            <SupabaseAuth onAuthSuccess={() => console.log('Auth success')} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const renderView = () => {
+    switch (currentView) {
+      case 'connect':
+        return <ConnectorsPage />
+      default:
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+            <div className="container mx-auto px-4 py-16">
+              <div className="text-center mb-12">
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                  Welcome back, {user.email}!
+                </h1>
+                <p className="text-xl text-gray-600 mb-8">
+                  Your DataSense AI Platform
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                  <Button
+                    onClick={() => setCurrentView('connect')}
+                    className="h-24 text-lg"
+                    variant="outline"
+                  >
+                    🔗 Connect Data
+                  </Button>
+                  <Button
+                    onClick={() => setCurrentView('analyze')}
+                    className="h-24 text-lg"
+                    variant="outline"
+                  >
+                    📊 Analyze
+                  </Button>
+                  <Button
+                    onClick={() => setCurrentView('visualize')}
+                    className="h-24 text-lg"
+                    variant="outline"
+                  >
+                    📈 Visualize
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+    }
+  }
+
+  return (
+    <div className="min-h-screen">
+      <nav className="bg-white shadow-sm border-b">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 
+            className="text-xl font-bold text-blue-600 cursor-pointer"
+            onClick={() => setCurrentView('home')}
+          >
+            DataSense AI
+          </h1>
+          <div className="flex items-center space-x-4">
+            <span className="text-sm text-gray-600">{user.email}</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const { signOut } = useAuth()
+                signOut()
+              }}
+            >
+              Sign Out
+            </Button>
+          </div>
+        </div>
+      </nav>
+      {renderView()}
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
+  )
+}
+
+export default App
 import { Upload, BarChart3, MessageSquare, Download, FileSpreadsheet, Zap, TrendingUp, Brain, Link, CheckCircle, AlertCircle, History, Settings, Target, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 import { AnimatedButton } from '@/components/ui/AnimatedButton.jsx'
@@ -8,6 +135,7 @@ import { Input } from '@/components/ui/input.jsx'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
 import { LoadingSpinner, ErrorAlert, ProgressBar } from '@/components/ui/alerts.jsx'
 import { ThemeProvider } from '@/contexts/ThemeContext.jsx'
+import { AuthProvider, useAuth } from '@/contexts/AuthContext.jsx'
 import { ThemeToggle } from '@/components/ui/ThemeToggle.jsx'
 import { AdvancedDropZone } from '@/components/ui/AdvancedDropZone.jsx'
 import { DataVisualization } from '@/components/DataVisualization.jsx'
@@ -23,6 +151,7 @@ import { DataPrepPage } from '@/components/DataPrepPage.jsx'
 import { EnrichPage } from '@/components/EnrichPage.jsx'
 import { AIToolsPage } from '@/components/AIToolsPage.jsx'
 import { AuthForm } from '@/components/AuthForm.jsx'
+import SupabaseAuth from '@/components/SupabaseAuth.jsx'
 import { UserDashboard } from '@/components/UserDashboard.jsx'
 import { DataCleaning } from '@/components/DataCleaning.jsx'
 import { ChartBuilder } from '@/components/ChartBuilder.jsx'
@@ -47,7 +176,6 @@ import {
 import { validateFile, validateGoogleSheetsUrl } from '@/utils/validation.js'
 import apiService from '@/services/api.js'
 import enhancedApiService from '@/services/enhancedApi.js'
-import authService from '@/services/auth.js'
 // Enhanced UI Components
 import { 
   EnhancedApp, 
@@ -60,11 +188,9 @@ import {
 } from '@/components/EnhancedUI.jsx'
 import './App.css'
 
-function App() {
-  // Authentication state
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [user, setUser] = useState(null)
-  const [authLoading, setAuthLoading] = useState(true)
+function AppContent() {
+  // Supabase authentication state
+  const { user, loading: authLoading, isAuthenticated } = useAuth()
   
   // App state
   const [currentView, setCurrentView] = useState('home')
@@ -82,11 +208,6 @@ function App() {
   // Enhanced analytics hook
   const { trackEvent, trackPageView, trackEngagement, trackError } = useAnalytics()
 
-  // Check authentication on app load
-  useEffect(() => {
-    checkAuthStatus()
-  }, [])
-
   // Handle URL changes
   useEffect(() => {
     const handlePopState = () => {
@@ -101,6 +222,13 @@ function App() {
   useEffect(() => {
     trackPageView(currentView)
   }, [currentView, trackPageView])
+
+  // Track user authentication events
+  useEffect(() => {
+    if (user) {
+      trackEvent('user_authenticated', { userId: user.id })
+    }
+  }, [user, trackEvent])
 
   // Initialize performance optimizations
   useEffect(() => {
@@ -123,31 +251,10 @@ function App() {
     }
   }, [])
 
-  const checkAuthStatus = async () => {
-    setAuthLoading(true)
-    
-    if (authService.isAuthenticated()) {
-      const result = await authService.getCurrentUser()
-      if (result.success) {
-        setIsAuthenticated(true)
-        setUser(result.user)
-        trackEvent('user_authenticated', { userId: result.user.id })
-      } else {
-        setIsAuthenticated(false)
-        setUser(null)
-      }
-    } else {
-      setIsAuthenticated(false)
-      setUser(null)
-    }
-    
-    setAuthLoading(false)
-  }
-
   const handleAuthSuccess = (userData) => {
-    setIsAuthenticated(true)
-    setUser(userData)
     setCurrentView('home')
+    trackEvent('auth_success', { method: 'supabase' })
+  }
     // Navigate to home page
     window.history.pushState(null, '', '/')
     setCurrentPath('/')
@@ -602,15 +709,16 @@ function App() {
   </SectionTracker>
 )
 
-  const AnalysisPage = () => (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-slate-50 to-blue-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-white/20 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg">
-                <FileSpreadsheet className="h-6 w-6 text-white" />
+  // Authentication loading state
+  if (authLoading) {
+    return (
+      <EnhancedApp>
+        <div className="min-h-screen flex items-center justify-center">
+          <EnhancedLoading message="Loading DataSense AI..." />
+        </div>
+      </EnhancedApp>
+    )
+  }
               </div>
               <div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
@@ -1182,6 +1290,24 @@ function App() {
     }
   }
 
+  // Show loading spinner while checking authentication
+  if (authLoading) {
+    return (
+      <EnhancedApp>
+        <EnhancedLoading message="Loading DataSense AI..." />
+      </EnhancedApp>
+    )
+  }
+
+  // Show authentication form if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <EnhancedApp>
+        <SupabaseAuth onAuthSuccess={handleAuthSuccess} />
+      </EnhancedApp>
+    )
+  }
+
   return (
     <EnhancedApp>
       {/* Global Navigation - Always visible */}
@@ -1195,10 +1321,16 @@ function App() {
   )
 }
 
+function App() {
+  return <AppContent />
+}
+
 function WrappedApp() {
   return (
     <ThemeProvider>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </ThemeProvider>
   )
 }

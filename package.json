@@ -7,7 +7,15 @@
     "dev": "cd excel-ai-frontend && npm run dev",
     "backend": "cd excel_ai_backend && python -m flask run --host=0.0.0.0 --port=5000 --debug"
   },
-  "keywords": ["excel", "ai", "data-analysis", "formulas"],
+  "keywords": [
+    "excel",
+    "ai",
+    "data-analysis",
+    "formulas"
+  ],
   "author": "Your Name",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.55.0"
+  }
 }
