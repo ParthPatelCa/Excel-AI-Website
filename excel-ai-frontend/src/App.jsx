@@ -3,11 +3,14 @@ import { ThemeProvider } from '@/contexts/ThemeContext.jsx'
 import { AuthProvider, useAuth } from '@/contexts/AuthContext.jsx'
 import SupabaseAuth from '@/components/SupabaseAuth.jsx'
 import { ConnectorsPage } from '@/components/ConnectorsPage.jsx'
+import LandingPage from '@/components/LandingPage.jsx'
+import DemoMode from '@/components/DemoMode.jsx'
 import { Button } from '@/components/ui/button.jsx'
 
 function AppContent() {
   const { user, loading, signOut } = useAuth()
-  const [currentView, setCurrentView] = useState('home')
+  const [currentView, setCurrentView] = useState('landing') // Start with landing page
+  const [showAuth, setShowAuth] = useState(false)
 
   if (loading) {
     return (
@@ -20,16 +23,81 @@ function AppContent() {
     )
   }
 
-  if (!user) {
+  // Show demo mode when requested
+  if (!user && currentView === 'demo') {
+    return (
+      <DemoMode
+        onBack={() => setCurrentView('landing')}
+        onSignUp={() => setShowAuth(true)}
+      />
+    )
+  }
+
+  // Show landing page for non-authenticated users
+  if (!user && !showAuth && currentView === 'landing') {
+    return (
+      <div className="min-h-screen">
+        {/* Navigation Bar */}
+        <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b sticky top-0 z-50">
+          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              DataSense AI
+            </h1>
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                onClick={() => setCurrentView('demo')}
+              >
+                Demo
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => setShowAuth(true)}
+              >
+                Sign In
+              </Button>
+              <Button
+                onClick={() => setShowAuth(true)}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              >
+                Get Started
+              </Button>
+            </div>
+          </div>
+        </nav>
+
+        <LandingPage
+          onGetStarted={() => setShowAuth(true)}
+          onTryDemo={() => setCurrentView('demo')}
+          onLearnMore={() => setCurrentView('features')}
+        />
+      </div>
+    )
+  }
+
+  // Show authentication forms when user clicks "Get Started" or "Sign In"
+  if (!user && showAuth) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        {/* Back to landing page option */}
+        <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b">
+          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+            <button
+              onClick={() => setShowAuth(false)}
+              className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+            >
+              ← DataSense AI
+            </button>
+          </div>
+        </nav>
+
         <div className="container mx-auto px-4 py-16">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Welcome to DataSense AI
             </h1>
             <p className="text-xl text-gray-600">
-              Transform your data into actionable insights with AI
+              Sign in or create your account to get started
             </p>
           </div>
           <div className="max-w-md mx-auto">
