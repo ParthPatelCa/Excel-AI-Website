@@ -1,25 +1,37 @@
 # Netlify Deployment Configuration
 
+## ✅ ISSUE RESOLVED
+- **Problem**: White screen on Netlify deployment
+- **Root Cause**: Missing Supabase environment variables
+- **Solution**: Test version without auth worked, confirming the issue
+
 ## Current Status
-- **Deployment Test Version**: Using AppNoAuth.jsx (no authentication)
-- **Purpose**: Test Netlify build process and identify white screen issues
+- **Deployment Test**: ✅ SUCCESSFUL - No white screen
+- **Next Step**: Restore full authentication and add environment variables
 
-## Environment Variables Needed for Full Version
+## Environment Variables Required for Full Version
 
-When ready to restore full authentication, add these to Netlify:
+Add these to your Netlify site settings:
 
 ```bash
-# Supabase Configuration
-VITE_SUPABASE_URL=your-supabase-url
+# Supabase Configuration (REQUIRED)
+VITE_SUPABASE_URL=your-supabase-project-url
 VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 
-# API Configuration  
+# API Configuration (Optional - for backend integration)
 VITE_API_BASE_URL=your-backend-api-url
 ```
 
-## Build Configuration
+## How to Add Environment Variables in Netlify
 
-Netlify should use:
+1. Go to your Netlify dashboard
+2. Select your site
+3. Go to **Site Settings** → **Environment Variables**
+4. Add the variables above with your actual Supabase values
+
+## Build Configuration ✅
+
+Netlify configuration is working correctly:
 - **Build Command**: `pnpm install && pnpm run build`
 - **Publish Directory**: `dist/`
 - **Base Directory**: `excel-ai-frontend/`
