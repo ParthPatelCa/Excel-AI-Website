@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { ThemeProvider } from '@/contexts/ThemeContext.jsx'
 import { AuthProvider, useAuth } from '@/contexts/AuthContext.jsx'
 import SupabaseAuth from '@/components/SupabaseAuth.jsx'
-import { ConnectorsPage } from '@/components/ConnectorsPage.jsx'
 import { VisualizePage } from '@/components/VisualizePage.jsx'
 import { AnalysisPage } from '@/components/AnalysisPage.jsx'
 import { EnrichPage } from '@/components/EnrichPage.jsx'
@@ -161,19 +160,30 @@ function AppContent() {
 
     switch (currentView) {
       case 'connect':
-        return <ConnectorsPage />
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+            <div className="container mx-auto px-4 py-16 text-center">
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">Connect</h1>
+              <p className="text-xl text-gray-600 mb-8">Coming Soon!</p>
+              <p className="text-gray-500 mb-8">Data source connections and file upload management</p>
+              <Button onClick={() => setCurrentView('home')} className="bg-blue-600 hover:bg-blue-700">
+                Back to Dashboard
+              </Button>
+            </div>
+          </div>
+        )
       case 'analyze':
         return <AnalysisPage />
       case 'visualize':
         return <VisualizePage />
       case 'data-prep':
         return (
-          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+          <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
             <div className="container mx-auto px-4 py-16 text-center">
               <h1 className="text-4xl font-bold text-gray-900 mb-4">Data Prep</h1>
-              <p className="text-xl text-gray-600 mb-8">Coming Soon!</p>
+              <p className="text-xl text-gray-600 mb-8">Ready for MVP!</p>
               <p className="text-gray-500 mb-8">AI-powered data cleaning and transformation tools</p>
-              <Button onClick={() => setCurrentView('home')} className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={() => setCurrentView('home')} className="bg-green-600 hover:bg-green-700">
                 Back to Dashboard
               </Button>
             </div>

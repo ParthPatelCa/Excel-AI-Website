@@ -41,7 +41,7 @@ const Dashboard = ({ user, onNavigate, onShowWelcome, onStartDemo }) => {
       description: "Upload files or connect data sources",
       action: () => onNavigate('connect'),
       color: "bg-blue-500",
-      status: "Ready"
+      status: "Coming Soon"
     },
     {
       icon: Brain,
@@ -49,8 +49,7 @@ const Dashboard = ({ user, onNavigate, onShowWelcome, onStartDemo }) => {
       description: "Get AI-powered insights from your data",
       action: () => onNavigate('analyze'),
       color: "bg-purple-500",
-      status: "Featured",
-      featured: true
+      status: "Ready"
     },
     {
       icon: BarChart3,
@@ -66,7 +65,7 @@ const Dashboard = ({ user, onNavigate, onShowWelcome, onStartDemo }) => {
       description: "Clean and transform your data",
       action: () => onNavigate('data-prep'),
       color: "bg-green-500",
-      status: "Coming Soon"
+      status: "Ready"
     },
     {
       icon: Sparkles,
@@ -198,16 +197,16 @@ const Dashboard = ({ user, onNavigate, onShowWelcome, onStartDemo }) => {
                   {platformFeatures.map((feature, index) => (
                     <Card 
                       key={index} 
-                      className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${feature.featured ? 'ring-2 ring-purple-500 bg-purple-50' : 'hover:shadow-md'}`}
+                      className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 hover:border-purple-300"
                       onClick={feature.action}
                     >
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-4">
-                          <div className={`p-3 rounded-lg ${feature.color}`}>
+                          <div className={`p-3 rounded-lg ${feature.color} transition-all duration-200 group-hover:scale-110`}>
                             <feature.icon className="h-6 w-6 text-white" />
                           </div>
                           <Badge 
-                            variant={feature.status === 'Featured' ? 'default' : feature.status === 'Ready' ? 'secondary' : 'outline'}
+                            variant={feature.status === 'Ready' ? 'secondary' : 'outline'}
                             className="text-xs"
                           >
                             {feature.status}
