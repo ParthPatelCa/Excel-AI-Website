@@ -373,10 +373,10 @@ export const EnhancedNavigation = ({ currentView, onViewChange, className = "" }
                 key={section.id}
                 onClick={() => handleNavigation(section.id)}
                 className={`
-                  relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105
+                  relative px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
                   ${currentView === section.id
-                    ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 pb-1'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 hover:shadow-sm'
+                    ? 'text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'
                   }
                 `}
                 aria-current={currentView === section.id ? 'page' : undefined}
@@ -434,7 +434,7 @@ export const EnhancedNavigation = ({ currentView, onViewChange, className = "" }
                   className={`
                     w-full text-left px-3 py-2 rounded-lg text-base font-medium transition-all duration-200
                     ${currentView === section.id
-                      ? 'text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400 pl-3'
+                      ? 'text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800'
                       : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'
                     }
                   `}

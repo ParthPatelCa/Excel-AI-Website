@@ -10,7 +10,37 @@ import apiService from '@/services/api.js'
 
 export function VisualizePage() {
   const [activeTab, setActiveTab] = useState('create')
-  const [chartTypes, setChartTypes] = useState({})
+  // Initialize with fallback chart types immediately
+  const [chartTypes, setChartTypes] = useState({
+    bar: {
+      name: 'Bar Chart',
+      best_for: 'Categorical data, comparisons'
+    },
+    line: {
+      name: 'Line Chart',
+      best_for: 'Time series, trends'
+    },
+    pie: {
+      name: 'Pie Chart',
+      best_for: 'Proportions, percentages'
+    },
+    scatter: {
+      name: 'Scatter Plot',
+      best_for: 'Correlations, distributions'
+    },
+    heatmap: {
+      name: 'Heatmap',
+      best_for: 'Correlation matrices, dense data'
+    },
+    histogram: {
+      name: 'Histogram',
+      best_for: 'Data distribution, frequency'
+    },
+    box: {
+      name: 'Box Plot',
+      best_for: 'Statistical distribution, outliers'
+    }
+  })
   const [selectedChart, setSelectedChart] = useState('')
   const [chartData, setChartData] = useState([])
   const [chartConfig, setChartConfig] = useState({})
@@ -31,47 +61,13 @@ export function VisualizePage() {
       console.log('Loading chart types...')
       const response = await apiService.getChartTypes()
       console.log('Chart types response:', response)
-      if (response.success) {
+      if (response.success && response.data) {
         setChartTypes(response.data)
         console.log('Chart types loaded:', response.data)
-      } else {
-        console.error('Failed to load chart types - response not successful:', response)
       }
     } catch (error) {
       console.error('Failed to load chart types:', error)
-      // Fallback with hardcoded chart types for demo
-      const fallbackTypes = {
-        bar: {
-          name: 'Bar Chart',
-          best_for: 'Categorical data, comparisons'
-        },
-        line: {
-          name: 'Line Chart',
-          best_for: 'Time series, trends'
-        },
-        pie: {
-          name: 'Pie Chart',
-          best_for: 'Proportions, percentages'
-        },
-        scatter: {
-          name: 'Scatter Plot',
-          best_for: 'Correlations, distributions'
-        },
-        heatmap: {
-          name: 'Heatmap',
-          best_for: 'Correlation matrices, dense data'
-        },
-        histogram: {
-          name: 'Histogram',
-          best_for: 'Data distribution, frequency'
-        },
-        box: {
-          name: 'Box Plot',
-          best_for: 'Statistical distribution, outliers'
-        }
-      }
-      setChartTypes(fallbackTypes)
-      console.log('Using fallback chart types:', fallbackTypes)
+      // Chart types already initialized with fallback data, so no need to set again
     }
   }
 

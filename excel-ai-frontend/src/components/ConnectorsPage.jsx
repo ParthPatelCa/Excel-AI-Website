@@ -298,7 +298,14 @@ export function ConnectorsPage() {
             {Object.entries(connectorTypes).map(([key, type]) => {
               const Icon = CONNECTOR_ICONS[key] || Database
               return (
-                <Card key={key} className="cursor-pointer hover:shadow-md transition-shadow">
+                <Card 
+                  key={key} 
+                  className="cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => {
+                    setSelectedConnectorType(key)
+                    setShowCreateDialog(true)
+                  }}
+                >
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-3">
                       <div className="p-2 bg-blue-100 rounded-lg">
