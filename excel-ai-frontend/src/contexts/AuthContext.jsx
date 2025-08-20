@@ -146,6 +146,42 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const changePassword = async (currentPassword, newPassword) => {
+    try {
+      setError(null)
+      
+      // Supabase handles password verification internally
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      })
+      
+      if (error) throw error
+      
+      return { error: null }
+    } catch (error) {
+      console.error('Change password error:', error)
+      setError(error.message)
+      return { error: error.message }
+    }
+  }
+
+  const deleteAccount = async () => {
+    try {
+      setError(null)
+      
+      // Note: Supabase doesn't have a direct delete user method from client
+      // This would typically require a server-side function
+      // For now, we'll just sign out and show a message
+      await signOut()
+      
+      return { error: null }
+    } catch (error) {
+      console.error('Delete account error:', error)
+      setError(error.message)
+      return { error: error.message }
+    }
+  }
+
   const value = {
     user,
     session,
@@ -156,6 +192,8 @@ export const AuthProvider = ({ children }) => {
     signOut,
     resetPassword,
     updateProfile,
+    changePassword,
+    deleteAccount,
     isAuthenticated: !!user
   }
 

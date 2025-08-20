@@ -264,6 +264,14 @@ const Dashboard = ({ user, onNavigate, onShowWelcome, onStartDemo }) => {
                   <PieChart className="mr-2 h-4 w-4" />
                   Create Chart
                 </Button>
+                <Button 
+                  onClick={() => onNavigate('profile')}
+                  variant="outline" 
+                  className="w-full justify-start"
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  Manage Profile
+                </Button>
               </CardContent>
             </Card>
 

@@ -7,11 +7,22 @@ import { AnalysisPage } from '@/components/AnalysisPage.jsx'
 import { EnrichPage } from '@/components/EnrichPage.jsx'
 import { ToolsPage } from '@/components/ToolsPage.jsx'
 import { DataPrepPage } from '@/components/DataPrepPage.jsx'
+import { UserProfilePage } from '@/components/UserProfilePage.jsx'
 import LandingPage from '@/components/LandingPage.jsx'
 import DemoMode from '@/components/DemoMode.jsx'
 import WelcomePage from '@/components/WelcomePage.jsx'
 import Dashboard from '@/components/Dashboard.jsx'
 import { Button } from '@/components/ui/button.jsx'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar.jsx'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu.jsx'
+import { User, Settings, LogOut, ChevronDown } from 'lucide-react'
 
 function AppContent() {
   const { user, loading, signOut } = useAuth()
@@ -183,6 +194,8 @@ function AppContent() {
         return <EnrichPage />
       case 'tools':
         return <ToolsPage />
+      case 'profile':
+        return <UserProfilePage onNavigateBack={() => setCurrentView('home')} />
       default:
         return (
           <Dashboard
@@ -224,6 +237,18 @@ function AppContent() {
     return 'User'
   }
 
+  // Helper function to get user initials
+  const getUserInitials = () => {
+    const displayName = getUserDisplayName()
+    if (displayName === 'User') return 'U'
+    
+    const names = displayName.split(' ')
+    if (names.length >= 2) {
+      return `${names[0][0]}${names[1][0]}`.toUpperCase()
+    }
+    return displayName.slice(0, 2).toUpperCase()
+  }
+
   return (
     <div className="min-h-screen">
       <nav className="bg-white shadow-sm border-b">
@@ -235,14 +260,44 @@ function AppContent() {
             DataSense AI
           </h1>
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">Hi, {getUserDisplayName()}</span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => signOut()}
-            >
-              Sign Out
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center space-x-2 px-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-blue-100 text-blue-600 text-sm font-medium">
+                      {getUserInitials()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="hidden md:flex flex-col items-start">
+                    <span className="text-sm font-medium text-gray-900">{getUserDisplayName()}</span>
+                    <span className="text-xs text-gray-500">{user?.email}</span>
+                  </div>
+                  <ChevronDown className="h-4 w-4 text-gray-500" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{getUserDisplayName()}</p>
+                    <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setCurrentView('profile')}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Profile Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setCurrentView('home')}>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Dashboard</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => signOut()}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sign Out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </nav>
