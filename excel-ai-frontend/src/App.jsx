@@ -6,6 +6,7 @@ import { VisualizePage } from '@/components/VisualizePage.jsx'
 import { AnalysisPage } from '@/components/AnalysisPage.jsx'
 import { EnrichPage } from '@/components/EnrichPage.jsx'
 import { ToolsPage } from '@/components/ToolsPage.jsx'
+import { DataPrepPage } from '@/components/DataPrepPage.jsx'
 import LandingPage from '@/components/LandingPage.jsx'
 import DemoMode from '@/components/DemoMode.jsx'
 import WelcomePage from '@/components/WelcomePage.jsx'
@@ -177,18 +178,7 @@ function AppContent() {
       case 'visualize':
         return <VisualizePage />
       case 'data-prep':
-        return (
-          <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
-            <div className="container mx-auto px-4 py-16 text-center">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">Data Prep</h1>
-              <p className="text-xl text-gray-600 mb-8">Ready for MVP!</p>
-              <p className="text-gray-500 mb-8">AI-powered data cleaning and transformation tools</p>
-              <Button onClick={() => setCurrentView('home')} className="bg-green-600 hover:bg-green-700">
-                Back to Dashboard
-              </Button>
-            </div>
-          </div>
-        )
+        return <DataPrepPage />
       case 'enrich':
         return <EnrichPage />
       case 'tools':
