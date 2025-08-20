@@ -7,7 +7,7 @@ import { AnalysisPage } from '@/components/AnalysisPage.jsx'
 import { EnrichPage } from '@/components/EnrichPage.jsx'
 import { ToolsPage } from '@/components/ToolsPage.jsx'
 import { DataPrepPage } from '@/components/DataPrepPage.jsx'
-import { UserProfilePage } from '@/components/UserProfilePage.jsx'
+import { UserProfilePageWorking } from '@/components/UserProfilePageWorking.jsx'
 import LandingPage from '@/components/LandingPage.jsx'
 import DemoMode from '@/components/DemoMode.jsx'
 import WelcomePage from '@/components/WelcomePage.jsx'
@@ -195,7 +195,7 @@ function AppContent() {
       case 'tools':
         return <ToolsPage />
       case 'profile':
-        return <UserProfilePage onNavigateBack={() => setCurrentView('home')} />
+        return <UserProfilePageWorking onNavigateBack={() => setCurrentView('home')} />
       default:
         return (
           <Dashboard
