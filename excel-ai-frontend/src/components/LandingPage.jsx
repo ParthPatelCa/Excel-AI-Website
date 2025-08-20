@@ -140,7 +140,7 @@ export function LandingPage({ onGetStarted, onTryDemo, onLearnMore }) {
             {features.map((feature, index) => (
               <Card 
                 key={index}
-                className={`relative transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer ${
+                className={`relative transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer bg-white ${
                   feature.featured ? 'ring-2 ring-blue-500 bg-gradient-to-br from-blue-50 to-purple-50' : ''
                 }`}
                 onMouseEnter={() => setHoveredFeature(index)}
@@ -148,7 +148,7 @@ export function LandingPage({ onGetStarted, onTryDemo, onLearnMore }) {
               >
                 {feature.featured && (
                   <div className="absolute -top-3 left-4">
-                    <Badge className="bg-gradient-to-r from-blue-600 to-purple-600">
+                    <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0">
                       ⭐ Most Popular
                     </Badge>
                   </div>
@@ -161,7 +161,7 @@ export function LandingPage({ onGetStarted, onTryDemo, onLearnMore }) {
                     }`} />
                   </div>
                   <CardTitle className="text-xl mb-2 text-gray-900 dark:text-gray-100">{feature.title}</CardTitle>
-                  <Badge variant="secondary" className="w-fit mx-auto">
+                  <Badge variant="secondary" className="w-fit mx-auto bg-gray-100 text-gray-800 border-0">
                     {feature.category}
                   </Badge>
                 </CardHeader>

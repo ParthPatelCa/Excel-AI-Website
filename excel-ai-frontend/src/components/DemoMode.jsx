@@ -145,28 +145,28 @@ export function DemoMode({ onBack, onSignUp }) {
                   <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                     <div className="flex items-center space-x-3 mb-2">
                       <FileSpreadsheet className="h-6 w-6 text-green-600" />
-                      <span className="font-medium">Sales Data.xlsx</span>
+                      <span className="font-medium text-gray-900">Sales Data.xlsx</span>
                     </div>
                     <p className="text-sm text-gray-600">12 rows, 4 columns</p>
-                    <Badge variant="outline" className="mt-2 bg-green-100">Connected</Badge>
+                    <Badge variant="outline" className="mt-2 bg-green-100 text-green-800 border-green-200">Connected</Badge>
                   </div>
                   
                   <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                     <div className="flex items-center space-x-3 mb-2">
                       <MessageSquare className="h-6 w-6 text-blue-600" />
-                      <span className="font-medium">Customer Feedback</span>
+                      <span className="font-medium text-gray-900">Customer Feedback</span>
                     </div>
                     <p className="text-sm text-gray-600">10 responses</p>
-                    <Badge variant="outline" className="mt-2 bg-blue-100">Connected</Badge>
+                    <Badge variant="outline" className="mt-2 bg-blue-100 text-blue-800 border-blue-200">Connected</Badge>
                   </div>
                   
                   <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
                     <div className="flex items-center space-x-3 mb-2">
                       <Star className="h-6 w-6 text-purple-600" />
-                      <span className="font-medium">Product Data</span>
+                      <span className="font-medium text-gray-900">Product Data</span>
                     </div>
                     <p className="text-sm text-gray-600">6 products</p>
-                    <Badge variant="outline" className="mt-2 bg-purple-100">Connected</Badge>
+                    <Badge variant="outline" className="mt-2 bg-purple-100 text-purple-800 border-purple-200">Connected</Badge>
                   </div>
                 </div>
               </CardContent>
@@ -300,7 +300,7 @@ export function DemoMode({ onBack, onSignUp }) {
                       <div className="p-3 bg-green-50 rounded border border-green-200">
                         <div className="flex items-center space-x-2 mb-1">
                           <span className="text-green-600 font-medium">😊 Positive</span>
-                          <Badge variant="outline" className="bg-green-100">72%</Badge>
+                          <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">72%</Badge>
                         </div>
                         <p className="text-sm text-green-700">Quality, service, features</p>
                       </div>
@@ -308,7 +308,7 @@ export function DemoMode({ onBack, onSignUp }) {
                       <div className="p-3 bg-yellow-50 rounded border border-yellow-200">
                         <div className="flex items-center space-x-2 mb-1">
                           <span className="text-yellow-600 font-medium">😐 Neutral</span>
-                          <Badge variant="outline" className="bg-yellow-100">18%</Badge>
+                          <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200">18%</Badge>
                         </div>
                         <p className="text-sm text-yellow-700">Documentation, setup</p>
                       </div>
@@ -316,7 +316,7 @@ export function DemoMode({ onBack, onSignUp }) {
                       <div className="p-3 bg-red-50 rounded border border-red-200">
                         <div className="flex items-center space-x-2 mb-1">
                           <span className="text-red-600 font-medium">😞 Negative</span>
-                          <Badge variant="outline" className="bg-red-100">10%</Badge>
+                          <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200">10%</Badge>
                         </div>
                         <p className="text-sm text-red-700">Pricing, delivery delays</p>
                       </div>
