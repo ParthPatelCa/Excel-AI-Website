@@ -114,6 +114,17 @@ const WelcomePage = ({ user, onGetStarted, onStartDemo }) => {
     }
   ]
 
+  const getUserDisplayName = () => {
+    if (user?.user_metadata?.full_name) {
+      return user.user_metadata.full_name
+    }
+    if (user?.user_metadata?.name) {
+      return user.user_metadata.name
+    }
+    // Fallback to email name
+    return user?.email?.split('@')[0] || 'there'
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-12">
@@ -125,7 +136,7 @@ const WelcomePage = ({ user, onGetStarted, onStartDemo }) => {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Welcome to DataSense AI, {user?.email?.split('@')[0] || 'there'}! 🎉
+            Welcome to DataSense AI, {getUserDisplayName()}! 🎉
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Your account is confirmed and ready. Let's turn your data into actionable insights.

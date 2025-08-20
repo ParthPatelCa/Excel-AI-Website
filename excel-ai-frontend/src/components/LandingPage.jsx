@@ -12,8 +12,8 @@ import {
   ArrowRight,
   Play,
   CheckCircle,
-  Users,
-  TrendingUp,
+  // Users,          // Commented out for MVP - uncomment when showing social proof
+  // TrendingUp,     // Commented out for MVP - uncomment when showing social proof
   Brain
 } from 'lucide-react'
 
@@ -60,11 +60,13 @@ export function LandingPage({ onGetStarted, onTryDemo, onLearnMore }) {
     }
   ]
 
-  const stats = [
-    { icon: Users, value: "10,000+", label: "Happy Users" },
-    { icon: TrendingUp, value: "2M+", label: "Data Points Analyzed" },
-    { icon: Zap, value: "95%", label: "Time Saved" }
-  ]
+  // Social proof stats - commented out for MVP launch
+  // Uncomment when you have real data to show
+  // const stats = [
+  //   { icon: Users, value: "10,000+", label: "Happy Users" },
+  //   { icon: TrendingUp, value: "2M+", label: "Data Points Analyzed" },
+  //   { icon: Zap, value: "95%", label: "Time Saved" }
+  // ]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -111,7 +113,9 @@ export function LandingPage({ onGetStarted, onTryDemo, onLearnMore }) {
             </Button>
           </div>
 
-          {/* Social Proof */}
+          {/* Social Proof - Commented out for MVP launch */}
+          {/* Uncomment when you have real data to show */}
+          {/* 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
@@ -123,6 +127,7 @@ export function LandingPage({ onGetStarted, onTryDemo, onLearnMore }) {
               </div>
             ))}
           </div>
+          */}
         </div>
 
         {/* Feature Grid */}

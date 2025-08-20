@@ -3,9 +3,14 @@ import { ThemeProvider } from '@/contexts/ThemeContext.jsx'
 import { AuthProvider, useAuth } from '@/contexts/AuthContext.jsx'
 import SupabaseAuth from '@/components/SupabaseAuth.jsx'
 import { ConnectorsPage } from '@/components/ConnectorsPage.jsx'
+import { VisualizePage } from '@/components/VisualizePage.jsx'
+import { AnalysisPage } from '@/components/AnalysisPage.jsx'
+import { EnrichPage } from '@/components/EnrichPage.jsx'
+import { ToolsPage } from '@/components/ToolsPage.jsx'
 import LandingPage from '@/components/LandingPage.jsx'
 import DemoMode from '@/components/DemoMode.jsx'
 import WelcomePage from '@/components/WelcomePage.jsx'
+import Dashboard from '@/components/Dashboard.jsx'
 import { Button } from '@/components/ui/button.jsx'
 
 function AppContent() {
@@ -157,70 +162,49 @@ function AppContent() {
     switch (currentView) {
       case 'connect':
         return <ConnectorsPage />
-      default:
+      case 'analyze':
+        return <AnalysisPage />
+      case 'visualize':
+        return <VisualizePage />
+      case 'data-prep':
         return (
           <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-            <div className="container mx-auto px-4 py-16">
-              <div className="text-center mb-12">
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                  Welcome back, {user.email?.split('@')[0] || 'there'}!
-                </h1>
-                <p className="text-xl text-gray-600 mb-8">
-                  Your DataSense AI Platform Dashboard
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
-                  <Button
-                    onClick={() => setCurrentView('connect')}
-                    className="h-24 text-lg bg-blue-500 hover:bg-blue-600"
-                    size="lg"
-                  >
-                    <div className="flex flex-col items-center">
-                      <span className="text-2xl mb-2">🔗</span>
-                      Connect Data
-                    </div>
-                  </Button>
-                  <Button
-                    onClick={() => setCurrentView('analyze')}
-                    className="h-24 text-lg bg-purple-500 hover:bg-purple-600"
-                    size="lg"
-                  >
-                    <div className="flex flex-col items-center">
-                      <span className="text-2xl mb-2">📊</span>
-                      Analyze
-                    </div>
-                  </Button>
-                  <Button
-                    onClick={() => setCurrentView('visualize')}
-                    className="h-24 text-lg bg-orange-500 hover:bg-orange-600"
-                    size="lg"
-                  >
-                    <div className="flex flex-col items-center">
-                      <span className="text-2xl mb-2">📈</span>
-                      Visualize
-                    </div>
-                  </Button>
-                </div>
-                <div className="flex justify-center space-x-4">
-                  <Button
-                    onClick={() => setCurrentView('demo')}
-                    variant="outline"
-                    size="lg"
-                  >
-                    Try Demo Mode
-                  </Button>
-                  <Button
-                    onClick={() => setShowWelcome(true)}
-                    variant="ghost"
-                    size="lg"
-                  >
-                    Show Welcome Guide
-                  </Button>
-                </div>
-              </div>
+            <div className="container mx-auto px-4 py-16 text-center">
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">Data Prep</h1>
+              <p className="text-xl text-gray-600 mb-8">Coming Soon!</p>
+              <p className="text-gray-500 mb-8">AI-powered data cleaning and transformation tools</p>
+              <Button onClick={() => setCurrentView('home')} className="bg-blue-600 hover:bg-blue-700">
+                Back to Dashboard
+              </Button>
             </div>
           </div>
         )
+      case 'enrich':
+        return <EnrichPage />
+      case 'tools':
+        return <ToolsPage />
+      default:
+        return (
+          <Dashboard
+            user={user}
+            onNavigate={(view) => setCurrentView(view)}
+            onShowWelcome={() => setShowWelcome(true)}
+            onStartDemo={() => setCurrentView('demo')}
+          />
+        )
     }
+  }
+
+  // Helper function to get user display name
+  const getUserDisplayName = () => {
+    if (user?.user_metadata?.full_name) {
+      return user.user_metadata.full_name
+    }
+    if (user?.user_metadata?.name) {
+      return user.user_metadata.name
+    }
+    // Fallback to email name
+    return user?.email?.split('@')[0] || 'User'
   }
 
   return (
@@ -234,7 +218,7 @@ function AppContent() {
             DataSense AI
           </h1>
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">{user.email}</span>
+            <span className="text-sm text-gray-600">Hi, {getUserDisplayName()}</span>
             <Button
               variant="outline"
               size="sm"
