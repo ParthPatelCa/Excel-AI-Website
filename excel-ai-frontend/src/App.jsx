@@ -22,7 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu.jsx'
-import { User, Settings, LogOut, ChevronDown } from 'lucide-react'
+import { Home, Settings, LogOut, ChevronDown } from 'lucide-react'
 
 function AppContent() {
   const { user, loading, signOut } = useAuth()
@@ -288,7 +288,7 @@ function AppContent() {
                   <span>Profile Settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setCurrentView('home')}>
-                  <User className="mr-2 h-4 w-4" />
+                  <Home className="mr-2 h-4 w-4" />
                   <span>Dashboard</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
