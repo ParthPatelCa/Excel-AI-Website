@@ -6,6 +6,7 @@ const DiagnosticApp = React.lazy(() => import('./AppDiagnostic.jsx'))
 const GradualApp = React.lazy(() => import('./AppGradual.jsx'))
 const DebuggerApp = React.lazy(() => import('./AppDebugger.jsx'))
 const SimpleTestApp = React.lazy(() => import('./AppSimpleTest.jsx'))
+const StepByStepApp = React.lazy(() => import('./AppStepByStep.jsx'))
 const MainApp = React.lazy(() => import('./App.jsx'))
 
 function AppRouter() {
@@ -56,6 +57,13 @@ function AppRouter() {
       return (
         <React.Suspense fallback={<LoadingSpinner message="Loading Simple Tester..." />}>
           <SimpleTestApp />
+        </React.Suspense>
+      )
+
+    case 'steps':
+      return (
+        <React.Suspense fallback={<LoadingSpinner message="Loading Step-by-Step Debugger..." />}>
+          <StepByStepApp />
         </React.Suspense>
       )
 
