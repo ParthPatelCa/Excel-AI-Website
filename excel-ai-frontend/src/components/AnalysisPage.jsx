@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx'
 import { Alert, AlertDescription } from '@/components/ui/alert.jsx'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs.jsx'
+import FeedbackWidget, { QuickRating } from '@/components/FeedbackWidget.jsx'
 import apiService from '@/services/api.js'
 import { 
   Plus, 
@@ -55,8 +56,11 @@ export function AnalysisPage() {
 
   useEffect(() => {
     loadAnalyses()
-    loadAnalysisTypes()
-    loadConnectors()
+  }, [])
+
+  // Track page view
+  useEffect(() => {
+    apiService.trackEvent('page_view', { page: 'analysis' })
   }, [])
 
   const loadAnalyses = async () => {
@@ -106,16 +110,41 @@ export function AnalysisPage() {
     try {
       setCreating(true)
       setError(null)
+      
+      // Track analysis creation attempt
+      apiService.trackEvent('analysis_created', { 
+        type: newAnalysis.analysis_type, 
+        has_connector: !!newAnalysis.connector_id 
+      })
+
       const response = await apiService.createAnalysis(newAnalysis)
       if (response.success) {
         setAnalyses(prev => [response.data, ...prev])
         setShowCreateDialog(false)
         setNewAnalysis({ name: '', analysis_type: '', connector_id: '', parameters: {} })
+        
+        // Track successful analysis creation
+        apiService.trackEvent('analysis_creation_success', { 
+          analysis_id: response.data.id,
+          type: newAnalysis.analysis_type 
+        })
       } else {
         setError(response.error)
+        
+        // Track analysis creation failure
+        apiService.trackEvent('analysis_creation_error', { 
+          error: response.error,
+          type: newAnalysis.analysis_type 
+        })
       }
     } catch (err) {
       setError(err.message)
+      
+      // Track analysis creation failure
+      apiService.trackEvent('analysis_creation_error', { 
+        error: err.message,
+        type: newAnalysis.analysis_type 
+      })
     } finally {
       setCreating(false)
     }
@@ -426,6 +455,9 @@ export function AnalysisPage() {
           <AlertDescription className="text-red-800">{error}</AlertDescription>
         </Alert>
       )}
+
+      {/* Feedback Widget */}
+      <FeedbackWidget context="analysis" />
     </div>
   )
 }

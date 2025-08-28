@@ -625,6 +625,48 @@ class ApiService {
       })
     })
   }
+
+  // ============ FEEDBACK & ANALYTICS API (MVP) ============
+  
+  async submitFeedback(feedbackData) {
+    return this.makeRequest('/v1/feedback/submit', {
+      method: 'POST',
+      body: JSON.stringify(feedbackData)
+    })
+  }
+
+  async submitQuickRating(ratingData) {
+    return this.makeRequest('/v1/feedback/quick-rating', {
+      method: 'POST',
+      body: JSON.stringify(ratingData)
+    })
+  }
+
+  async trackEvent(eventType, eventData = {}) {
+    // Silent analytics tracking - don't throw errors if it fails
+    try {
+      return this.makeRequest('/v1/feedback/analytics', {
+        method: 'POST',
+        body: JSON.stringify({
+          event_type: eventType,
+          feature_name: eventData.feature_name,
+          duration_seconds: eventData.duration_seconds,
+          success: eventData.success,
+          error_message: eventData.error_message,
+          metadata: eventData
+        })
+      })
+    } catch (error) {
+      console.warn('Analytics tracking failed:', error)
+      return null
+    }
+  }
+
+  async getFeedbackSummary() {
+    return this.makeRequest('/v1/feedback/admin/summary', {
+      method: 'GET'
+    })
+  }
 }
 
 // Create a singleton instance

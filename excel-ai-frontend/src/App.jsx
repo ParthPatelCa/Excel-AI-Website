@@ -4,14 +4,15 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext.jsx'
 import SupabaseAuth from '@/components/SupabaseAuth.jsx'
 import { VisualizePage } from '@/components/VisualizePage.jsx'
 import { AnalysisPage } from '@/components/AnalysisPage.jsx'
-import { EnrichPage } from '@/components/EnrichPage.jsx'
-import { ToolsPage } from '@/components/ToolsPage.jsx'
-import { DataPrepPage } from '@/components/DataPrepPage.jsx'
+// MVP: Comment out non-MVP components for initial release
+// import { EnrichPage } from '@/components/EnrichPage.jsx'
+// import { ToolsPage } from '@/components/ToolsPage.jsx'
+// import { DataPrepPage } from '@/components/DataPrepPage.jsx'
 import { UserProfilePageWorking } from '@/components/UserProfilePageWorking.jsx'
 import LandingPage from '@/components/LandingPage.jsx'
 import DemoMode from '@/components/DemoMode.jsx'
 import WelcomePage from '@/components/WelcomePage.jsx'
-import Dashboard from '@/components/Dashboard.jsx'
+import DashboardMVP from '@/components/DashboardMVP.jsx'  // MVP: Use simplified dashboard
 import { Button } from '@/components/ui/button.jsx'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar.jsx'
 import {
@@ -146,7 +147,7 @@ function AppContent() {
         onGetStarted={(action) => {
           setShowWelcome(false)
           if (action === 'upload') {
-            setCurrentView('connect')
+            setCurrentView('analyze')  // MVP: Go directly to analyze instead of connect
           } else {
             setCurrentView('home')
           }
@@ -171,34 +172,38 @@ function AppContent() {
     }
 
     switch (currentView) {
-      case 'connect':
-        return (
-          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-            <div className="container mx-auto px-4 py-16 text-center">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">Connect</h1>
-              <p className="text-xl text-gray-600 mb-8">Coming Soon!</p>
-              <p className="text-gray-500 mb-8">Data source connections and file upload management</p>
-              <Button onClick={() => setCurrentView('home')} className="bg-blue-600 hover:bg-blue-700">
-                Back to Dashboard
-              </Button>
-            </div>
-          </div>
-        )
+      // MVP: Simplified view routing
       case 'analyze':
         return <AnalysisPage />
       case 'visualize':
         return <VisualizePage />
-      case 'data-prep':
-        return <DataPrepPage />
-      case 'enrich':
-        return <EnrichPage />
-      case 'tools':
-        return <ToolsPage />
       case 'profile':
         return <UserProfilePageWorking onNavigateBack={() => setCurrentView('home')} />
+      
+      // MVP: Comment out non-MVP views
+      // case 'connect':
+      //   return (
+      //     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      //       <div className="container mx-auto px-4 py-16 text-center">
+      //         <h1 className="text-4xl font-bold text-gray-900 mb-4">Connect</h1>
+      //         <p className="text-xl text-gray-600 mb-8">Coming Soon!</p>
+      //         <p className="text-gray-500 mb-8">Data source connections and file upload management</p>
+      //         <Button onClick={() => setCurrentView('home')} className="bg-blue-600 hover:bg-blue-700">
+      //           Back to Dashboard
+      //         </Button>
+      //       </div>
+      //     </div>
+      //   )
+      // case 'data-prep':
+      //   return <DataPrepPage />
+      // case 'enrich':
+      //   return <EnrichPage />
+      // case 'tools':
+      //   return <ToolsPage />
+      
       default:
         return (
-          <Dashboard
+          <DashboardMVP
             user={user}
             onNavigate={(view) => setCurrentView(view)}
             onShowWelcome={() => setShowWelcome(true)}

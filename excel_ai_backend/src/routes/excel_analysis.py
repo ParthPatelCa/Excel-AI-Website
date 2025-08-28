@@ -283,7 +283,54 @@ def upload_file():
         if len(df.columns) == 0:
             return jsonify({'error': 'The uploaded file has no columns'}), 400
         
-        # Basic file information
+        # Enhanced data analysis for MVP
+        def detect_data_types(df):
+            """Detect and categorize column types for MVP insights"""
+            column_analysis = {}
+            for col in df.columns:
+                # Get basic info
+                col_type = str(df[col].dtype)
+                null_count = df[col].isnull().sum()
+                unique_count = df[col].nunique()
+                
+                # Classify column type
+                if df[col].dtype in ['int64', 'float64']:
+                    category = 'numeric'
+                    # Add basic stats for numeric columns
+                    stats = {
+                        'min': float(df[col].min()) if not df[col].empty else None,
+                        'max': float(df[col].max()) if not df[col].empty else None,
+                        'mean': float(df[col].mean()) if not df[col].empty else None
+                    }
+                elif df[col].dtype == 'datetime64[ns]':
+                    category = 'datetime'
+                    stats = {
+                        'min_date': str(df[col].min()) if not df[col].empty else None,
+                        'max_date': str(df[col].max()) if not df[col].empty else None
+                    }
+                else:
+                    category = 'text'
+                    # Check if it might be categorical
+                    if unique_count < len(df) * 0.5 and unique_count < 20:
+                        category = 'categorical'
+                        stats = {'categories': df[col].value_counts().head(10).to_dict()}
+                    else:
+                        stats = {'sample_values': df[col].dropna().head(5).tolist()}
+                
+                column_analysis[col] = {
+                    'type': col_type,
+                    'category': category,
+                    'null_count': int(null_count),
+                    'unique_count': int(unique_count),
+                    'stats': stats
+                }
+            
+            return column_analysis
+        
+        # Get enhanced column analysis
+        column_analysis = detect_data_types(df)
+        
+        # Basic file information with MVP enhancements
         file_info = {
             'filename': file.filename,
             'file_size': file_size,
@@ -291,15 +338,64 @@ def upload_file():
             'columns': len(df.columns),
             'column_names': df.columns.tolist(),
             'data_types': df.dtypes.astype(str).to_dict(),
-            'preview': df.head(5).to_dict('records')
+            'column_analysis': column_analysis,  # MVP: Enhanced column insights
+            'preview': df.head(10).to_dict('records'),  # MVP: Show 10 rows instead of 5
+            'data_summary': {  # MVP: Quick summary stats
+                'numeric_columns': len([col for col, analysis in column_analysis.items() if analysis['category'] == 'numeric']),
+                'text_columns': len([col for col, analysis in column_analysis.items() if analysis['category'] == 'text']),
+                'categorical_columns': len([col for col, analysis in column_analysis.items() if analysis['category'] == 'categorical']),
+                'datetime_columns': len([col for col, analysis in column_analysis.items() if analysis['category'] == 'datetime']),
+                'total_null_values': int(df.isnull().sum().sum()),
+                'data_quality_score': round((1 - df.isnull().sum().sum() / (len(df) * len(df.columns))) * 100, 1)
+            }
         }
         
         # Store the dataframe in session or temporary storage
         # For now, we'll return the data directly
+        
+        # MVP: Add immediate basic insights to upload response
+        def get_quick_insights(df, column_analysis):
+            """Generate quick insights for MVP without AI call"""
+            insights = []
+            
+            # Data size insights
+            if len(df) > 10000:
+                insights.append(f"Large dataset with {len(df):,} rows - consider filtering for faster analysis")
+            elif len(df) < 100:
+                insights.append(f"Small dataset with {len(df)} rows - results may be limited")
+            
+            # Column insights
+            numeric_cols = [col for col, analysis in column_analysis.items() if analysis['category'] == 'numeric']
+            if numeric_cols:
+                insights.append(f"Found {len(numeric_cols)} numeric columns suitable for statistical analysis")
+            
+            categorical_cols = [col for col, analysis in column_analysis.items() if analysis['category'] == 'categorical']
+            if categorical_cols:
+                insights.append(f"Found {len(categorical_cols)} categorical columns for grouping and segmentation")
+            
+            # Data quality insights
+            total_cells = len(df) * len(df.columns)
+            null_cells = df.isnull().sum().sum()
+            if null_cells > total_cells * 0.1:
+                insights.append("High number of missing values detected - consider data cleaning")
+            elif null_cells == 0:
+                insights.append("Complete dataset with no missing values")
+            
+            # Suggest next steps
+            if numeric_cols and len(df) > 50:
+                insights.append("Ready for trend analysis and statistical insights")
+            if categorical_cols:
+                insights.append("Ready for segmentation and categorical analysis")
+            
+            return insights
+        
+        quick_insights = get_quick_insights(df, column_analysis)
+        
         return jsonify({
             'success': True,
             'file_info': file_info,
-            'data': df.to_dict('records')
+            'quick_insights': quick_insights,  # MVP: Immediate insights
+            'data': df.to_dict('records')  # Full data for now, could be limited in production
         })
         
     except Exception as e:
@@ -308,7 +404,7 @@ def upload_file():
 @excel_bp.route('/analyze', methods=['POST'])
 @token_required
 def analyze_data(current_user):
-    """Perform AI-powered analysis on the uploaded data"""
+    """Perform simplified MVP analysis on the uploaded data"""
     with TelemetryTracker(current_user.id, 'analysis', '/excel/analyze') as tracker:
         try:
             data = request.json
@@ -318,30 +414,119 @@ def analyze_data(current_user):
             # Convert data back to DataFrame
             df = pd.DataFrame(data['data'])
             
-            # Generate basic statistics
-            insights = generate_insights(df)
+            # MVP: Generate simplified insights without heavy AI dependency
+            def generate_mvp_insights(df):
+                """Generate basic statistical insights for MVP"""
+                insights = {}
+                
+                # Basic dataset info
+                insights['dataset_overview'] = {
+                    'total_rows': len(df),
+                    'total_columns': len(df.columns),
+                    'missing_values': int(df.isnull().sum().sum()),
+                    'data_quality_score': round((1 - df.isnull().sum().sum() / (len(df) * len(df.columns))) * 100, 1)
+                }
+                
+                # Column analysis
+                numeric_columns = df.select_dtypes(include=[np.number]).columns.tolist()
+                text_columns = df.select_dtypes(include=['object']).columns.tolist()
+                
+                insights['column_summary'] = {
+                    'numeric_columns': len(numeric_columns),
+                    'text_columns': len(text_columns),
+                    'total_columns': len(df.columns)
+                }
+                
+                # Numeric insights
+                if numeric_columns:
+                    numeric_stats = {}
+                    for col in numeric_columns[:5]:  # Limit to first 5 numeric columns
+                        stats = {
+                            'mean': float(df[col].mean()) if not df[col].empty else 0,
+                            'median': float(df[col].median()) if not df[col].empty else 0,
+                            'std': float(df[col].std()) if not df[col].empty else 0,
+                            'min': float(df[col].min()) if not df[col].empty else 0,
+                            'max': float(df[col].max()) if not df[col].empty else 0,
+                            'null_count': int(df[col].isnull().sum())
+                        }
+                        numeric_stats[col] = stats
+                    insights['numeric_analysis'] = numeric_stats
+                
+                # Categorical insights  
+                if text_columns:
+                    categorical_stats = {}
+                    for col in text_columns[:5]:  # Limit to first 5 text columns
+                        stats = {
+                            'unique_values': int(df[col].nunique()),
+                            'most_common': df[col].value_counts().head(3).to_dict(),
+                            'null_count': int(df[col].isnull().sum())
+                        }
+                        categorical_stats[col] = stats
+                    insights['categorical_analysis'] = categorical_stats
+                
+                # Simple trend detection for numeric data
+                trends = []
+                for col in numeric_columns[:3]:  # Check first 3 numeric columns
+                    if len(df) > 10:
+                        correlation_with_index = df[col].corr(pd.Series(range(len(df))))
+                        if abs(correlation_with_index) > 0.5:
+                            trend_direction = "increasing" if correlation_with_index > 0 else "decreasing"
+                            trends.append(f"{col} shows a {trend_direction} trend")
+                
+                insights['trend_analysis'] = trends
+                
+                return insights
             
+            # Generate basic statistics
+            basic_insights = generate_mvp_insights(df)
+            
+            # Check usage limits
             if not current_user.can_query():
                 return jsonify({'error': 'Query limit reached for current plan', 'limit_reached': True}), 429
             
-            # Generate AI-powered insights with telemetry
-            start_time = time.time()
-            ai_insights = generate_ai_insights(df, insights)
-            
-            # Track AI call metrics
-            if isinstance(ai_insights, dict) and 'error' not in ai_insights:
-                estimated_tokens = estimate_tokens(str(ai_insights))
-                tracker.set_ai_metadata(
-                    model_used=resolve_model(),
-                    tokens_used=estimated_tokens
-                )
+            # MVP: Optional AI insights with simplified prompt
+            ai_insights = None
+            if client and api_key and api_key != 'sk-test-key-replace-with-real-key':
+                try:
+                    # Simplified AI analysis for MVP
+                    summary_prompt = f"""
+                    Analyze this dataset summary and provide 3-5 key insights in simple language:
+                    
+                    Dataset: {len(df)} rows, {len(df.columns)} columns
+                    Numeric columns: {len(df.select_dtypes(include=[np.number]).columns)}
+                    Text columns: {len(df.select_dtypes(include=['object']).columns)}
+                    Missing values: {df.isnull().sum().sum()}
+                    
+                    Sample data (first 3 rows):
+                    {df.head(3).to_dict('records')}
+                    
+                    Provide insights as a simple list of strings focusing on:
+                    1. Data quality assessment
+                    2. Key patterns or trends
+                    3. Recommendations for further analysis
+                    """
+                    
+                    response = call_openai_with_retry(
+                        [{"role": "user", "content": summary_prompt}],
+                        max_tokens=500,
+                        temperature=0.3
+                    )
+                    
+                    if response and 'choices' in response:
+                        ai_content = response['choices'][0]['message']['content']
+                        ai_insights = [line.strip() for line in ai_content.split('\n') if line.strip() and not line.strip().startswith('#')]
+                    
+                except Exception as e:
+                    print(f"AI analysis failed: {e}")
+                    ai_insights = ["AI analysis temporarily unavailable"]
             
             current_user.increment_usage('query')
             
             return jsonify({
                 'success': True,
-                'insights': insights,
-                'ai_insights': ai_insights
+                'insights': basic_insights,
+                'ai_insights': ai_insights,
+                'analysis_type': 'mvp_simplified'
             })
             
         except Exception as e:
