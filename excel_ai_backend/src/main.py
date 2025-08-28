@@ -28,6 +28,7 @@ from src.routes.visualize import visualize_bp  # Keep for basic charts
 # from src.routes.data_prep import data_prep_bp  # Future: Advanced data preparation
 # from src.routes.enrich import enrich_bp  # Future: Text enrichment
 # from src.routes.tools import tools_bp  # Future: Tools suite
+from src.routes.feedback import feedback_bp  # MVP: User feedback collection
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'fallback-secret-key')
@@ -52,6 +53,7 @@ app.register_blueprint(visualize_bp, url_prefix='/api/v1/visualize', name='visua
 # app.register_blueprint(data_prep_bp, url_prefix='/api/v1/data-prep', name='data_prep_v1')  # Future: Advanced data prep
 # app.register_blueprint(enrich_bp, url_prefix='/api/v1/enrich', name='enrich_v1')  # Future: Text enrichment
 # app.register_blueprint(tools_bp, url_prefix='/api/v1/tools', name='tools_v1')  # Future: Tools suite
+app.register_blueprint(feedback_bp, url_prefix='/api/v1/feedback', name='feedback_v1')  # MVP: User feedback
 
 # MVP: Legacy support - comment out non-MVP routes for now
 app.register_blueprint(user_bp, url_prefix='/api', name='user_legacy')

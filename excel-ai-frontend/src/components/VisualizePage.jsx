@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input.jsx'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx'
 import { BarChart3, LineChart, PieChart, ScatterChart, Activity, BarChart2, Box, Lightbulb, Download } from 'lucide-react'
 import ChartLazy from '@/components/ChartLazy.jsx'
+import FeedbackWidget from '@/components/FeedbackWidget.jsx'
 import apiService from '@/services/api.js'
 
 export function VisualizePage() {
@@ -54,6 +55,15 @@ export function VisualizePage() {
     if (activeTab === 'library') {
       loadVisualizations()
     }
+  }, [activeTab])
+
+  // Track page view and tab changes
+  useEffect(() => {
+    apiService.trackEvent('page_view', { page: 'visualize' })
+  }, [])
+
+  useEffect(() => {
+    apiService.trackEvent('tab_change', { page: 'visualize', tab: activeTab })
   }, [activeTab])
 
   const loadChartTypes = async () => {
@@ -126,6 +136,13 @@ export function VisualizePage() {
 
     setIsLoading(true)
     try {
+      // Track visualization creation attempt
+      apiService.trackEvent('visualization_created', { 
+        chart_type: selectedChart,
+        data_points: chartData.length,
+        has_title: !!chartConfig.title
+      })
+
       const response = await apiService.createVisualization({
         title: chartConfig.title || `${chartTypes[selectedChart]?.name || selectedChart} Chart`,
         chart_type: selectedChart,
@@ -136,9 +153,27 @@ export function VisualizePage() {
       if (response.success) {
         setGeneratedChart(response.data)
         setActiveTab('preview')
+        
+        // Track successful visualization creation
+        apiService.trackEvent('visualization_creation_success', { 
+          chart_type: selectedChart,
+          visualization_id: response.data.id
+        })
+      } else {
+        // Track visualization creation failure
+        apiService.trackEvent('visualization_creation_error', { 
+          chart_type: selectedChart,
+          error: 'API response failed'
+        })
       }
     } catch (error) {
       console.error('Failed to create visualization:', error)
+      
+      // Track visualization creation failure
+      apiService.trackEvent('visualization_creation_error', { 
+        chart_type: selectedChart,
+        error: error.message
+      })
     } finally {
       setIsLoading(false)
     }
@@ -433,6 +468,9 @@ export function VisualizePage() {
           )}
         </div>
       )}
+
+      {/* Feedback Widget */}
+      <FeedbackWidget context="visualize" />
     </div>
   )
 }

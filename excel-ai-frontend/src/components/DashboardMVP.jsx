@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import FeedbackWidget from '@/components/FeedbackWidget.jsx'
 import { 
   Upload, 
   BarChart3, 
@@ -289,6 +290,9 @@ const DashboardMVP = ({ user, onNavigate, onShowWelcome, onStartDemo }) => {
             </div>
           </CardContent>
         </Card>
+
+        {/* MVP: Feedback Widget */}
+        <FeedbackWidget feature="dashboard" />
       </div>
     </div>
   )
